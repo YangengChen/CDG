@@ -1,29 +1,19 @@
 @import '../@theme/styles/themes';
-:host {
-
-  background: nb-theme(card-bg); // and use it
-}
-
-//@include nb-install-component() {
 
 
+    #state-button{
+        width:200px;
+    }
 
-    
-    // nb-card {
-    //     height:98%;
-    //     background-color:lightgray;
-    // }
-    // nb-sidebar{
-    //     width:20%;
-    // }
-    // /deep/ nb-layout-header .fixed {
-    //     background-color:#2e4874;
-    // }
-    // /deep/ .layout{
-    //     background-color:#2e4874;
-    // }
-    // /deep/ .main-container {
-    //     width:20%;
-    //     background-color:#2e4874;
-    // }
-//}
+   #dropperino{
+       width:100%;
+       display:flex;
+       justify-content: space-between;
+       text-align: center;
+       vertical-align: middle;
+       line-height: 50px;
+    }
+
+    nb-card {
+        height:98%;
+    }

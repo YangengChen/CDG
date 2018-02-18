@@ -8,5 +8,12 @@ $nb-themes: nb-register-theme((
 
   //Sidebar Customs
   sidebar-bg: navy,
-
+  sidebar-width:30rem,
+  card-shadow: navy,
+  card-header-bg:white,
+  card-bg:lightgray,
+  btn-primary-bg:navy,
+  btn-font-family: "Arialsans-serif",
+  header-bg:lightgray,
+  header-height:6rem,
 ), default, default); // let's leave it as default

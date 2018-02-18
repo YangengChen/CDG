@@ -1,11 +1,22 @@
     <nb-layout>
-      <nb-layout-header fixed>Congressional District Generator</nb-layout-header>
+      <nb-layout-header fixed >
+        <div id="dropperino" class="dropdown" ngbDropdown>
+                  Congressional District Generator
+          <button class="btn btn-primary" type="button" ngbDropdownToggle>
+            Dropdown
+          </button>
+          <ul class="dropdown-menu" ngbDropdownMenu>
+            <li class="dropdown-item">Icon Button</li>
+            <li class="dropdown-item">Hero Button</li>
+            <li class="dropdown-item">Default</li>
+          </ul>
+        </div>
+      </nb-layout-header>
 
       <nb-sidebar>
         <nb-card>
           <nb-card-header>Controls</nb-card-header>
           <nb-card-body>
-
           </nb-card-body>
         </nb-card>
       </nb-sidebar>
