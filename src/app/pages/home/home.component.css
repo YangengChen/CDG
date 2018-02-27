@@ -24,7 +24,7 @@ a:focus, a:hover {
   margin-bottom: 0;
   text-transform: uppercase;
   border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-  background-color: navy;
+  background-color: #050649;
 }
 
 #mainNav .navbar-toggler {
@@ -74,7 +74,7 @@ a:focus, a:hover {
     padding-top: 10px;
     padding-bottom: 10px;
     border-bottom: 1px solid rgba(255, 255, 255, 0.3);
-    background: navy;
+    background: #050649;
   }
   #mainNav .nav-link.active {
     outline: none;
@@ -92,7 +92,7 @@ a:focus, a:hover {
   padding: 200px 0;
   text-align: center;
   color: white;
-  background: url("../../../img/white-house2.jpg") no-repeat bottom center scroll;
+  background: url("../../../img/intro-bg.jpg") no-repeat bottom center scroll;
   background-color: black;
   -webkit-background-size: cover;
   -moz-background-size: cover;
@@ -107,15 +107,16 @@ a:focus, a:hover {
 
 .masthead .intro-body .brand-heading {
   font-size: 50px;
-  color:navy;
-  border:black;
+  color:white;
+  stroke-width: 2px;
+  stroke:black;
 }
 
 .masthead .intro-body .intro-text {
   font-size: 18px;
-  color:navy;
+  color:white;
   font-weight: bold;
-  border:black;
+  stroke:black;
 }
 
 @media (min-width: 768px) {

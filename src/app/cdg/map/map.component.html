@@ -1,5 +1,17 @@
 <nb-card>
-  <nb-card-header>Google Maps</nb-card-header>
+  <nb-card-header>
+    <div style="position:relative" id="header-container">
+      <div style="width:200px; display:inline-block;">
+        <cdg-dropdown name="MapType"></cdg-dropdown>
+      </div>
+      <div style="width:200px; display:inline-block;">
+        <cdg-dropdown name="Saved Maps"></cdg-dropdown>
+      </div>
+      <div style="padding-top:0.7rem;position:absolute;right:10px;display:inline-block;">
+        Districts Map
+      </div>
+    </div>
+  </nb-card-header>
   <nb-card-body>
     <agm-map>
       <agm-marker></agm-marker>

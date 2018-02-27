@@ -1,23 +1,46 @@
     <nb-layout>
-      <nb-layout-header fixed >
-        <div id="dropperino" class="dropdown" ngbDropdown>
-                  Congressional District Generator
-          <button class="btn btn-primary" type="button" ngbDropdownToggle>
-            Dropdown
-          </button>
-          <ul class="dropdown-menu" ngbDropdownMenu>
-            <li class="dropdown-item">Icon Button</li>
-            <li class="dropdown-item">Hero Button</li>
-            <li class="dropdown-item">Default</li>
-          </ul>
+      <nb-layout-header  fixed >
+        <div style="padding-top:1.5rem;padding-left:1rem;text-align:middle; width:100%;">
+          <h1>CDG
+            <h6>Congressional District Generator</h6>
+          </h1>
+        </div>
+        <div id="user-container" style="padding-right:5rem; margin-top:30px;">
+              <nb-user title="Guest-User" name="Bears"></nb-user>
         </div>
       </nb-layout-header>
-
-      <nb-sidebar>
+      <nb-sidebar id="sidebar">
         <nb-card>
-          <nb-card-header>Controls</nb-card-header>
-          <nb-card-body>
-          </nb-card-body>
+          <nb-tabset class="full-width">
+          <nb-tab tabTitle="Generate">
+            <div id="generate-tool-container">
+              <div id="pick-state-button">
+                <cdg-dropdown name="States"></cdg-dropdown>
+              </div>
+              <div id="slider-container">
+                <cdg-slider name="Compactness"></cdg-slider>
+                <cdg-slider name="Contiguity"></cdg-slider>
+                <cdg-slider name="Equal population"></cdg-slider>
+                <cdg-slider name="Partisan fairness"></cdg-slider>
+                <cdg-slider name="Racial fairness"></cdg-slider>
+              </div>
+              <div id="generate-button">
+                <cdg-button name="Generate Districts"></cdg-button>
+              </div>
+              <div id="replay-generate-button">
+                <cdg-button name="Replay Generation"></cdg-button>
+              </div>
+            </div>
+          </nb-tab>
+          <nb-tab tabTitle="Information">
+            <div id="information-container" class="container">
+            </div>
+           </nb-tab>
+          <nb-tab tabTitle="File">
+            <div id="information-container" class="container">
+            </div>
+          </nb-tab>
+          </nb-tabset>
         </nb-card>
       </nb-sidebar>
 

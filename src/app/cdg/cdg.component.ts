@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input} from '@angular/core';
 
 
 
@@ -8,8 +8,10 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./cdg.component.scss']
 })
 export class CdgComponent implements OnInit {
-
-  constructor() { }
+  @Input() items:[{title:"Testing"}, {title:"menu"}];
+  constructor() { 
+    
+  };
 
   ngOnInit() {
   }

@@ -7,13 +7,15 @@
 $nb-themes: nb-register-theme((
 
   //Sidebar Customs
-  sidebar-bg: navy,
+  sidebar-bg:#050649,
   sidebar-width:30rem,
-  card-shadow: navy,
-  card-header-bg:white,
-  card-bg:lightgray,
-  btn-primary-bg:navy,
+  card-shadow:  	#ecf2f4,
+  card-header-bg:#ecf2f4,
+  card-bg: 	#ecf2f4,
+  btn-primary-bg:  	#27214f,
+  shadow: 	#ecf2f4,
+  layout-bg: #050649,
   btn-font-family: "Arialsans-serif",
-  header-bg:lightgray,
+  header-bg: 	 	#ecf2f4,
   header-height:6rem,
 ), default, default); // let's leave it as default
