@@ -110,6 +110,7 @@ a:focus, a:hover {
   color:white;
   stroke-width: 2px;
   stroke:black;
+  background-color: rgba(255, 0, 0, 0.4);
 }
 
 .masthead .intro-body .intro-text {
@@ -117,6 +118,8 @@ a:focus, a:hover {
   color:white;
   font-weight: bold;
   stroke:black;
+  background-color: rgba(0, 0, 255, 0.5);
+  padding: 10px;
 }
 
 @media (min-width: 768px) {
@@ -258,4 +261,19 @@ img::selection {
 
 img::-moz-selection {
   background: transparent;
+}
+
+.info-block {
+  margin: auto;
+  width: 60%;
+  padding: 100px 25px 0px 25px;
+}
+
+.member-box {
+  color:black;
+}
+
+.title-text {
+  color:white;
+  background-color: rgba(0, 0, 255, 0.3);
 }
