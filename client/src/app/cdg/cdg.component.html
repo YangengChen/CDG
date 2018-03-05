@@ -34,10 +34,19 @@
           </nb-tab>
           <nb-tab tabTitle="Information">
             <div id="information-container" class="container">
+              <div id="tab-data-block">
+              <cdg-dropdown name="States"></cdg-dropdown>
+              This is where the drop down info about the selected state would go
+              </div>
             </div>
            </nb-tab>
           <nb-tab tabTitle="File">
             <div id="information-container" class="container">
+            <div id="file-buttons">
+              <cdg-button name="Load File" class="file-button"></cdg-button>
+              <cdg-button name="Save Map" class="file-button"></cdg-button>
+              <cdg-button name="Export Map" class="file-button"></cdg-button>
+            </div>
             </div>
           </nb-tab>
           </nb-tabset>
