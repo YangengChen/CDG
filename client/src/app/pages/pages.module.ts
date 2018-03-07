@@ -10,11 +10,26 @@ import {
   NbThemeModule,
   NbCardModule,
  } from '@nebular/theme';
+//  import { NbAuthModule,
+//   NbAuthComponent,
+//   NbLoginComponent,
+//   NbRegisterComponent,
+//   NbLogoutComponent,
+//   NbRequestPasswordComponent,
+//   NbResetPasswordComponent,
+// } from '@nebular/auth';
 
 import {AgmCoreModule} from '@agm/core';
 @NgModule({
   imports: [
     CommonModule,
+    // NbAuthModule,
+    // NbAuthComponent,
+    // NbLoginComponent,
+    // NbRegisterComponent,
+    // NbLogoutComponent,
+    // NbRequestPasswordComponent,
+    // NbResetPasswordComponent,
     NbSidebarModule, 
     NbLayoutModule,
     PagesRoutingModule,
