@@ -12,6 +12,6 @@ public class MapController {
 	
 	@RequestMapping( value = "/map", method=RequestMethod.GET)
 	public ResponseEntity<String> getMap() {
-		return new ResponseEntity<String>("Testing", HttpStatus.OK);
+		return new ResponseEntity<String>("Testing The Mapperino\n", HttpStatus.OK);
 	}
 }
