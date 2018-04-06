@@ -1,5 +1,5 @@
-import { Component, OnInit, Input} from '@angular/core';
-
+import {Injectable, Component, OnInit, Input} from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 
 
 @Component({
@@ -9,10 +9,14 @@ import { Component, OnInit, Input} from '@angular/core';
 })
 export class CdgComponent implements OnInit {
   @Input() items:[{title:"Testing"}, {title:"menu"}];
-  constructor() { 
+  url = "http://localhost:8080/api/map/states";
+  dat = ""
+  constructor(private http: HttpClient) { 
     
   };
-
+  clickOn(){
+    this.http.get(this.url).subscribe(data => this.dat=data[0]);
+  }
   ngOnInit() {
   }
 

@@ -1,11 +1,11 @@
 @import '../../@theme/styles/themes';
-    #login{
-        width:100%;
-        height:100%;
-        background-color:navy;
-    }
 
-    #login-container{
-        margin: 15rem 30%;
-    }
+@include nb-install-component() {
 
+  nb-card {
+      margin-top: 200px;
+  }
+  nb-card-body {
+
+  }
+}

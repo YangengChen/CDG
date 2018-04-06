@@ -2,7 +2,8 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdgComponent } from './cdg.component';
 import { CdgUiModule } from '../cdg-ui/cdg-ui.module';
-import { MapService } from "./map/map.service"
+import { MapService } from "./map/map.service";
+import { HttpClientModule } from "@angular/common/http"
 import { 
   NbSidebarModule, 
   NbLayoutModule, 
@@ -18,6 +19,7 @@ import { MapComponent } from './map/map.component';
 import {AgmCoreModule} from '@agm/core';
 @NgModule({
   imports: [
+    HttpClientModule,
     CommonModule,
     NbSidebarModule, 
     NbLayoutModule,
