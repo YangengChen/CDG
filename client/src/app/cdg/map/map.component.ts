@@ -21,11 +21,11 @@ export class MapComponent implements OnInit {
     .subscribe(data => this.map = data.toString())
   }
 
-  getState(){
-    this.mapService.getState()
+  getState(chosenState: string){
+    this.mapService.getState(chosenState)
     .subscribe(stateData =>{
         this.geoJson = stateData["geoJson"];
         this.stateName = stateData["state"];
-    })
+    });
   }
 }

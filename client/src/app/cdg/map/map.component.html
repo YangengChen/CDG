@@ -14,7 +14,7 @@
   </nb-card-header>
   <nb-card-body>
     <agm-map [latitude]="lat" [longitude]="lng" [zoom]="zoom">      
-      <agm-data-layer *ngIg="mapObject" [geoJson] = "mapObject" (layerClick)="mapClick($event)"></agm-data-layer>
+      <agm-data-layer *ngIf="mapObject" [geoJson] = "mapObject" (layerClick)="mapClick($event)"></agm-data-layer>
     </agm-map>
   </nb-card-body>
 </nb-card>
