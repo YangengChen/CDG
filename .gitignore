@@ -1,5 +1,8 @@
 
 client/dist/
+client/target/
 server/target/
 server/bin/
 server/src/main/resources/static/
+
+.DS_Store
