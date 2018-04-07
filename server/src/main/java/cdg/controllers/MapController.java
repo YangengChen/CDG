@@ -41,8 +41,6 @@ public class MapController {
 	
 	@RequestMapping( value = "/geojson/{statename}/{maptype}", method=RequestMethod.GET)
 	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable("statename") String stateName, @PathVariable("maptype") MapType type) {
-		//check if logged in
-		
 		//get state from database
 		//fake data
 		State state = new State(stateName.toLowerCase(),null,null);
