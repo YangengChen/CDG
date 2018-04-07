@@ -1,1 +1,4 @@
-target`
+
+client/dist/
+server/target/
+server/bin/

@@ -10,6 +10,8 @@ export class MapComponent implements OnInit {
 
   constructor(private mapService: MapService) { }
   map: string;
+  geoJson:string;
+  stateName:string;
   ngOnInit() {
     this.map = "hi"
   }
@@ -17,5 +19,13 @@ export class MapComponent implements OnInit {
   showMap(){
     this.mapService.getMap()
     .subscribe(data => this.map = data.toString())
+  }
+
+  getState(){
+    this.mapService.getState()
+    .subscribe(stateData =>{
+        this.geoJson = stateData["geoJson"];
+        this.stateName = stateData["state"];
+    })
   }
 }
