@@ -2,3 +2,4 @@
 client/dist/
 server/target/
 server/bin/
+server/src/main/resources/static/
