@@ -1,7 +1,14 @@
 package cdg.dao;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import cdg.dto.DistrictDTO;
+import cdg.dto.MapDataDTO;
 
 public class State extends Region {
 	private Map<Integer,CongressionalDistrict> conDistricts;
@@ -57,5 +64,46 @@ public class State extends Region {
 	public String getPrecinctMapGeoJson()
 	{
 		return null;
+	}
+	
+	public DistrictDTO getDataDTO()
+	{
+		DistrictDTO data = new DistrictDTO();
+		data.setID(this.getPublicID());
+		data.setName(this.getName());
+		return data;
+	}
+	
+	public MapDataDTO getStateData()
+	{
+		List<Region> districts = Arrays.asList(this);
+		return populateDataDTO(districts);
+	}
+	
+	public MapDataDTO getCongressionalData()
+	{
+		List<Region> districts = new ArrayList<>(conDistricts.values());
+		return populateDataDTO(districts);
+	}
+	
+	public MapDataDTO getPrecinctData()
+	{
+		List<Region> districts = new ArrayList<>(precincts.values());
+		return populateDataDTO(districts);
+	}
+	
+	private MapDataDTO populateDataDTO(Collection<Region> regions)
+	{
+		if (regions == null)
+			throw new NullPointerException();
+		MapDataDTO data = new MapDataDTO();
+		data.setState(this.getName());
+		List<DistrictDTO> districts = new ArrayList<>();
+		for (Region dist : regions)
+		{
+			districts.add(dist.getDataDTO());
+		}
+		data.setDistricts(districts);
+		return data;
 	}
 }

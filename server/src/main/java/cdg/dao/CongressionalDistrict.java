@@ -3,6 +3,9 @@ package cdg.dao;
 import java.util.HashMap;
 import java.util.Map;
 
+import cdg.dto.CongressionalDistrictDTO;
+import cdg.dto.DistrictDTO;
+
 public class CongressionalDistrict extends Region {
 	private State state;
 	private Map<Integer,Precinct> precincts;
@@ -69,5 +72,16 @@ public class CongressionalDistrict extends Region {
 	 */
 	public void setGoodnessValue(double goodnessValue) {
 		this.goodnessValue = goodnessValue;
+	}	
+
+	@Override
+	public DistrictDTO getDataDTO() {
+		CongressionalDistrictDTO data = new CongressionalDistrictDTO();
+		data.setID(this.getPublicID());
+		data.setName(this.getName());
+		data.setNumPrecincts(precincts.size());
+		data.setGoodness(this.goodnessValue);
+		return data;
 	}
+
 }

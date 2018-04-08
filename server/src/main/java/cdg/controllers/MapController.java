@@ -5,7 +5,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,11 +23,14 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
+import cdg.dao.CongressionalDistrict;
 import cdg.dao.NameOnly;
+import cdg.dao.Precinct;
 import cdg.dao.State;
 import cdg.domain.map.MapType;
 import cdg.domain.map.MapTypeEnumConverter;
 import cdg.dto.MapDTO;
+import cdg.dto.MapDataDTO;
 
 @RestController
 @RequestMapping("/api/map")
@@ -39,11 +44,11 @@ public class MapController {
 	    dataBinder.registerCustomEditor(MapType.class, new MapTypeEnumConverter());
 	}
 	
-	@RequestMapping( value = "/geojson/{statename}/{maptype}", method=RequestMethod.GET)
-	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable("statename") String stateName, @PathVariable("maptype") MapType type) {
+	@RequestMapping( value = "/geojson/{stateid}/{maptype}", method=RequestMethod.GET)
+	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable("stateid") int stateID, @PathVariable("maptype") MapType type) {
 		//get state from database
 		//fake data
-		State state = new State(stateName.toLowerCase(),null,null);
+		State state = getFakeStates().get(stateID);
 
 		//get maps based on map type
 		String geoJson = null;
@@ -80,6 +85,34 @@ public class MapController {
 		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
 	}
 	
+	@RequestMapping( value = "data/{stateid}/{maptype}", method=RequestMethod.GET)
+	public ResponseEntity<MapDataDTO> getStaticStateData(@PathVariable("stateid") int stateID, @PathVariable("maptype") MapType type)
+	{
+		//get state from database
+		//fake data
+		State state = getFakeStates().get(stateID);
+
+		MapDataDTO data = null;
+		switch (type)
+		{
+			case STATE:
+				data = state.getStateData();
+				break;
+			case CONGRESSIONAL:
+				data = state.getCongressionalData();
+				break;
+			case PRECINCT:
+				data = state.getPrecinctData();
+				break;
+			default:
+				break;
+		}
+		if (data == null)
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+				
+		return new ResponseEntity<>(data, HttpStatus.OK);
+	}
+	
 	@RequestMapping( value = "/states", method=RequestMethod.GET)
 	public List<String> getAllStates() {
 		//Get all state's name fields from database, ordered alphabetically
@@ -94,7 +127,10 @@ public class MapController {
 		}
 		
 		//fake data
-		names.addAll(Arrays.asList("minnesota","washington","wisconsin"));
+		for (State state : getFakeStates().values())
+		{
+			names.add(state.getName());
+		}
 		
 		return names;
 	}
@@ -104,5 +140,40 @@ public class MapController {
 		responseDTO.setState(state);
 		responseDTO.setGeoJson(geoJson);
 		return responseDTO;
+	}
+	
+	private Map<Integer,State> getFakeStates()
+	{
+		Map<Integer,State> states = new HashMap<>();
+		State state;
+		Map<Integer,CongressionalDistrict> districts;
+		Map<Integer,Precinct> precincts;
+		CongressionalDistrict conDist;
+		Precinct pre;
+		
+		state  = new State("minnesota", null, null);
+		state.setPublicID(1000);
+		districts = new HashMap<>();
+		conDist = new CongressionalDistrict("Min 11", null, null, null, 100);
+		conDist.setPublicID(11);
+		districts.put(1, conDist);
+		conDist = new CongressionalDistrict("Min 22", null, null, null, 200);
+		conDist.setPublicID(22);
+		districts.put(2, conDist);
+		state.setConDistricts(districts);
+		precincts = new HashMap<>();
+		pre = new Precinct("Min 33", null, null, null, null);
+		pre.setPublicID(33);
+		precincts.put(3, pre);
+		pre = new Precinct("Min 44", null, null, null, null);
+		pre.setPublicID(44);
+		precincts.put(4, pre);
+		state.setPrecincts(precincts);
+		states.put(1, state);
+		
+
+		states.put(2, new State("washington",null,null));
+		states.put(3, new State("wisconsin",null,null));
+		return states;
 	}
 }

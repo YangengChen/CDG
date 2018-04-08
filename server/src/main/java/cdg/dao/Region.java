@@ -3,8 +3,12 @@ package cdg.dao;
 import java.util.HashMap;
 import java.util.Map;
 
+import cdg.dto.CongressionalDistrictDTO;
+import cdg.dto.DistrictDTO;
+
 public class Region {
 	private int id;
+	private int publicID;
 	private String name;
 	private String geoJsonGeometry;
 	private ElectionResult presidentialVoteTotals;
@@ -88,5 +92,24 @@ public class Region {
 	public void setPresidentialVoteTotals(ElectionResult presidentialVoteTotals) {
 		this.presidentialVoteTotals = presidentialVoteTotals;
 	}
+	/**
+	 * @return the publicID
+	 */
+	public int getPublicID() {
+		return publicID;
+	}
+	/**
+	 * @param publicID the publicID to set
+	 */
+	public void setPublicID(int publicID) {
+		this.publicID = publicID;
+	}
 
+	public DistrictDTO getDataDTO()
+	{
+		DistrictDTO data = new DistrictDTO();
+		data.setID(this.getPublicID());
+		data.setName(this.getName());
+		return data;
+	}
 }
