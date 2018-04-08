@@ -1,7 +1,9 @@
 package cdg.controllers;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,13 +16,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import cdg.dao.FakeData;
 import cdg.dao.NameOnly;
 import cdg.dao.State;
 import cdg.domain.map.MapType;
 import cdg.domain.map.MapTypeEnumConverter;
 import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
+import cdg.repository.FakeData;
 
 @RestController
 @RequestMapping("/api/map")
@@ -39,7 +41,11 @@ public class MapController {
 	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable("stateid") int stateID, @PathVariable("maptype") MapType type) {
 		//get state from database
 		//fake data
-		State state = fakeRepo.findById(stateID);
+		Optional<State> result = fakeRepo.findById(stateID);
+		
+		if (!result.isPresent())
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		State state = result.get();
 
 		MapDTO map = state.getMap(type);
 		if (map == null)
@@ -53,7 +59,11 @@ public class MapController {
 	{
 		//get state from database
 		//fake data
-		State state = fakeRepo.findById(stateID);
+		Optional<State> result = fakeRepo.findById(stateID);
+		
+		if (!result.isPresent())
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		State state = result.get();
 
 		MapDataDTO data = state.getMapData(type);
 		if (data == null)
@@ -66,7 +76,7 @@ public class MapController {
 	public List<String> getAllStates() {
 		//Get all state's name fields from database, ordered alphabetically
 		//fake data
-		Iterable<NameOnly> stateNames = fakeRepo.findAllProjectedBy();
+		Collection<NameOnly> stateNames = fakeRepo.findAllProjectedBy();
 		
 		//Convert to readable format
 		List<String> names = new ArrayList<String>();

@@ -1,30 +1,24 @@
-package cdg.dao;
+package cdg.repository;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.stereotype.Repository;
 
+import cdg.dao.CongressionalDistrict;
+import cdg.dao.NameOnly;
+import cdg.dao.NameOnlyFake;
+import cdg.dao.Precinct;
+import cdg.dao.State;
+
 @Repository
-public class FakeData {
-	//private static FakeData instance = null;
-	
+public class FakeData implements StateRepository {
+
 	private Map<Integer,State> fakeStates;
-	
-	/*private FakeData() {
-		setFakeStates();
-	}
-	
-	public static FakeData getInstance()
-	{
-		if (instance == null)
-		{
-			instance = new FakeData();		
-		}
-		return instance;
-	}*/
 	
 	private void setFakeStates()
 	{
@@ -60,12 +54,12 @@ public class FakeData {
 		fakeStates.put(3, new State("wisconsin",null,null));
 	}
 	
-	public State findById(int id)
+	public Optional<State> findById(int id)
 	{
 		if (fakeStates == null)
 			setFakeStates();
 		
-		return fakeStates.get(id);
+		return Optional.of(fakeStates.get(id));
 	}
 	
 	public Iterable<State> findAll()
@@ -76,7 +70,7 @@ public class FakeData {
 		return fakeStates.values();
 	}
 	
-	public Iterable<NameOnly> findAllProjectedBy()
+	public Collection<NameOnly> findAllProjectedBy()
 	{
 		if (fakeStates == null)
 			setFakeStates();
@@ -90,5 +84,11 @@ public class FakeData {
 			result.add(name);
 		}
 		return result;
+	}
+
+	@Override
+	public List<State> findByName(String name) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
