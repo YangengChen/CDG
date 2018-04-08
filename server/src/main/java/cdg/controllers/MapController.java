@@ -1,18 +1,9 @@
 package cdg.controllers;
 
-import java.io.StringWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
@@ -23,9 +14,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
-import cdg.dao.CongressionalDistrict;
+import cdg.dao.FakeData;
 import cdg.dao.NameOnly;
-import cdg.dao.Precinct;
 import cdg.dao.State;
 import cdg.domain.map.MapType;
 import cdg.domain.map.MapTypeEnumConverter;
@@ -36,8 +26,9 @@ import cdg.dto.MapDataDTO;
 @RequestMapping("/api/map")
 @CrossOrigin(origins = "http://localhost:4200")
 public class MapController {
+	//Fake data repository
 	@Autowired
-	private ResourceLoader resourceLoader;
+	FakeData fakeRepo;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
@@ -48,41 +39,13 @@ public class MapController {
 	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable("stateid") int stateID, @PathVariable("maptype") MapType type) {
 		//get state from database
 		//fake data
-		State state = getFakeStates().get(stateID);
+		State state = fakeRepo.findById(stateID);
 
-		//get maps based on map type
-		String geoJson = null;
-		switch (type)
-		{
-			case STATE:
-				geoJson = state.getStateMapGeoJson();
-				break;
-			case CONGRESSIONAL:
-				geoJson = state.getCongressionalMapGeoJson();
-				break;
-			case PRECINCT:
-				//geoJson = state.getPrecinctMapGeoJson();
-				//fake data
-				try {
-					Resource resource = resourceLoader.getResource("classpath:minnesota_precincts.geojson");
-					StringWriter writer = new StringWriter();
-					IOUtils.copy(resource.getInputStream(), writer, StandardCharsets.UTF_8);
-					geoJson = writer.toString();
-				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				break;
-			default:
-				geoJson = null;
-				break;
-		}
-		if (geoJson == null)
+		MapDTO map = state.getMap(type);
+		if (map == null)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		
-		//generate DTO
-		MapDTO responseDTO = populateMapDTO(state.getName(), geoJson);
-		return new ResponseEntity<>(responseDTO, HttpStatus.OK);
+		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 	
 	@RequestMapping( value = "data/{stateid}/{maptype}", method=RequestMethod.GET)
@@ -90,7 +53,7 @@ public class MapController {
 	{
 		//get state from database
 		//fake data
-		State state = getFakeStates().get(stateID);
+		State state = fakeRepo.findById(stateID);
 
 		MapDataDTO data = state.getMapData(type);
 		if (data == null)
@@ -103,7 +66,7 @@ public class MapController {
 	public List<String> getAllStates() {
 		//Get all state's name fields from database, ordered alphabetically
 		//fake data
-		Collection<NameOnly> stateNames = new ArrayList<NameOnly>();
+		Iterable<NameOnly> stateNames = fakeRepo.findAllProjectedBy();
 		
 		//Convert to readable format
 		List<String> names = new ArrayList<String>();
@@ -112,54 +75,6 @@ public class MapController {
 			names.add(stateName.getName());
 		}
 		
-		//fake data
-		for (State state : getFakeStates().values())
-		{
-			names.add(state.getName());
-		}
-		
 		return names;
-	}
-	
-	private MapDTO populateMapDTO(String state, String geoJson) {
-		MapDTO responseDTO = new MapDTO();
-		responseDTO.setState(state);
-		responseDTO.setGeoJson(geoJson);
-		return responseDTO;
-	}
-	
-	private Map<Integer,State> getFakeStates()
-	{
-		Map<Integer,State> states = new HashMap<>();
-		State state;
-		Map<Integer,CongressionalDistrict> districts;
-		Map<Integer,Precinct> precincts;
-		CongressionalDistrict conDist;
-		Precinct pre;
-		
-		state  = new State("minnesota", null, null);
-		state.setPublicID(1000);
-		districts = new HashMap<>();
-		conDist = new CongressionalDistrict("Min 11", null, null, null, 100);
-		conDist.setPublicID(11);
-		districts.put(1, conDist);
-		conDist = new CongressionalDistrict("Min 22", null, null, null, 200);
-		conDist.setPublicID(22);
-		districts.put(2, conDist);
-		state.setConDistricts(districts);
-		precincts = new HashMap<>();
-		pre = new Precinct("Min 33", null, null, null, null);
-		pre.setPublicID(33);
-		precincts.put(3, pre);
-		pre = new Precinct("Min 44", null, null, null, null);
-		pre.setPublicID(44);
-		precincts.put(4, pre);
-		state.setPrecincts(precincts);
-		states.put(1, state);
-		
-
-		states.put(2, new State("washington",null,null));
-		states.put(3, new State("wisconsin",null,null));
-		return states;
 	}
 }

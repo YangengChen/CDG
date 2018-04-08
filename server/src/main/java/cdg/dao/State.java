@@ -1,11 +1,17 @@
 package cdg.dao;
 
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import cdg.domain.map.MapType;
 import cdg.dto.DistrictDTO;
@@ -53,6 +59,37 @@ public class State extends Region {
 		this.precincts = precincts;
 	}
 	
+	public MapDTO getMap(MapType type)
+	{
+		if (type == null)
+			throw new NullPointerException();
+		
+		String geoJson = null;
+		switch (type)
+		{
+			case STATE:
+				geoJson = getStateMapGeoJson();
+				break;
+			case CONGRESSIONAL:
+				geoJson = getCongressionalMapGeoJson();
+				break;
+			case PRECINCT:
+				geoJson = getPrecinctMapGeoJson();
+				break;
+			default:
+				geoJson = null;
+				break;
+		}
+		if (geoJson == null)
+			return null;
+		
+		MapDTO map = new MapDTO();
+		map.setState(this.getName());
+		map.setGeoJson(geoJson);
+		
+		return map;
+	}
+	
 	public String getStateMapGeoJson()
 	{
 		return null;
@@ -65,7 +102,18 @@ public class State extends Region {
 	
 	public String getPrecinctMapGeoJson()
 	{
-		return null;
+		String geoJson = null;
+		try {
+			Resource resource = new ClassPathResource("minnesota_precincts.geojson");
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(resource.getInputStream(), writer, StandardCharsets.UTF_8);
+			geoJson = writer.toString();
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return geoJson;
 	}
 	
 	public DistrictDTO getDataDTO()
