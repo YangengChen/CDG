@@ -92,21 +92,7 @@ public class MapController {
 		//fake data
 		State state = getFakeStates().get(stateID);
 
-		MapDataDTO data = null;
-		switch (type)
-		{
-			case STATE:
-				data = state.getStateData();
-				break;
-			case CONGRESSIONAL:
-				data = state.getCongressionalData();
-				break;
-			case PRECINCT:
-				data = state.getPrecinctData();
-				break;
-			default:
-				break;
-		}
+		MapDataDTO data = state.getMapData(type);
 		if (data == null)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 				

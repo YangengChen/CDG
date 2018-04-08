@@ -7,7 +7,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import cdg.domain.map.MapType;
 import cdg.dto.DistrictDTO;
+import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
 
 public class State extends Region {
@@ -72,6 +74,24 @@ public class State extends Region {
 		data.setID(this.getPublicID());
 		data.setName(this.getName());
 		return data;
+	}
+	
+	public MapDataDTO getMapData(MapType type)
+	{
+		if (type == null)
+			throw new NullPointerException();
+		
+		switch (type)
+		{
+			case STATE:
+				return getStateData();
+			case CONGRESSIONAL:
+				return getCongressionalData();
+			case PRECINCT:
+				return getPrecinctData();
+			default:
+				return null;
+		}
 	}
 	
 	public MapDataDTO getStateData()
