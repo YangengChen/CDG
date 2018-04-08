@@ -3,9 +3,9 @@ package cdg.controllers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
@@ -41,11 +42,10 @@ public class MapController {
 	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable("stateid") int stateID, @PathVariable("maptype") MapType type) {
 		//get state from database
 		//fake data
-		Optional<State> result = fakeRepo.findById(stateID);
+		State state = fakeRepo.findByPublicId(stateID, State.class);
 		
-		if (!result.isPresent())
+		if (state == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		State state = result.get();
 
 		MapDTO map = state.getMap(type);
 		if (map == null)
@@ -54,16 +54,33 @@ public class MapController {
 		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 	
+	@RequestMapping( value = "/file/{stateid}/{maptype}", method=RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<FileSystemResource> getStaticStateMapFile(@PathVariable("stateid") int stateID, @PathVariable("maptype") MapType type)
+	{
+		//get state from database
+		//fake data
+		State state = fakeRepo.findByPublicId(stateID, State.class);
+				
+		if (state == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+		FileSystemResource file = state.getMapFile(type);
+		if (file == null)
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		
+		return new ResponseEntity<>(file, HttpStatus.OK);	
+	}
+	
 	@RequestMapping( value = "data/{stateid}/{maptype}", method=RequestMethod.GET)
 	public ResponseEntity<MapDataDTO> getStaticStateData(@PathVariable("stateid") int stateID, @PathVariable("maptype") MapType type)
 	{
 		//get state from database
 		//fake data
-		Optional<State> result = fakeRepo.findById(stateID);
+		State state = fakeRepo.findByPublicId(stateID, State.class);
 		
-		if (!result.isPresent())
+		if (state == null)
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-		State state = result.get();
 
 		MapDataDTO data = state.getMapData(type);
 		if (data == null)

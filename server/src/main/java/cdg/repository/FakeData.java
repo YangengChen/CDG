@@ -10,6 +10,7 @@ import java.util.Optional;
 import org.springframework.stereotype.Repository;
 
 import cdg.dao.CongressionalDistrict;
+import cdg.dao.GeoFiles;
 import cdg.dao.NameOnly;
 import cdg.dao.NameOnlyFake;
 import cdg.dao.Precinct;
@@ -54,12 +55,18 @@ public class FakeData implements StateRepository {
 		fakeStates.put(3, new State("wisconsin",null,null));
 	}
 	
-	public Optional<State> findById(int id)
-	{
-		if (fakeStates == null)
-			setFakeStates();
-		
-		return Optional.of(fakeStates.get(id));
+	
+	@Override
+	public <T> T findByPublicId(int publicId, Class<T> type) {
+		if (type.equals(State.class))
+		{
+			if (fakeStates == null)
+				setFakeStates();
+			
+			return (T) fakeStates.get(publicId);
+		}
+		else
+			return null;
 	}
 	
 	public Iterable<State> findAll()

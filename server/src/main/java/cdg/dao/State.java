@@ -1,7 +1,10 @@
 package cdg.dao;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.StringWriter;
 import java.nio.charset.StandardCharsets;
+import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -11,6 +14,7 @@ import java.util.Map;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 
 import cdg.domain.map.MapType;
@@ -21,6 +25,9 @@ import cdg.dto.MapDataDTO;
 public class State extends Region {
 	private Map<Integer,CongressionalDistrict> conDistricts;
 	private Map<Integer,Precinct> precincts;
+	private Blob stateMapFile;
+	private Blob conDistrictMapFile;
+	private Blob precinctMapFile;
 	
 	public State()
 	{
@@ -58,6 +65,57 @@ public class State extends Region {
 	public void setPrecincts(Map<Integer,Precinct> precincts) {
 		this.precincts = precincts;
 	}
+	
+	public FileSystemResource getMapFile(MapType type)
+	{
+		if (type == null)
+			throw new NullPointerException();
+		
+		File mapFile = null;
+		switch (type)
+		{
+			case STATE:
+				mapFile = getStateMapFile();
+				break;
+			case CONGRESSIONAL:
+				mapFile = getConDistrictMapFile();
+				break;
+			case PRECINCT:
+				mapFile = getPrecinctMapFile();
+				break;
+			default:
+				mapFile = null;
+				break;
+		}
+		if (mapFile == null)
+			return null;
+		
+		return new FileSystemResource(mapFile);
+	}
+	
+	public File getStateMapFile()
+	{
+		return null;
+	}
+	
+	public File getConDistrictMapFile()
+	{
+		return null;
+	}
+	
+	public File getPrecinctMapFile()
+	{
+		try 
+		{
+			Resource resource = new ClassPathResource("minnesota_precincts.geojson");
+			return resource.getFile();
+		}
+		catch (IOException ioe)
+		{
+			return null;
+		}
+	}
+	
 	
 	public MapDTO getMap(MapType type)
 	{
@@ -173,5 +231,41 @@ public class State extends Region {
 		}
 		data.setDistricts(districts);
 		return data;
+	}
+	/**
+	 * @return the stateMapFile
+	 */
+	public Blob getStateMapBlob() {
+		return stateMapFile;
+	}
+	/**
+	 * @param stateMapFile the stateMapFile to set
+	 */
+	public void setStateMapBlob(Blob stateMapFile) {
+		this.stateMapFile = stateMapFile;
+	}
+	/**
+	 * @return the conDistrictMapFile
+	 */
+	public Blob getConDistrictMapBlob() {
+		return conDistrictMapFile;
+	}
+	/**
+	 * @param conDistrictMapFile the conDistrictMapFile to set
+	 */
+	public void setConDistrictMapBlob(Blob conDistrictMapFile) {
+		this.conDistrictMapFile = conDistrictMapFile;
+	}
+	/**
+	 * @return the precinctMapFile
+	 */
+	public Blob getPrecinctMapBlob() {
+		return precinctMapFile;
+	}
+	/**
+	 * @param precinctMapFile the precinctMapFile to set
+	 */
+	public void setPrecinctMapBlob(Blob precinctMapFile) {
+		this.precinctMapFile = precinctMapFile;
 	}
 }
