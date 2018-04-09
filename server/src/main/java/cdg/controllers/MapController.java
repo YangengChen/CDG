@@ -15,6 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.wololo.jts2geojson.GeoJSONReader;
+
+import com.vividsolutions.jts.geom.Geometry;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import cdg.dao.NameOnly;
@@ -89,18 +93,25 @@ public class MapController {
 		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
 	
+	/*@RequestMapping( value = "/us", method=RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<FileSystemResource> getStaticStateMapFile()
+	{
+		State state = fakeRepo.findByPublicId(1000, State.class);
+		
+		GeoJSONReader reader = new GeoJSONReader();
+		Geometry geom = reader.read(state.getPrecinctMapGeoJson());
+	}*/
+	
 	@RequestMapping( value = "/states", method=RequestMethod.GET)
-	public List<String> getAllStates() {
+	public List<NameOnly> getAllStates() {
 		//Get all state's name fields from database, ordered alphabetically
 		//fake data
 		Collection<NameOnly> stateNames = fakeRepo.findAllProjectedBy();
 		
 		//Convert to readable format
-		List<String> names = new ArrayList<String>();
-		for (NameOnly stateName : stateNames)
-		{
-			names.add(stateName.getName());
-		}
+		List<NameOnly> names = new ArrayList<NameOnly>();
+		names.addAll(stateNames);
 		
 		return names;
 	}

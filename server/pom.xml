@@ -52,6 +52,12 @@
    	 		<artifactId>guava</artifactId>
     			<version>22.0</version>
 		</dependency>
+		
+		<dependency>
+    			<groupId>org.wololo</groupId>
+    			<artifactId>jts2geojson</artifactId>
+    			<version>0.10.0</version>
+		</dependency>
 	</dependencies>
 
 	<build>
