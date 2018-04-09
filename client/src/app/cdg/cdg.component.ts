@@ -14,7 +14,8 @@ export class CdgComponent implements OnInit {
   constructor(private http: HttpClient) { 
     
   };
-  clickOn(){
+  logout(){
+    // TODO: NEEDS A LOGOUT
     this.http.get(this.url).subscribe(data => this.dat=data[0]);
   }
   ngOnInit() {
