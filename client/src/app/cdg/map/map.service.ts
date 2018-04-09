@@ -4,13 +4,13 @@ import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class MapService {
   mapurl:string = "/api/map";
-  stateUrl:string = "/api/map/geoJson/minnesota/state";
+  stateUrl:string = "http://localhost:8080/api/map/file/";
   constructor(private http: HttpClient) {}
   getMap(){
     return this.http.get(this.mapurl)
   }
 
   getState(state:string){
-    return this.http.get(this.stateUrl.concat(state));
+    return this.http.get(this.stateUrl.concat(state).concat("/precinct"));
   }
 }

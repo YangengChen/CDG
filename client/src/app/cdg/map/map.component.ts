@@ -10,10 +10,15 @@ export class MapComponent implements OnInit {
 
   constructor(private mapService: MapService) { }
   map: string;
-  geoJson:string;
+  mapObject:Object;
   stateName:string;
   ngOnInit() {
-    this.map = "hi"
+    this.mapService.getState("1")
+    .subscribe(stateData =>{
+        this.mapObject = stateData;
+        this.stateName = stateData["description"];
+        console.log(this.mapObject);
+    });
   }
 
   showMap(){
@@ -24,8 +29,12 @@ export class MapComponent implements OnInit {
   getState(chosenState: string){
     this.mapService.getState(chosenState)
     .subscribe(stateData =>{
-        this.geoJson = stateData["geoJson"];
-        this.stateName = stateData["state"];
+        this.mapObject = stateData["features"]["geometry"]["coordinates"];
+        this.stateName = stateData["description"];
     });
+  }
+
+  mapclick(e:Event){
+    console.log(this.mapObject);
   }
 }
