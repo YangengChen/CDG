@@ -1,6 +1,7 @@
 import {Injectable, Component, OnInit, Input} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-
+import {LoginService } from "../pages/login/login.service";
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-cdg',
@@ -11,12 +12,12 @@ export class CdgComponent implements OnInit {
   @Input() items:[{title:"Testing"}, {title:"menu"}];
   url = "http://localhost:8080/api/map/states";
   dat = ""
-  constructor(private http: HttpClient) { 
+  constructor(private router:Router, private loginService: LoginService, private http: HttpClient) { 
     
   };
   logout(){
     // TODO: NEEDS A LOGOUT
-    this.http.get(this.url).subscribe(data => this.dat=data[0]);
+    this.router.navigateByUrl("/");
   }
   ngOnInit() {
   }

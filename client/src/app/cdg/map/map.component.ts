@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { MapService } from './map.service';
+
 @Component({
   selector: 'map',
   templateUrl: './map.component.html',
@@ -13,7 +14,7 @@ export class MapComponent implements OnInit {
   mapObject:Object;
   stateName:string;
   ngOnInit() {
-    this.mapService.getState("1")
+    this.mapService.getState("1000")
     .subscribe(stateData =>{
         this.mapObject = stateData;
         this.stateName = stateData["description"];
@@ -27,9 +28,9 @@ export class MapComponent implements OnInit {
   }
 
   getState(chosenState: string){
-    this.mapService.getState(chosenState)
+    this.mapService.getState("1000")
     .subscribe(stateData =>{
-        this.mapObject = stateData["features"]["geometry"]["coordinates"];
+        this.mapObject = stateData;
         this.stateName = stateData["description"];
     });
   }
