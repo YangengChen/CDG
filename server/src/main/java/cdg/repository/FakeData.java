@@ -48,11 +48,14 @@ public class FakeData implements StateRepository {
 		pre.setPublicID(44);
 		precincts.put(4, pre);
 		state.setPrecincts(precincts);
-		fakeStates.put(1, state);
+		fakeStates.put(1000, state);
 		
-
-		fakeStates.put(2, new State("washington",null,null));
-		fakeStates.put(3, new State("wisconsin",null,null));
+		state = new State("washington",null,null);
+		state.setPublicID(2000);
+		fakeStates.put(2000, state);
+		state = new State("wisconsin",null,null);
+		state.setPublicID(3000);
+		fakeStates.put(3000, state);
 	}
 	
 	
@@ -87,6 +90,7 @@ public class FakeData implements StateRepository {
 		for (State state : fakeStates.values())
 		{
 			name = new NameOnlyFake();
+			name.setPublicId(state.getPublicID());
 			name.setName(state.getName());
 			result.add(name);
 		}
