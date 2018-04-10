@@ -4,6 +4,7 @@ import { CdgComponent } from './cdg.component';
 import { CdgUiModule } from '../cdg-ui/cdg-ui.module';
 import { MapService } from "./map/map.service";
 import { HttpClientModule } from "@angular/common/http"
+import { GenerationService } from "./generation.service";
 import { 
   NbSidebarModule, 
   NbLayoutModule, 
@@ -37,6 +38,6 @@ import {AgmCoreModule} from '@agm/core';
     CdgComponent,
     MapComponent
   ],
-  providers:[NbSidebarService,MapService]
+  providers:[NbSidebarService,MapService,GenerationService]
 })
 export class CdgModule { }

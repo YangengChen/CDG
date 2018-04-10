@@ -7,6 +7,7 @@ import { Component, OnInit, Input} from '@angular/core';
 })
 export class CdgSliderComponent implements OnInit {
   @Input() name: string;
+  @Input() disabled:boolean = false;
   constructor() { }
 
   ngOnInit() {

@@ -6,9 +6,11 @@ import { CdgButtonComponent } from './cdg-button/cdg-button.component';
 import { CdgSliderComponent } from './cdg-slider/cdg-slider.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { MatSliderModule } from '@angular/material';
+import { FormsModule } from "@angular/forms";
 import 'hammerjs';
 @NgModule({
   imports: [
+    FormsModule,
     CommonModule,
     NgbModule,
     MatSliderModule,

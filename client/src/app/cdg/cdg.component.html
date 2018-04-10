@@ -15,20 +15,20 @@
           <nb-tab tabTitle="Generate">
             <div id="generate-tool-container">
               <div id="pick-state-button">
-                <cdg-dropdown name="States"></cdg-dropdown>
+                <cdg-dropdown [values]="stateList" (change)="changeState($event)" name="States"></cdg-dropdown>
               </div>
               <div id="slider-container">
-                <cdg-slider name="Compactness"></cdg-slider>
-                <cdg-slider name="Contiguity"></cdg-slider>
-                <cdg-slider name="Equal population"></cdg-slider>
-                <cdg-slider name="Partisan fairness"></cdg-slider>
-                <cdg-slider name="Racial fairness"></cdg-slider>
+                <cdg-slider  disabled="!genConfig" name="Compactness"></cdg-slider>
+                <cdg-slider  disabled="!genConfig"name="Contiguity"></cdg-slider>
+                <cdg-slider  disabled="!genConfig"name="Equal population"></cdg-slider>
+                <cdg-slider  disabled="!genConfig"name="Partisan fairness"></cdg-slider>
+                <cdg-slider  disabled="!genConfig"name="Racial fairness"></cdg-slider>
               </div>
               <div id="generate-button">
-                <cdg-button (click)="clickOn()" name="Generate Districts"></cdg-button>
+                <cdg-button disabled="!genConfig" (click)="clickOn()" name="Generate Districts"></cdg-button>
               </div>
               <div id="replay-generate-button">
-                <cdg-button name="Replay Generation"></cdg-button>
+                <cdg-button disabled="!genConfig" name="Replay Generation"></cdg-button>
               </div>
             </div>
           </nb-tab>
@@ -61,6 +61,6 @@
       </nb-sidebar>
 
       <nb-layout-column>
-        <map></map>
+        <map [mapTypeList]="mapTypeList" [savedMapList]="savedMapList"></map>
       </nb-layout-column>
     </nb-layout>

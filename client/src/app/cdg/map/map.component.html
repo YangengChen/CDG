@@ -2,10 +2,12 @@
   <nb-card-header>
     <div style="position:relative" id="header-container">
       <div style="width:200px; display:inline-block;">
-        <cdg-dropdown name="MapType"></cdg-dropdown>
+        MapType:
+        <cdg-dropdown [values]="mapTypeList" name="MapType"></cdg-dropdown>
       </div>
       <div style="width:200px; display:inline-block;">
-        <cdg-dropdown name="Saved Maps"></cdg-dropdown>
+        Saved Maps:
+        <cdg-dropdown  [values]="savedMapList" name="No Saved Maps" [disabled]="disabled"></cdg-dropdown>
       </div>
       <div style="padding-top:0.7rem;position:absolute;right:10px;display:inline-block;">
         Districts Map

@@ -1,14 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
-
-export class DropdownValue {
-  value:string;
-  label:string;
-
-  constructor(value:string, label:string){
-    this.value = value;
-    this.label = label;
-  }
-}
+import { DropdownValue } from "../../objects/dropdownvalue";
 
 @Component({
   selector: 'cdg-dropdown',
@@ -17,26 +8,32 @@ export class DropdownValue {
 })
 export class CdgDropdownComponent implements OnInit {
   @Input() 
-  chosen: string;
+  selected: string;
 
   @Input()
   name: string;
 
   @Input()
-  values: DropdownValue[];
+  values: DropdownValue<any>[];
 
+  @Input() disabled:boolean = false;
 
   @Output()
-  change: EventEmitter<string>;
+  change: EventEmitter<any>;
 
   constructor(private ref: ElementRef){ 
-    this.change = new EventEmitter<string>();
+    this.change = new EventEmitter<any>();
+    this.values = []
   }
 
   ngOnInit() {
+    if(this.values && this.values.length > 0)
+      this.selected = this.values[0].label;
   }
 
-  select(value){
+  select(value:any){
     this.change.emit(value);
+    this.selected = value.label;
   }
 }
+

@@ -1,41 +1,44 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { MapService } from './map.service';
+import { DropdownValue } from "../../objects/dropdownvalue";
 
 @Component({
   selector: 'map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
-export class MapComponent implements OnInit {
+export class MapComponent implements OnInit{
 
+  constructor(private mapService: MapService) {
 
-  constructor(private mapService: MapService) { }
+  }
+
   map: string;
   mapObject:Object;
   stateName:string;
-  ngOnInit() {
-    this.mapService.getState("1000")
-    .subscribe(stateData =>{
-        this.mapObject = stateData;
-        this.stateName = stateData["description"];
-        console.log(this.mapObject);
-    });
-  }
+  disabled:boolean = false;
+  @Input() savedMapList:DropdownValue<any>[];
+  @Input() mapTypeList:DropdownValue<String>[];
 
+  ngOnInit() {
+    if(this.savedMapList == null){
+      this.disabled = true;
+      this.savedMapList = [new DropdownValue<String>("", "No Saved Maps")];
+    }
+  }
+  
   showMap(){
     this.mapService.getMap()
     .subscribe(data => this.map = data.toString())
   }
 
-  getState(chosenState: string){
-    this.mapService.getState("1000")
-    .subscribe(stateData =>{
-        this.mapObject = stateData;
-        this.stateName = stateData["description"];
-    });
+  setMapData(mapObject: Object){
+    this.mapObject = mapObject;
   }
+
 
   mapclick(e:Event){
     console.log(this.mapObject);
   }
+
 }

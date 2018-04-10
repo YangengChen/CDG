@@ -1,10 +1,8 @@
 <div class="dropdown" ngbDropdown>
-  <button class="btn btn-primary" type="button" ngbDropdownToggle>
-  {{name}}
+  <button [disabled]="disabled" class="btn btn-primary" type="button" ngbDropdownToggle>
+  {{selected}}
   </button>
   <ul id="test" class="dropdown-menu" ngbDropdownMenu>
-    <li class="dropdown-item">Minnesota</li>
-    <li class="dropdown-item">Wisconsin</li>
-    <li class="dropdown-item">Washington</li>
+    <li *ngFor="let val of values" (click)="select(val)" class="dropdown-item">{{val.label}}</li>
   </ul>
 </div>
