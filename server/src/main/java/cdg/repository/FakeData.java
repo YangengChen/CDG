@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import cdg.dao.CongressionalDistrict;
@@ -15,10 +16,11 @@ import cdg.dao.NameOnly;
 import cdg.dao.NameOnlyFake;
 import cdg.dao.Precinct;
 import cdg.dao.State;
+import cdg.domain.generation.GeometryService;
 
 @Repository
 public class FakeData implements StateRepository {
-
+	
 	private Map<Integer,State> fakeStates;
 	
 	private void setFakeStates()
@@ -32,22 +34,7 @@ public class FakeData implements StateRepository {
 		
 		state  = new State("minnesota", null, null);
 		state.setPublicID(1000);
-		districts = new HashMap<>();
-		conDist = new CongressionalDistrict("Min 11", null, null, null, 100);
-		conDist.setPublicID(11);
-		districts.put(1, conDist);
-		conDist = new CongressionalDistrict("Min 22", null, null, null, 200);
-		conDist.setPublicID(22);
-		districts.put(2, conDist);
-		state.setConDistricts(districts);
-		precincts = new HashMap<>();
-		pre = new Precinct("Min 33", null, null, null, null);
-		pre.setPublicID(33);
-		precincts.put(3, pre);
-		pre = new Precinct("Min 44", null, null, null, null);
-		pre.setPublicID(44);
-		precincts.put(4, pre);
-		state.setPrecincts(precincts);
+		GeometryService.updateGeometry(state);
 		fakeStates.put(1000, state);
 		
 		state = new State("washington",null,null);

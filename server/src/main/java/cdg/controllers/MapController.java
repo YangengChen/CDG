@@ -93,16 +93,6 @@ public class MapController {
 		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
 	
-	/*@RequestMapping( value = "/us", method=RequestMethod.GET)
-	@ResponseBody
-	public ResponseEntity<FileSystemResource> getStaticStateMapFile()
-	{
-		State state = fakeRepo.findByPublicId(1000, State.class);
-		
-		GeoJSONReader reader = new GeoJSONReader();
-		Geometry geom = reader.read(state.getPrecinctMapGeoJson());
-	}*/
-	
 	@RequestMapping( value = "/states", method=RequestMethod.GET)
 	public List<NameOnly> getAllStates() {
 		//Get all state's name fields from database, ordered alphabetically
