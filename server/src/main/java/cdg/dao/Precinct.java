@@ -1,7 +1,7 @@
 package cdg.dao;
 
-import cdg.dto.CongressionalDistrictDTO;
 import cdg.dto.DistrictDTO;
+import cdg.dto.PrecinctDTO;
 
 public class Precinct extends Region {
 	private CongressionalDistrict conDistrict;
@@ -44,9 +44,10 @@ public class Precinct extends Region {
 
 	@Override
 	public DistrictDTO getDataDTO() {
-		DistrictDTO data = new DistrictDTO();
+		PrecinctDTO data = new PrecinctDTO();
 		data.setID(this.getPublicID());
 		data.setName(this.getName());
+		data.setDistrictID(conDistrict.getPublicID());
 		return data;
 	}
 }
