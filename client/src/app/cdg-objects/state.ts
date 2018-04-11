@@ -1,6 +1,6 @@
-import { CdgMap } from "./cdgmap";
+import { CdgMapData } from "./cdgmapdata";
 
-export class State implements CdgMap {
+export class State implements CdgMapData {
     label: String;
     mapType:String;
     id:number;

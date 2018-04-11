@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.wololo.jts2geojson.GeoJSONReader;
-
-import com.vividsolutions.jts.geom.Geometry;
-
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import cdg.dao.NameOnly;
@@ -94,14 +90,17 @@ public class MapController {
 	}
 	
 	@RequestMapping( value = "/states", method=RequestMethod.GET)
-	public List<NameOnly> getAllStates() {
+	public List<String> getAllStates() {
 		//Get all state's name fields from database, ordered alphabetically
 		//fake data
 		Collection<NameOnly> stateNames = fakeRepo.findAllProjectedBy();
 		
 		//Convert to readable format
-		List<NameOnly> names = new ArrayList<NameOnly>();
-		names.addAll(stateNames);
+		List<String> names = new ArrayList<String>();
+		for (NameOnly stateName : stateNames)
+		{
+			names.add(stateName.getName());
+		}
 		
 		return names;
 	}
