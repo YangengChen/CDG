@@ -24,7 +24,8 @@ import cdg.domain.map.MapTypeEnumConverter;
 import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
 import cdg.repository.FakeData;
-
+import org.wololo.jts2geojson.GeoJSONReader;
+import com.vividsolutions.jts.geom.Geometry;
 @RestController
 @RequestMapping("/api/map")
 @CrossOrigin(origins = "http://localhost:4200")
@@ -50,7 +51,7 @@ public class MapController {
 		MapDTO map = state.getMap(type);
 		if (map == null)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		
+
 		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 	
@@ -88,19 +89,25 @@ public class MapController {
 				
 		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
+	/*@RequestMapping( value = "/us", method=RequestMethod.GET)
+	@ResponseBody
+	public ResponseEntity<FileSystemResource> getStaticStateMapFile()
+	{
+		State state = fakeRepo.findByPublicId(1000, State.class);
+		
+		GeoJSONReader reader = new GeoJSONReader();
+		Geometry geom = reader.read(state.getPrecinctMapGeoJson());
+	}*/
 	
 	@RequestMapping( value = "/states", method=RequestMethod.GET)
-	public List<String> getAllStates() {
+	public List<NameOnly> getAllStates() {
 		//Get all state's name fields from database, ordered alphabetically
 		//fake data
 		Collection<NameOnly> stateNames = fakeRepo.findAllProjectedBy();
 		
 		//Convert to readable format
-		List<String> names = new ArrayList<String>();
-		for (NameOnly stateName : stateNames)
-		{
-			names.add(stateName.getName());
-		}
+		List<NameOnly> names = new ArrayList<NameOnly>();
+		names.addAll(stateNames);
 		
 		return names;
 	}
