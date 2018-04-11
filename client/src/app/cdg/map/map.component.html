@@ -15,7 +15,7 @@
     </div>
   </nb-card-header>
   <nb-card-body>
-    <agm-map>      
+    <agm-map [latitude]="39.5" [longitude]="-98.35" [zoom]="5">      
       <agm-data-layer [geoJson]="mapObject" (layerClick)="mapClick($event)"></agm-data-layer>
     </agm-map>
   </nb-card-body>

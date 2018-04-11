@@ -15,6 +15,7 @@
           <nb-tab tabTitle="Generate">
             <div id="generate-tool-container">
               <div id="pick-state-button">
+                State List:
                 <cdg-dropdown [values]="stateList" (change)="changeState($event)" name="States"></cdg-dropdown>
               </div>
               <div id="slider-container">
@@ -36,7 +37,6 @@
             <div id="information-container" class="container">
               <div id="tab-data-block">
               <br>
-              <cdg-dropdown name="States"></cdg-dropdown>
               <br><br>
               <br><p>Name: Wisconson</p>
               <br><p>Socioeconomic Status: </p>
@@ -61,6 +61,6 @@
       </nb-sidebar>
 
       <nb-layout-column>
-        <map [mapTypeList]="mapTypeList" [savedMapList]="savedMapList"></map>
+        <map (clicked)="precinctSelected($event)" [mapObject]="mapObject"[mapTypeList]="mapTypeList" [savedMapList]="savedMapList"></map>
       </nb-layout-column>
     </nb-layout>
