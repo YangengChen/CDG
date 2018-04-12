@@ -5,6 +5,7 @@ import { AppComponent } from './app.component';
 import { CdgModule } from './cdg/cdg.module';
 import { PagesModule } from './pages/pages.module';
 import { NbThemeModule } from '@nebular/theme';
+import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
 // import { NbAuthModule,
 //   NbAuthComponent,
 //   NbLoginComponent,
@@ -13,6 +14,7 @@ import { NbThemeModule } from '@nebular/theme';
 //   NbRequestPasswordComponent,
 //   NbResetPasswordComponent,
 // } from '@nebular/auth';
+import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './pages/home/home.component';
@@ -68,6 +70,7 @@ import 'hammerjs'
     PagesModule,
     HttpClientModule,
     BrowserAnimationsModule,
+    LeafletModule.forRoot(),
     // NbAuthModule.forRoot(),
     // NbAuthComponent,
     // NbLoginComponent,

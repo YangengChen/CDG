@@ -45,7 +45,7 @@ export class CdgComponent implements OnInit {
       new DropdownValue<State>(new State("Wisconson", 2000), "Wisconson"),
       new DropdownValue<State>(new State("Washington", 3000), "Washington")
      ] 
-     this.getState("1"); 
+     this.getState("1000"); 
 }
 
   precinctSelected(precinct){

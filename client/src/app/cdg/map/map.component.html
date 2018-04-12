@@ -15,8 +15,73 @@
     </div>
   </nb-card-header>
   <nb-card-body>
-    <agm-map [latitude]="39.5" [longitude]="-98.35" [zoom]="5">      
-      <agm-data-layer [geoJson]="mapObject" (layerClick)="mapClick($event)"></agm-data-layer>
-    </agm-map>
+  <mgl-map
+    [style]="'mapbox://styles/mapbox/streets-v10'"
+    [zoom]="[6]"
+    [center]="[-89, 46]"
+    (load)="map = $event"
+  >
+   <mgl-geojson-source
+     id="states"
+     [(data)]="mapObject"
+   ></mgl-geojson-source>
+
+   <mgl-layer
+      id="state-fills"
+      type="fill"
+      source="states"
+      (mouseMove)="onPrecinctHover($event)"
+      (mouseLeave)="onPrecinctExit()"
+      [paint]="{
+        'fill-color': {
+              property: 'CongDist',
+              type: 'interval',
+              stops: [
+                  [1, '#51bbd6'],
+                  [8, '#f1f075'],
+                  [10000, '#f28cb1']
+              ]
+          },
+          'fill-opacity': 0.5
+      }"
+   >
+    </mgl-layer>
+      <mgl-layer
+      *ngIf="currPrecinct"
+      id="state-popup"
+      type="fill"
+      source="states"
+      [paint]="{
+        'fill-color': {
+              property: 'CongDist',
+              type: 'interval',
+              stops: [
+                  [1, '#51bbd6'],
+                  [8, '#f1f075'],
+                  [10000, '#f28cb1']
+              ]
+          },
+          'fill-opacity': 0.5
+      }"
+    >
+    <mgl-popup [(lngLat)]="popupCords" >
+      Precinct: {{currPrecinct.Precinct}}
+      <br>
+      PrecinctID: {{currPrecinct.PrecinctID}}
+      <br>
+      County: {{currPrecinct.County}}
+      <br>
+      CountyID: {{currPrecinct.CountyID}}
+      <br>
+      CongressionalDistrict: {{currPrecinct.CongDist}}
+      <br>
+      MNSenDist: {{currPrecinct.MNSenDist}}
+      <br>
+      MNLegDist: {{currPrecinct.MNSenDist}}
+      <br>
+      CtyComDist: {{currPrecinct.CtyComDist}}
+    </mgl-popup>
+    </mgl-layer>
+  </mgl-map>
   </nb-card-body>
 </nb-card>
