@@ -100,15 +100,7 @@ public class State extends Region {
 	{
 		try 
 		{
-			Resource resource = null;
-			if (this.getName().equals("minnesota"))
-				resource = new ClassPathResource("minnesota_precincts.geojson");
-			else if (this.getName().equals("wisconsin"))
-				resource = new ClassPathResource("wisconsin_precincts.geojson");
-			else if (this.getName().equals("washington"))
-				resource = new ClassPathResource("washington_precincts.geojson");
-			if (resource == null)
-				return null;
+			Resource resource = new ClassPathResource("minnesota_precincts.geojson");
 			return resource.getFile();
 		}
 		catch (IOException ioe)
@@ -161,22 +153,14 @@ public class State extends Region {
 	
 	public String getPrecinctMapGeoJson()
 	{
-		//fake data
 		String geoJson = null;
 		try {
-			Resource resource = null;
-			if (this.getName().equals("minnesota"))
-				resource = new ClassPathResource("minnesota_precincts.geojson");
-			else if (this.getName().equals("wisconsin"))
-				resource = new ClassPathResource("wisconsin_precincts.geojson");
-			else if (this.getName().equals("washington"))
-				resource = new ClassPathResource("washington_precincts.geojson");
-			if (resource == null)
-				return null;
+			Resource resource = new ClassPathResource("minnesota_precincts.geojson");
 			StringWriter writer = new StringWriter();
 			IOUtils.copy(resource.getInputStream(), writer, StandardCharsets.UTF_8);
 			geoJson = writer.toString();
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		
