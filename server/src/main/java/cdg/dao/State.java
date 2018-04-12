@@ -177,6 +177,7 @@ public class State extends Region {
 			IOUtils.copy(resource.getInputStream(), writer, StandardCharsets.UTF_8);
 			geoJson = writer.toString();
 		} catch (Exception e) {
+			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		

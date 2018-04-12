@@ -11,6 +11,6 @@ export class LoginService {
   }
 
   logout(){
-    return this.http.get(this.logoutUrl);
+    this.http.get(this.logoutUrl);
   }
 }

@@ -15,10 +15,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-import org.wololo.jts2geojson.GeoJSONReader;
-
-import com.vividsolutions.jts.geom.Geometry;
-
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import cdg.dao.NameOnly;
@@ -54,7 +50,7 @@ public class MapController {
 		MapDTO map = state.getMap(type);
 		if (map == null)
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-		
+
 		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 	

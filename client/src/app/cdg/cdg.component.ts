@@ -3,8 +3,10 @@ import { HttpClient } from '@angular/common/http';
 import {LoginService } from "../pages/login/login.service";
 import { Router } from "@angular/router";
 import { GenerationService, GenerationConfiguration } from "./generation.service";
-import { State } from "../objects/state";
-import { DropdownValue } from "../objects/dropdownvalue";
+import { Precinct} from "../cdg-objects/precinct";
+import { State } from "../cdg-objects/state";
+import { CdgMap } from "../cdg-objects/cdgmap";
+import { DropdownValue } from "../cdg-objects/dropdownvalue";
 import { MapService } from "./map/map.service";
 @Component({
   selector: 'app-cdg',
@@ -23,6 +25,7 @@ export class CdgComponent implements OnInit {
   mapObject: Object;
   selectedStateName:string;
   selectedStateId:number;
+  selectedPrecinct: Precinct;
   constructor(
     private router:Router, 
     private loginService: LoginService, 
@@ -41,8 +44,14 @@ export class CdgComponent implements OnInit {
       new DropdownValue<State>(new State("Minnesota",1000), "Minnesota"),
       new DropdownValue<State>(new State("Wisconson", 2000), "Wisconson"),
       new DropdownValue<State>(new State("Washington", 3000), "Washington")
-     ]  
+     ] 
+     this.getState("1000"); 
 }
+
+  precinctSelected(precinct){
+    this.selectedPrecinct = precinct.f ;
+    console.log(this.selectedPrecinct.CongDist);
+  }
 
   changeState(event){
     this.genConfig = new GenerationConfiguration()
@@ -52,7 +61,7 @@ export class CdgComponent implements OnInit {
   }
 
   getState(chosenState: string){
-    this.mapService.getState("1000")
+    this.mapService.getState(chosenState)
     .subscribe(stateData =>{
         this.mapObject = stateData;
     });

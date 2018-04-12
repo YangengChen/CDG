@@ -1,44 +1,59 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MapService } from './map.service';
-import { DropdownValue } from "../../objects/dropdownvalue";
-
+import { DropdownValue } from "../../cdg-objects/dropdownvalue";
+import * as mapboxgl from 'mapbox-gl';
 @Component({
   selector: 'map',
   templateUrl: './map.component.html',
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit{
-
-  constructor(private mapService: MapService) {
-
-  }
-
-  map: string;
-  mapObject:Object;
+  map: mapboxgl.Map;
   stateName:string;
   disabled:boolean = false;
+
+  @Input() mapObject:mapboxgl.GeoJSONSource;
+  @Input() congressionalDistricts: Object[]
   @Input() savedMapList:DropdownValue<any>[];
   @Input() mapTypeList:DropdownValue<String>[];
-
-  ngOnInit() {
+  @Input() popupCords:mapboxgl.LngLatLike;
+  @Input() currPrecinct:any;
+  stylePattern = {
+        'fill-color': [
+          'match',
+          ['get', 'CongDist'],
+          1, "red",
+          2, "blue",
+          3, "green"
+        ],
+        'fill-opacity': 0.5
+      };
+  popupFilter = ['==', 'name', '']
+  @Output() clicked: EventEmitter<any>
+  constructor(private mapService: MapService) {
+    this.clicked = new EventEmitter<any>();
+  }
+  ngOnInit() { 
     if(this.savedMapList == null){
       this.disabled = true;
       this.savedMapList = [new DropdownValue<String>("", "No Saved Maps")];
     }
   }
-  
-  showMap(){
-    this.mapService.getMap()
-    .subscribe(data => this.map = data.toString())
+
+  onPrecinctHover(event){
+    this.popupCords = event.lngLat;
+    this.currPrecinct = event.features[0].properties;
+    this.popupFilter = ['==', 'name', event.features[0].properties.name];
   }
 
-  setMapData(mapObject: Object){
-    this.mapObject = mapObject;
+  onPrecinctExit(){
+    this.popupCords = null;
+    this.popupFilter = ['==', 'name', '']
+    this.currPrecinct = null;
+
   }
 
-
-  mapclick(e:Event){
-    console.log(this.mapObject);
+  mapClick(event){
+    this.clicked.emit(event.feature);
   }
-
 }

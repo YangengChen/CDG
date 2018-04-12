@@ -1,5 +1,6 @@
 package cdg.controllers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -7,44 +8,51 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import cdg.responses.CdgResponseBuilder;
+import cdg.responses.UserResponse;
+
+import java.util.Properties;
 import javax.servlet.http.HttpSession;
 
+import static cdg.properties.CdgConstants.*;
 
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
-	String SESSION = "usersession";
-	String USERNAME = "username";
-	String PASSWORD = "password";
-	CdgResponseBuilder responseBuilder = new CdgResponseBuilder();
+	Properties prop = new Properties();
 	
 	@RequestMapping( value = "/login", method=RequestMethod.POST)
-	public @ResponseBody CdgResponse<String>  login(@RequestBody Credentials creds, HttpSession session)
+	public @ResponseBody ResponseEntity<UserResponse>  login(@RequestBody Credentials credentials, HttpSession session)
 	{
-		String loggedInUser = (String) session.getAttribute(SESSION);
+		CdgUser loggedInUser = (CdgUser) session.getAttribute(SESSION_USER);
 		if(loggedInUser != null) {
-			return responseBuilder.errorMessage("Already Logged In");
+			return CdgResponseBuilder.generateErrorResponse("Already Logged In");
 		}
-		if(creds.compare(PASSWORD)) {
-			session.setAttribute(SESSION, USERNAME);
-			return responseBuilder.successMessage("Logged In");
+		//Replace with repo call
+		CdgUser user = new CdgUser("USERNAME", credentials.getPassword());
+//		if(user == null) {
+//			return responseBuilder.errorMessage("Account Doesn't Exist");
+//		}
+		if(credentials.compare(user.getPassword())) {
+			session.setAttribute(SESSION_USER, user);
+			return  CdgResponseBuilder.generateSuccessResponse(new UserResponse(user));
 		}
 		else {
-			return responseBuilder.errorMessage("Incorrect Password");
+			return CdgResponseBuilder.generateErrorResponse("Incorrect Password");
 		}
 	}
 	
 	
 	@RequestMapping( value = "/logout", method=RequestMethod.GET)
-	public CdgResponse<String>  logout(HttpSession session)
+	public ResponseEntity<UserResponse> logout(HttpSession session)
 	{	
-		String user = (String) session.getAttribute(SESSION);
+		CdgUser user = (CdgUser) session.getAttribute(SESSION_USER);
 		if(user == null) {
-			return responseBuilder.errorMessage("Not Logged In");
+			return CdgResponseBuilder.generateErrorResponse("Not Logged In");
 		}
-		session.removeAttribute(SESSION);
-		return responseBuilder.successMessage("Logged Out");
+		session.removeAttribute(SESSION_USER);
+		return CdgResponseBuilder.generateSuccessResponse(new UserResponse(user));
 	}
 }
 
