@@ -18,24 +18,16 @@ export class MapComponent implements OnInit{
   @Input() mapTypeList:DropdownValue<String>[];
   @Input() popupCords:mapboxgl.LngLatLike;
   @Input() currPrecinct:any;
-  stylePattern: mapboxgl.FillPaint = 
-  {
-      'fill-color': {
-        property:'CongDist',
-        stops: [[20000, '#fff'], [120000, '#f00']]
-      },
-    };
-  districtToColor = {
-    1:'red',
-    2:'green',
-    3:'blue',
-    4:'red',
-    5:'green',
-    6:'blue',
-    7:'red',
-    8:'green',
-    9:'blue'
-  };
+  stylePattern = {
+        'fill-color': [
+          'match',
+          ['get', 'CongDist'],
+          1, "red",
+          2, "blue",
+          3, "green"
+        ],
+        'fill-opacity': 0.5
+      };
   popupFilter = ['==', 'name', '']
   @Output() clicked: EventEmitter<any>
   constructor(private mapService: MapService) {

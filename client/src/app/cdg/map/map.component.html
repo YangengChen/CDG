@@ -32,39 +32,8 @@
       source="states"
       (mouseMove)="onPrecinctHover($event)"
       (mouseLeave)="onPrecinctExit()"
-      [paint]="{
-        'fill-color': {
-              property: 'CongDist',
-              type: 'interval',
-              stops: [
-                  [1, '#51bbd6'],
-                  [8, '#f1f075'],
-                  [10000, '#f28cb1']
-              ]
-          },
-          'fill-opacity': 0.5
-      }"
-   >
-    </mgl-layer>
-      <mgl-layer
-      *ngIf="currPrecinct"
-      id="state-popup"
-      type="fill"
-      source="states"
-      [paint]="{
-        'fill-color': {
-              property: 'CongDist',
-              type: 'interval',
-              stops: [
-                  [1, '#51bbd6'],
-                  [8, '#f1f075'],
-                  [10000, '#f28cb1']
-              ]
-          },
-          'fill-opacity': 0.5
-      }"
-    >
-    <mgl-popup [(lngLat)]="popupCords" >
+      [paint]="stylePattern">
+      <mgl-popup *ngIf="currPrecinct" [(lngLat)]="popupCords" >
       Precinct: {{currPrecinct.Precinct}}
       <br>
       PrecinctID: {{currPrecinct.PrecinctID}}

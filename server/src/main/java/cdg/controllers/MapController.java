@@ -100,14 +100,17 @@ public class MapController {
 	}*/
 	
 	@RequestMapping( value = "/states", method=RequestMethod.GET)
-	public List<NameOnly> getAllStates() {
+	public List<String> getAllStates() {
 		//Get all state's name fields from database, ordered alphabetically
 		//fake data
 		Collection<NameOnly> stateNames = fakeRepo.findAllProjectedBy();
 		
 		//Convert to readable format
-		List<NameOnly> names = new ArrayList<NameOnly>();
-		names.addAll(stateNames);
+		List<String> names = new ArrayList<String>();
+		for (NameOnly stateName : stateNames)
+		{
+			names.add(stateName.getName());
+		}
 		
 		return names;
 	}
