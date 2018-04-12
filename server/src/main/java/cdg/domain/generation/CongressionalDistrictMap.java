@@ -2,7 +2,6 @@ package cdg.domain.generation;
 
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
 import java.util.Random;
@@ -10,10 +9,11 @@ import java.util.Random;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 
 import cdg.dao.CongressionalDistrict;
 import cdg.dao.State;
-import cdg.repository.StateRepository;
+import cdg.repository.FakeData;
 
 public class CongressionalDistrictMap {
 	private State state;
@@ -22,15 +22,53 @@ public class CongressionalDistrictMap {
 	private Map<Integer,LinkedList<Integer>> borderPrecinctQueues;
 	private Random randGenerator;
 	private final int MAXID;
-	@Autowired
-	StateRepository stateRepo;
+	//@Autowired
+	//StateRepository stateRepo;
 	
-	public CongressionalDistrictMap(int stateID, GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval)
-	{
-		MAXID = 10;
+	@Autowired
+	FakeData stateRepo;
+	
+	public CongressionalDistrictMap(int stateID, GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval) {
+		if (goodnessEval == null || constraintEval == null) {
+			throw new IllegalArgumentException();
+		}
+		state = stateRepo.findByPublicId(stateID, State.class);
+		if (state == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		MAXID = generateCustomMap(state.getConDistricts().values());
+		initMap();
+		evaluateAllGoodness(goodnessEval);
+		initHelpers(constraintEval);
 	}
 	
-	private void initMap()
+	private int generateCustomMap(Iterable<CongressionalDistrict> districts) {
+		int key = 1;
+		BiMap<Integer,CongressionalDistrict> districtMap = HashBiMap.create();
+		for (CongressionalDistrict district : districts) {
+			districtMap.put(key++,district);
+		}
+		return (key - 1);
+	}
+	
+	private void initMap() {
+		mapPrecincts();
+		mapBorderPrecincts();
+		mapNeighborPrecincts();
+	}
+	
+	private void mapPrecincts()
+	{
+
+	}
+	
+	private void mapBorderPrecincts()
+	{
+		
+	}
+	
+	private void mapNeighborPrecincts()
 	{
 		
 	}
@@ -45,10 +83,6 @@ public class CongressionalDistrictMap {
 		return null;
 	}
 	
-	private BiMap<Integer,CongressionalDistrict> generateCustomMap(List<CongressionalDistrict> districts)
-	{
-		return null;
-	}
 	
 	public double evaluateGoodness(int districtID, GoodnessEvaluator evaluator)
 	{
@@ -90,22 +124,7 @@ public class CongressionalDistrictMap {
 		return -1;
 	}
 	
-	private void mapPrecincts()
-	{
-		
-	}
-	
-	private void mapBorderPrecincts()
-	{
-		
-	}
-	
-	private void mapNeighborPrecincts()
-	{
-		
-	}
-	
-	private void evaluatorAllGoodness(GoodnessEvaluator goodnessEval)
+	private void evaluateAllGoodness(GoodnessEvaluator goodnessEval)
 	{
 		
 	}
