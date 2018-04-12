@@ -17,15 +17,13 @@
   <nb-card-body>
   <mgl-map
     [style]="'mapbox://styles/mapbox/streets-v10'"
-    [zoom]="[6]"
-    [center]="[-89, 46]"
-    (load)="map = $event"
-  >
+    [zoom]="[3]"
+    [center]="[-87.6500523,41.850033]"
+    (load)="map = $event">
    <mgl-geojson-source
      id="states"
      [(data)]="mapObject"
    ></mgl-geojson-source>
-
    <mgl-layer
       id="state-fills"
       type="fill"

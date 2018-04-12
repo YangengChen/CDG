@@ -18,14 +18,24 @@ export class MapComponent implements OnInit{
   @Input() mapTypeList:DropdownValue<String>[];
   @Input() popupCords:mapboxgl.LngLatLike;
   @Input() currPrecinct:any;
+  stops = [
+    ["1", "red"],
+    ["2", "blue"],
+    ["3", "green"],
+    ["4", "yellow"],
+    ["5", "purple"],
+    ["6", "orange"],
+    ["7", "black"],
+    ["8", "white"],
+    ["9", "navy"]
+  ]
   stylePattern = {
-        'fill-color': [
-          'match',
-          ['get', 'CongDist'],
-          1, "red",
-          2, "blue",
-          3, "green"
-        ],
+        'fill-color': {
+          type:'categorical',
+          property: 'CongDist',
+          stops: this.stops,
+          default:"green"
+        },
         'fill-opacity': 0.5
       };
   popupFilter = ['==', 'name', '']
