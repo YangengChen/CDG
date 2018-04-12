@@ -6,8 +6,18 @@ import java.util.Map;
 import cdg.dto.CongressionalDistrictDTO;
 import cdg.dto.DistrictDTO;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.OneToMany;
+import javax.persistence.ManyToOne;
+
+@Entity
+@Table (name = "Districts")
 public class CongressionalDistrict extends Region {
+	@ManyToOne
 	private State state;
+	@OneToMany(mappedBy="conDistrict", cascade=CascadeType.ALL, orphanRemoval=true)
+	@MapKey(name = "id")
 	private Map<Integer,Precinct> precincts;
 	private Map<Integer,Precinct> borderPrecincts;
 	private double goodnessValue;

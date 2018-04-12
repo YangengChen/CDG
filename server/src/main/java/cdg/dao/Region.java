@@ -6,7 +6,23 @@ import java.util.Map;
 import cdg.dto.CongressionalDistrictDTO;
 import cdg.dto.DistrictDTO;
 
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.OneToMany;
+
+@Entity
+@Table(name = "Regions")
+@Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "type")
 public class Region {
+	@Id
+	@GeneratedValue( strategy = GenerationType.IDENTITY)
 	private int id;
 	private int publicID;
 	private String name;

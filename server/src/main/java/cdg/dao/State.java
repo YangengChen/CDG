@@ -22,8 +22,19 @@ import cdg.dto.DistrictDTO;
 import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
+
+@Entity
+@Table(name = "States")
 public class State extends Region {
+	@OneToMany(mappedBy="state", cascade=CascadeType.ALL, orphanRemoval=true)
+	@MapKey(name = "id")
 	private Map<Integer,CongressionalDistrict> conDistricts;
+	@OneToMany(mappedBy="state", cascade=CascadeType.ALL, orphanRemoval=true)
+	@MapKey(name = "id")
 	private Map<Integer,Precinct> precincts;
 	private Blob stateMapFile;
 	private Blob conDistrictMapFile;

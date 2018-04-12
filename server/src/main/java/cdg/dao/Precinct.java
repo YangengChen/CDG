@@ -3,8 +3,16 @@ package cdg.dao;
 import cdg.dto.CongressionalDistrictDTO;
 import cdg.dto.DistrictDTO;
 
+import javax.persistence.Entity;
+import javax.persistence.Table;
+import javax.persistence.ManyToOne;
+
+@Entity
+@Table( name = "Precincts")
 public class Precinct extends Region {
+	@ManyToOne
 	private CongressionalDistrict conDistrict;
+	@ManyToOne
 	private State state;
 	
 	public Precinct()
