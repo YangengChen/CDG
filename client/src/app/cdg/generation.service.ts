@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, Input, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class GenerationService{
@@ -15,14 +15,12 @@ export class GenerationConfiguration {
     private state: string;
     private permConDist: Array<number>;
     private permPrecinct: Array<number>;
-    private compactnessWeight:Number;
-    private contiguityWeight:Number;
-    private equalPopWeight: Number;
-    private racialFairWeight: Number;
-    constructor(){
-
-    }
-
+    compactnessWeight:Number;
+    contiguityWeight:Number;
+    equalPopWeight: Number;
+    racialFairWeight: Number;
+    partisanFairnessWeight:Number;
+    constructor(){}
     setState(state:string){
         this.state = state;
     }
@@ -40,8 +38,12 @@ export class GenerationConfiguration {
         if(this.permPrecinct.includes(id))
             this.permPrecinct.splice(this.permPrecinct.indexOf(id), 1);
     }
+    setPartisanFairness(weight:Number){
+        this.partisanFairnessWeight = weight;
+    }
     setCompactnessWeight(weight: Number){
         this.compactnessWeight = weight;
+        console.log(this.compactnessWeight);
     }
     setContiguityWeight(weight:Number){
         this.contiguityWeight = weight;

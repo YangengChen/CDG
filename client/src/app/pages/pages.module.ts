@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {FormsModule } from '@angular/forms';
-import { PagesRoutingModule } from './pages-routing.module';
 import { LoginComponent } from './login/login.component';
 import { LoginService } from './login/login.service';
 import { 
@@ -38,7 +37,6 @@ import {AgmCoreModule} from '@agm/core';
     NbUserModule,
     NbMenuModule,
     CommonModule,
-    PagesRoutingModule,
     FormsModule,
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDbo0ubVsgdziReD82-FBC9KCbuiZeFnuU' 

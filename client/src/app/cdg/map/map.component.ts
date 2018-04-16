@@ -10,34 +10,18 @@ import * as mapboxgl from 'mapbox-gl';
 export class MapComponent implements OnInit{
   map: mapboxgl.Map;
   stateName:string;
-  disabled:boolean = false;
-
+  @Input() mapTypeListLabel: string;
+  @Input() savedMapListLabel:string;
   @Input() mapObject:mapboxgl.GeoJSONSource;
   @Input() congressionalDistricts: Object[]
   @Input() savedMapList:DropdownValue<any>[];
   @Input() mapTypeList:DropdownValue<String>[];
   @Input() popupCords:mapboxgl.LngLatLike;
   @Input() currPrecinct:any;
-  stops = [
-    ["1", "red"],
-    ["2", "blue"],
-    ["3", "green"],
-    ["4", "yellow"],
-    ["5", "purple"],
-    ["6", "orange"],
-    ["7", "black"],
-    ["8", "white"],
-    ["9", "navy"]
-  ]
-  stylePattern = {
-        'fill-color': {
-          type:'categorical',
-          property: 'CongDist',
-          stops: this.stops,
-          default:"green"
-        },
-        'fill-opacity': 0.5
-      };
+  @Input() mapColorPattern:any;
+  disabled:boolean = false;
+
+  stylePattern:any;
   popupFilter = ['==', 'name', '']
   @Output() clicked: EventEmitter<any>
   constructor(private mapService: MapService) {
@@ -48,21 +32,26 @@ export class MapComponent implements OnInit{
       this.disabled = true;
       this.savedMapList = [new DropdownValue<String>("", "No Saved Maps")];
     }
+    this.stylePattern =  {
+        'fill-color': {
+          type:'categorical',
+          property: 'CongDist',
+          stops: this.mapColorPattern,
+          default:"green"
+        },
+        'fill-opacity': 0.5
+      };
   }
-
   onPrecinctHover(event){
     this.popupCords = event.lngLat;
     this.currPrecinct = event.features[0].properties;
     this.popupFilter = ['==', 'name', event.features[0].properties.name];
   }
-
   onPrecinctExit(){
     this.popupCords = null;
     this.popupFilter = ['==', 'name', '']
     this.currPrecinct = null;
-
   }
-
   mapClick(event){
     this.clicked.emit(event.feature);
   }

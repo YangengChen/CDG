@@ -1,4 +1,4 @@
-import { Component, OnInit, Input} from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
 
 @Component({
   selector: 'cdg-slider',
@@ -8,9 +8,12 @@ import { Component, OnInit, Input} from '@angular/core';
 export class CdgSliderComponent implements OnInit {
   @Input() name: string;
   @Input() disabled:boolean = false;
-  constructor() { }
-
-  ngOnInit() {
+  @Output() change:EventEmitter<number>
+  constructor() {
+    this.change = new EventEmitter<number>;
+   }
+  ngOnInit() {}
+  onChange(event){
+    this.change.emit(event.value);
   }
-
 }

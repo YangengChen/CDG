@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
 
   login(){
     if(this.model.password == "password" && this.model.username == "username")
-      this.router.navigateByUrl("/cdg")
+      this.router.navigate(["/cdg"])
   }
 
   logout(){

@@ -6,7 +6,7 @@
           </h1>
         </div>
         <div id="user-container" style="padding-right:5rem; margin-top:30px;">
-              <cdg-button (click)="logout()" name="Logout"></cdg-button>
+            <cdg-button (click)="logout()" name="Logout"></cdg-button>
         </div>
       </nb-layout-header>
       <nb-sidebar id="sidebar">
@@ -15,25 +15,25 @@
           <nb-tab tabTitle="Generate">
             <div id="generate-tool-container">
               <div id="pick-state-button">
-                State List:
+                {{stateListLabel}}:
                 <cdg-dropdown [values]="stateList" (change)="changeState($event)" name="States"></cdg-dropdown>
               </div>
               <div id="slider-container">
-                <cdg-slider  disabled="!genConfig" name="Compactness"></cdg-slider>
-                <cdg-slider  disabled="!genConfig"name="Contiguity"></cdg-slider>
-                <cdg-slider  disabled="!genConfig"name="Equal population"></cdg-slider>
-                <cdg-slider  disabled="!genConfig"name="Partisan fairness"></cdg-slider>
-                <cdg-slider  disabled="!genConfig"name="Racial fairness"></cdg-slider>
+                <cdg-slider  [disabled]="!genConfig" (change)="updateCompactness($event)" name="{{compactnessSliderLabel}}"></cdg-slider>
+                <cdg-slider  [disabled]="!genConfig" (change)="updateContiguity($event)" name="{{contiguitySliderLabel}}"></cdg-slider>
+                <cdg-slider  [disabled]="!genConfig" (change)="updateEqualPopulation($event)" name="{{equalPopulationSliderLabel}}"></cdg-slider>
+                <cdg-slider  [disabled]="!genConfig" (change)="updatePartisanFairness($event)" name="{{partisanFairnessSliderLabel}}"></cdg-slider>
+                <cdg-slider  [disabled]="!genConfig" (change)="updateRacialFairness($event)" name="{{raicalFairnessSliderLabel}}"></cdg-slider>
               </div>
               <div id="generate-button">
-                <cdg-button disabled="!genConfig" (click)="clickOn()" name="Generate Districts"></cdg-button>
+                <cdg-button [disabled]="!genConfig" (click)="clickOn()" name="{{generateDistrictsButtonLabel}}"></cdg-button>
               </div>
               <div id="replay-generate-button">
-                <cdg-button disabled="!genConfig" name="Replay Generation"></cdg-button>
+                <cdg-button [disabled]="!genConfig" name="{{replayGenerationButtonLabel}}"></cdg-button>
               </div>
             </div>
           </nb-tab>
-          <nb-tab tabTitle="Information">
+          <nb-tab tabTitle="{{informationTabLabel}}">
             <div id="information-container" class="container">
               <div id="tab-data-block">
               <br>
@@ -47,7 +47,7 @@
               </div>
             </div>
            </nb-tab>
-          <nb-tab tabTitle="File">
+          <nb-tab tabTitle="{{fileTabLabel}}">
             <div id="information-container" class="container">
             <div id="file-buttons">
               <cdg-button name="Load File" class="file-button"></cdg-button>
@@ -61,6 +61,15 @@
       </nb-sidebar>
 
       <nb-layout-column>
-        <map (clicked)="precinctSelected($event)" [mapObject]="mapObject"[mapTypeList]="mapTypeList" [savedMapList]="savedMapList"></map>
+        <map 
+          (clicked)="precinctSelected($event)" 
+          [mapObject]="mapObject"
+          [mapTypeList]="mapTypeList" 
+          [savedMapList]="savedMapList"
+          [savedMapListLabel]="savedMapListLabel"
+          [mapTypeListLabel]="mapTypeListLabel"
+          [mapColorPattern]="mapColorPattern"
+          >
+          </map>
       </nb-layout-column>
     </nb-layout>
