@@ -24,4 +24,18 @@ export class LoginComponent implements OnInit {
 
   }
 
+  selectLoginTab(e){
+    console.log("Login");
+    // Set tab toggle
+    document.getElementById("loginTab").className = "active";
+    document.getElementById("registerTab").className = "";
+  }
+
+  selectRegisterTab(e){
+    console.log("Register");
+    // Set tab toggle
+    document.getElementById("loginTab").className = "";
+    document.getElementById("registerTab").className = "active";
+  }
+
 }
