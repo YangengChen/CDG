@@ -105,11 +105,12 @@ export class CdgComponent implements OnInit {
     this.genConfig.setPartisanFairness(weight);
   }
   startGeneration(){
+    console.log(this.genConfig.getJsonified());
     if(this.genConfig != null){
       this.genService.startGeneration(this.genConfig)
       .subscribe(data =>{
         //TODO: DECIDE WHAT TO DO AFTER GENERATE START RETURN
-
+        console.log(data);
       });
     }
     else{

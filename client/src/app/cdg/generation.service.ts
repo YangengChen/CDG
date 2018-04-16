@@ -2,11 +2,11 @@ import { Injectable, Input, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 @Injectable()
 export class GenerationService{
-    generateUrl: string = "";
+    generateUrl: string = "http://localhost:8080/api/generation/start";
     constructor(private http: HttpClient){
     }
     startGeneration(config:GenerationConfiguration){
-        return this.http.post(this.generateUrl, config.getJsonified());
+        return this.http.post(this.generateUrl, JSON.stringify(config),{headers:{'Content-Type': 'application/json'}});
     }
 
 }
@@ -19,8 +19,17 @@ export class GenerationConfiguration {
     contiguityWeight:Number;
     equalPopWeight: Number;
     racialFairWeight: Number;
-    partisanFairnessWeight:Number;
-    constructor(){}
+    partisanFairWeight:Number;
+    constructor(){
+        this.compactnessWeight = 50;
+        this.contiguityWeight = 50;
+        this.equalPopWeight = 50;
+        this.racialFairWeight = 50;
+        this.partisanFairWeight = 50;
+        this.permConDist;
+        this.permPrecinct;
+        this.state = "Hello";
+    }
     setState(state:string){
         this.state = state;
     }
@@ -39,7 +48,7 @@ export class GenerationConfiguration {
             this.permPrecinct.splice(this.permPrecinct.indexOf(id), 1);
     }
     setPartisanFairness(weight:Number){
-        this.partisanFairnessWeight = weight;
+        this.partisanFairWeight = weight;
     }
     setCompactnessWeight(weight: Number){
         this.compactnessWeight = weight;
