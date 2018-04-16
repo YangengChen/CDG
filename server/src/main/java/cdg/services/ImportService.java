@@ -29,7 +29,7 @@ import cdg.dao.State;
 
 @Service
 public class ImportService {
-	
+
 	//fake execution. needs to persist to database and add geojson and neighbors
 	public static State createState(String name, String geoJSON) {
 		if (name == null || geoJSON == null) {
@@ -51,6 +51,10 @@ public class ImportService {
 			//set mappings
 			state.setConDistricts(districts);
 			state.setPrecincts(precincts);
+			
+			//make maps
+			String congressionalDistrictMap = MapService.generateCongressionalDistrictMap(state, true);
+			state.setCongressionalMapGeoJson(congressionalDistrictMap);
 			
 			//store to database and use returned state value - will generate all mappings
 			//flush repository

@@ -1,7 +1,5 @@
 package cdg.dao;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.Blob;
 import java.util.ArrayList;
@@ -10,8 +8,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.springframework.core.io.InputStreamResource;
 
 import cdg.domain.map.MapType;
 import cdg.dto.DistrictDTO;
@@ -87,7 +83,11 @@ public class State extends Region {
 	
 	public byte[] getConDistrictMapFile()
 	{
-		return null;
+		if (conDistrictMapGeoJSON == null) {
+			return null;
+		}
+		//fake
+		return conDistrictMapGeoJSON.getBytes(StandardCharsets.UTF_8);
 	}
 	
 	public byte[] getPrecinctMapFile()
@@ -138,7 +138,12 @@ public class State extends Region {
 	
 	public String getCongressionalMapGeoJson()
 	{
-		return null;
+		//fake
+		return conDistrictMapGeoJSON;
+	}
+	
+	public void setCongressionalMapGeoJson(String geoJSON) {
+		conDistrictMapGeoJSON = geoJSON;
 	}
 	
 	public String getPrecinctMapGeoJson()
