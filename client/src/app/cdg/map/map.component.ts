@@ -35,7 +35,7 @@ export class MapComponent implements OnInit{
     this.stylePattern =  {
         'fill-color': {
           type:'categorical',
-          property: 'CongDist',
+          property: 'districtID',
           stops: this.mapColorPattern,
           default:"green"
         },

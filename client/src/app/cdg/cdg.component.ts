@@ -68,7 +68,7 @@ export class CdgComponent implements OnInit {
   }
   precinctSelected(precinct){
     this.selectedPrecinct = precinct.f ;
-    console.log(this.selectedPrecinct.CongDist);
+    console.log(this.selectedPrecinct.districtID);
   }
   changeState(event){
     if(event.value.id == 0){
