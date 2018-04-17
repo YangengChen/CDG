@@ -7,6 +7,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import cdg.dao.User;
+import cdg.repository.UserRepository;
 
 import cdg.responses.CdgResponseBuilder;
 import cdg.responses.UserResponse;
@@ -14,12 +19,16 @@ import cdg.responses.UserResponse;
 import java.util.Properties;
 import javax.servlet.http.HttpSession;
 
+
 import static cdg.properties.CdgConstants.*;
 
 @RestController
 @RequestMapping("/api/user")
 @CrossOrigin(origins = "http://localhost:4200")
 public class UserController {
+	
+	@Autowired
+	UserRepository userRepository;
 	Properties prop = new Properties();
 	
 	@RequestMapping( value = "/login", method=RequestMethod.POST)
@@ -31,9 +40,6 @@ public class UserController {
 		}
 		//Replace with repo call
 		CdgUser user = new CdgUser("USERNAME", credentials.getPassword());
-//		if(user == null) {
-//			return responseBuilder.errorMessage("Account Doesn't Exist");
-//		}
 		if(credentials.compare(user.getPassword())) {
 			session.setAttribute(SESSION_USER, user);
 			return  CdgResponseBuilder.generateSuccessResponse(new UserResponse(user));
@@ -43,8 +49,14 @@ public class UserController {
 		}
 	}
 	
+	@RequestMapping(path="/register") // Map ONLY GET Requests
+	public ResponseEntity<UserResponse> register(@RequestBody User user,HttpSession session) {
+		user.setPassword(user.encryptPassword(user.getPassword()));
+		userRepository.save(user);
+		return CdgResponseBuilder.generateErrorResponse("User Registered");
+	} 
 	
-	@RequestMapping( value = "/logout", method=RequestMethod.GET)
+	@RequestMapping(value= "/logout", method=RequestMethod.GET)
 	public ResponseEntity<UserResponse> logout(HttpSession session)
 	{	
 		CdgUser user = (CdgUser) session.getAttribute(SESSION_USER);
@@ -54,5 +66,12 @@ public class UserController {
 		session.removeAttribute(SESSION_USER);
 		return CdgResponseBuilder.generateSuccessResponse(new UserResponse(user));
 	}
+	
+	@RequestMapping(path="/all")
+	public @ResponseBody Iterable<User> getAllUsers() {
+		// This returns a JSON or XML with the users
+		return userRepository.findAll();
+	}	
+	
 }
 

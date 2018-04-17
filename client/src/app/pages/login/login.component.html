@@ -38,16 +38,16 @@
       <div class="innter-form">
             <form class="sa-innate-form" method="post">
             <label>First Name</label>
-            <input type="text" name="firstname">
+            <input type="text" name="fnametext" [(ngModel)]="newUser.firstName">
             <label>Last Name</label>
-            <input type="text" name="lastname">
+            <input type="text" name="lnametext" [(ngModel)]="newUser.lastName">
             <label>Email Address</label>
-            <input type="text" name="username">
+            <input type="text" name="email" name="emailtext" [(ngModel)]="newUser.email">
             <label>Password</label>
-            <input type="password" name="password">
-            <button type="submit">Register</button>
+            <input type="password" name="password" name="passwordtext" [(ngModel)]="newUser.password">
+            <button type="submit" (click)="register()">Register</button>
             </form>
-            </div>
+        </div>
         </div>
     </div>
     </div>
