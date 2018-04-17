@@ -1,13 +1,13 @@
 package cdg.dto;
 
 public class PrecinctDTO extends DistrictDTO {
-	private int districtID;
+	private String districtID;
 
-	public int getDistrictID() {
+	public String getDistrictID() {
 		return districtID;
 	}
 
-	public void setDistrictID(int districtID) {
+	public void setDistrictID(String districtID) {
 		this.districtID = districtID;
 	}
 }

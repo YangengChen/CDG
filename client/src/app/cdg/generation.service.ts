@@ -12,7 +12,7 @@ export class GenerationService{
 }
 
 export class GenerationConfiguration {
-    private state: string;
+    private stateId: string;
     private permConDist: Array<number>;
     private permPrecinct: Array<number>;
     compactnessWeight:Number;
@@ -21,8 +21,8 @@ export class GenerationConfiguration {
     racialFairWeight: Number;
     partisanFairnessWeight:Number;
     constructor(){}
-    setState(state:string){
-        this.state = state;
+    setState(stateId:string){
+        this.stateId = stateId;
     }
     setPermConDist(id:number){
         this.permConDist.push(id);
