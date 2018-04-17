@@ -1,7 +1,9 @@
 import { Injectable, Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
-import {LoginService } from "./login.service";
+import { LoginService } from "./login.service";
+import { User } from "../../cdg-objects/user"
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -10,7 +12,11 @@ import {LoginService } from "./login.service";
 export class LoginComponent implements OnInit {
   response: string = "";
   model: any = {};
-  constructor(private router: Router, private loginService: LoginService) { }
+  newUser : User;
+
+  constructor(private router: Router, private loginService: LoginService) {
+    this.newUser = new User()
+  }
 
   login(){
     if(this.model.password == "password" && this.model.username == "username")
@@ -20,6 +26,19 @@ export class LoginComponent implements OnInit {
   logout(){
       this.router.navigateByUrl("/");
   }
+
+  register(){
+    console.log("New User: ", this.newUser)
+    this.loginService.register(this.newUser).subscribe(
+      (data) =>{
+        console.log(data);
+      },
+      (err) =>{
+        console.error(err);
+      }
+    )
+  }
+
   ngOnInit() {
 
   }

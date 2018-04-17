@@ -1,6 +1,6 @@
 import { CdgMap } from "./cdgmap";
 export class Precinct implements CdgMap{
-    CongDist:string;
+    districtID:string;
     County:string;
     CountID:string;
     MNLegDist:string;

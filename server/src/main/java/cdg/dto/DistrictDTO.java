@@ -1,19 +1,19 @@
 package cdg.dto;
 
 public class DistrictDTO {
-	private int ID;
+	private String ID;
 	private String name;
 	
 	/**
 	 * @return the iD
 	 */
-	public int getID() {
+	public String getID() {
 		return ID;
 	}
 	/**
 	 * @param iD the iD to set
 	 */
-	public void setID(int ID) {
+	public void setID(String ID) {
 		this.ID = ID;
 	}
 	/**

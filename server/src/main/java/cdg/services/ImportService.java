@@ -29,7 +29,7 @@ import cdg.dao.State;
 
 @Service
 public class ImportService {
-	
+
 	//fake execution. needs to persist to database and add geojson and neighbors
 	public static State createState(String name, String geoJSON) {
 		if (name == null || geoJSON == null) {
@@ -52,10 +52,18 @@ public class ImportService {
 			state.setConDistricts(districts);
 			state.setPrecincts(precincts);
 			
+			//make GeoJSON maps
+			String congressionalDistrictMap = MapService.generateCongressionalDistrictMap(state, true);
+			state.setCongressionalMapGeoJson(congressionalDistrictMap);
+			String stateMap = MapService.generateStateMap(state);
+			state.setStateMapGeoJson(stateMap);
+			
 			//store to database and use returned state value - will generate all mappings
 			//flush repository
 		} catch (Exception e) {
 			//remove any partial data from database
+			System.err.print(e.getMessage());
+			e.printStackTrace();
 			return null;
 		}
 		return state;
@@ -73,12 +81,12 @@ public class ImportService {
 	}
 	
 	private static void generatePrecinctsAndDistricts(Feature[] features, State state, Map<Integer,CongressionalDistrict> districts, Map<Integer,Precinct> precincts) {
-		Map<Integer,CongressionalDistrict> districtsPubID = new HashMap<Integer,CongressionalDistrict>();
+		Map<String,CongressionalDistrict> districtsPubID = new HashMap<String,CongressionalDistrict>();
 		Map<String,Object> currProp;
 		Geometry currGeom;
 		Precinct currPrecinct;
 		CongressionalDistrict currDistrict;
-		int currDistPubID;
+		String currDistPubID;
 		int distIDCounter = 1;
 		int precinctIDCounter = 1;
 		for (int i = 0; i < features.length; i++) {
@@ -88,11 +96,11 @@ public class ImportService {
 			//fake
 			currPrecinct.setId(precinctIDCounter++);
 			currPrecinct.setName((String)currProp.get("name"));
-			currPrecinct.setPublicID((int)currProp.get("ID"));
+			currPrecinct.setPublicID((String)currProp.get("ID"));
 			currPrecinct.setGeoJsonGeometry(currGeom.toString());
 			
 			//ClassCast 
-			currDistPubID = (int)currProp.get("districtID");
+			currDistPubID = (String)currProp.get("districtID");
 			currDistrict = districtsPubID.get(currDistPubID);
 			if (currDistrict == null) {
 				currDistrict = new CongressionalDistrict();
@@ -123,17 +131,17 @@ public class ImportService {
 			throw new IllegalArgumentException();
 		}
 		
-		Map<Integer,Precinct> precinctsPubID = new HashMap<Integer,Precinct>();
+		Map<String,Precinct> precinctsPubID = new HashMap<String,Precinct>();
 		for (Precinct precinct : precincts.values()) {
 			precinctsPubID.put(precinct.getPublicID(), precinct);
 		}
 		
 		Map<String,Object> currProp;
-		List<Integer> currNeighbors;
+		List<String> currNeighbors;
 		int i = 0;
 		for (Precinct precinct : precincts.values()) {
 			currProp = features[i++].getProperties();
-			currNeighbors = (List<Integer>)currProp.get("neighbors"); //public keys of neighbors
+			currNeighbors = (List<String>)currProp.get("neighbors"); //public keys of neighbors
 			
 			Precinct neighbor;
 			boolean valid;
@@ -185,7 +193,7 @@ public class ImportService {
 
 	private static String annotateGeoJSONNeighbors(String geoJSON) {
 		if (geoJSON == null) {
-			return null;
+			throw new IllegalArgumentException();
 		}
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
 		Bindings bindings = engine.createBindings();
@@ -196,6 +204,9 @@ public class ImportService {
 			Resource resource = new ClassPathResource("annotateNeighbors.js");
 			script = new InputStreamReader(resource.getInputStream());
 			result = (String)engine.eval(script,bindings);
+			if (result == null) {
+				throw new IllegalArgumentException();
+			}
 		} catch (IOException ioe) {
 			throw new IllegalStateException();
 		} catch (ScriptException e) {

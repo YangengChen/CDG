@@ -1,6 +1,6 @@
 package cdg.dao;
 
 public interface NameOnly {
-	int getPublicId();
+	String getPublicId();
 	String getName();
 }

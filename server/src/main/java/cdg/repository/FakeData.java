@@ -22,18 +22,19 @@ import cdg.services.ImportService;
 @Repository
 public class FakeData implements StateRepository {
 	
-	private Map<Integer,State> fakeStates;
+	private Map<String,State> fakeStates;
 	
 	private void setFakeStates()
 	{
 		fakeStates = new HashMap<>();
 		State state;
 		//minnesota - good boundary data
-		addFakeState("minnesota", 1000, "minnesota_precincts.geojson");
+		addFakeState("minnesota", "1000", "minnesota_precincts.geojson");
+		addFakeState("alabama", "4000", "alabama_precincts.geojson");
 		
 		//addFakeState("washington", 2000, "washington_precincts.geojson");
 		state = new State("washington", null, null);
-		state.setPublicID(2000);
+		state.setPublicID("2000");
 		String geoJson = null;
 		try {
 			Resource resource = new ClassPathResource("washington_precincts.geojson");
@@ -49,7 +50,7 @@ public class FakeData implements StateRepository {
 		
 		//addFakeState("wisconsin", 3000, "wisconsin_precincts.geojson");
 		state = new State("wisconsin", null, null);
-		state.setPublicID(3000);
+		state.setPublicID("3000");
 		geoJson = null;
 		try {
 			Resource resource = new ClassPathResource("wisconsin_precincts.geojson");
@@ -64,7 +65,7 @@ public class FakeData implements StateRepository {
 		fakeStates.put(state.getPublicID(), state);
 	}
 	
-	private void addFakeState(String name, int publicID, String pathName) {
+	private void addFakeState(String name, String publicID, String pathName) {
 		String geoJson = null;
 		
 		try {
@@ -86,7 +87,7 @@ public class FakeData implements StateRepository {
 	
 	
 	@Override
-	public <T> T findByPublicId(int publicId, Class<T> type) {
+	public <T> T findByPublicId(String publicId, Class<T> type) {
 		if (type.equals(State.class))
 		{
 			if (fakeStates == null)

@@ -63,11 +63,12 @@ export class CdgComponent implements OnInit {
       new DropdownValue<State>(new State("Minnesota",1000), "Minnesota"),
       new DropdownValue<State>(new State("Washington", 2000), "Washington"),     
       new DropdownValue<State>(new State("Wisconson", 3000), "Wisconson"),
+      new DropdownValue<State>(new State("Alabama",4000), "Alabama"),
      ] 
   }
   precinctSelected(precinct){
     this.selectedPrecinct = precinct.f ;
-    console.log(this.selectedPrecinct.CongDist);
+    console.log(this.selectedPrecinct.districtID);
   }
   changeState(event){
     if(event.value.id == 0){

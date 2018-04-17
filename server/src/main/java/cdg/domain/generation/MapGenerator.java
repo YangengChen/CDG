@@ -9,7 +9,7 @@ import cdg.responses.GenerationResponse;
 public class MapGenerator {
 	private GoodnessEvaluator goodnessEvaluator;
 	private ConstraintEvaluator constraintEvaluator;
-	private int stateId;
+	private String stateId;
 	private GenerateMapAlgorithm currAlgorithmRun;
 	
 	//@Autowired
@@ -81,7 +81,7 @@ public class MapGenerator {
 	}
 	
 	
-	public void setState(int stateId) {
+	public void setState(String stateId) {
 		this.stateId = stateId;
 	}
 	
@@ -93,7 +93,7 @@ public class MapGenerator {
 		this.constraintEvaluator = constraintEvaluator;
 	}
 	
-	public void resetGenerator(int stateId, GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval) {
+	public void resetGenerator(String stateId, GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval) {
 		reset();
 		setState(stateId);
 		setGoodnessEvaluator(goodnessEval);
@@ -103,7 +103,7 @@ public class MapGenerator {
 	private void reset() {
 		goodnessEvaluator = null;
 		constraintEvaluator = null;
-		stateId = -1;
+		stateId = null;
 		stopGeneration();
 		currAlgorithmRun = null;
 	}

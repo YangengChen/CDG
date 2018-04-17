@@ -1,5 +1,5 @@
 export interface CdgMap{
-    CongDist:string;
+    districtID:string;
     County:string;
     CountID:string;
     MNLegDist:string;

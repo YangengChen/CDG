@@ -12,7 +12,7 @@ export class GenerationService{
 }
 
 export class GenerationConfiguration {
-    private state: string;
+    private stateId: string;
     private permConDist: Array<number>;
     private permPrecinct: Array<number>;
     compactnessWeight:Number;
