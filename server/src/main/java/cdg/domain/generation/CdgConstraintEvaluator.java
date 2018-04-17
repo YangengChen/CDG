@@ -39,14 +39,14 @@ public class CdgConstraintEvaluator extends ConstraintEvaluator {
 			throw new IllegalArgumentException();
 		}
 		
-		int id = district.getPublicID();
-		Map<Integer,Integer> permConDistricts;
+		String id = district.getPublicID();
+		Map<String,String> permConDistricts;
 		try {
 			Object constraintValue = this.getConstraints(UserConstraint.PERMCONDIST);
 			if (constraintValue == null) {
 				throw new IllegalStateException();
 			}
-			permConDistricts = (Map<Integer,Integer>)constraintValue;
+			permConDistricts = (Map<String,String>)constraintValue;
 		} catch (Exception e) {
 			throw new IllegalStateException();
 		}

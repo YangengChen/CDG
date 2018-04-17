@@ -45,7 +45,7 @@ public class GenerationController {
 		if (user == null) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.UNAUTHORIZED);
 		}
-		State state = stateRepo.findByPublicId(config.getState(), State.class);
+		State state = stateRepo.findByPublicId(config.getStateId(), State.class);
 		if (state == null) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.NOT_FOUND);
 		}
@@ -59,7 +59,7 @@ public class GenerationController {
 		} catch (IllegalArgumentException iae) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.BAD_REQUEST);
 		}
-		generator.resetGenerator(config.getState(), goodnessEval, constraintEval);
+		generator.resetGenerator(config.getStateId(), goodnessEval, constraintEval);
 		
 		try {
 			generator.startGeneration(state);

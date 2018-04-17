@@ -26,7 +26,7 @@
                 <cdg-slider  [disabled]="!genConfig" (change)="updateRacialFairness($event)" name="{{raicalFairnessSliderLabel}}"></cdg-slider>
               </div>
               <div id="generate-button">
-                <cdg-button [disabled]="!genConfig" (click)="clickOn()" name="{{generateDistrictsButtonLabel}}"></cdg-button>
+                <cdg-button [disabled]="!genConfig" (click)="startGeneration()" name="{{generateDistrictsButtonLabel}}"></cdg-button>
               </div>
               <div id="replay-generate-button">
                 <cdg-button [disabled]="!genConfig" name="{{replayGenerationButtonLabel}}"></cdg-button>

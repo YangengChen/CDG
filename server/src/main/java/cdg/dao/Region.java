@@ -24,7 +24,7 @@ public class Region {
 	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY)
 	private int id;
-	private int publicID;
+	private String publicID;
 	private String name;
 	private String geoJsonGeometry;
 	private ElectionResult presidentialVoteTotals;
@@ -111,13 +111,13 @@ public class Region {
 	/**
 	 * @return the publicID
 	 */
-	public int getPublicID() {
+	public String getPublicID() {
 		return publicID;
 	}
 	/**
 	 * @param publicID the publicID to set
 	 */
-	public void setPublicID(int publicID) {
+	public void setPublicID(String publicID) {
 		this.publicID = publicID;
 	}
 

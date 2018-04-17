@@ -39,7 +39,7 @@ public class MapController {
 	}
 	
 	@RequestMapping( value = "/geojson/{stateid}/{maptype}", method=RequestMethod.GET)
-	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable("stateid") int stateID, @PathVariable("maptype") MapType type) {
+	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable("stateid") String stateID, @PathVariable("maptype") MapType type) {
 		//get state from database
 		//fake data
 		State state = fakeRepo.findByPublicId(stateID, State.class);
@@ -55,7 +55,7 @@ public class MapController {
 	}
 	
 	@RequestMapping( value = "/file/{stateid}/{maptype}", method=RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<byte[]> getStaticStateMapFile(@PathVariable("stateid") int stateID, @PathVariable("maptype") MapType type)
+	public ResponseEntity<byte[]> getStaticStateMapFile(@PathVariable("stateid") String stateID, @PathVariable("maptype") MapType type)
 	{
 		//get state from database
 		//fake data
@@ -75,7 +75,7 @@ public class MapController {
 	}
 	
 	@RequestMapping( value = "data/{stateid}/{maptype}", method=RequestMethod.GET)
-	public ResponseEntity<MapDataDTO> getStaticStateData(@PathVariable("stateid") int stateID, @PathVariable("maptype") MapType type)
+	public ResponseEntity<MapDataDTO> getStaticStateData(@PathVariable("stateid") String stateID, @PathVariable("maptype") MapType type)
 	{
 		//get state from database
 		//fake data

@@ -3,7 +3,7 @@ package cdg.domain.generation;
 import java.util.List;
 
 public class GenerationConfiguration {
-	private int state;
+	private String stateId;
 	private List<Integer> permConDist;
 	private List<Integer> permPrecinct;
 	private double compactnessWeight;
@@ -68,11 +68,11 @@ public class GenerationConfiguration {
 		this.racialFairWeight = racialFairWeight;
 	}
 
-	public int getState() {
-		return state;
+	public String getStateId() {
+		return stateId;
 	}
 
-	public void setState(int stateId) {
-		this.state = stateId;
+	public void setStateId(String stateId) {
+		this.stateId = stateId;
 	}
 }
