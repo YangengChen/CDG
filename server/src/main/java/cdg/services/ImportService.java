@@ -52,9 +52,11 @@ public class ImportService {
 			state.setConDistricts(districts);
 			state.setPrecincts(precincts);
 			
-			//make maps
+			//make GeoJSON maps
 			String congressionalDistrictMap = MapService.generateCongressionalDistrictMap(state, true);
 			state.setCongressionalMapGeoJson(congressionalDistrictMap);
+			String stateMap = MapService.generateStateMap(state);
+			state.setStateMapGeoJson(stateMap);
 			
 			//store to database and use returned state value - will generate all mappings
 			//flush repository

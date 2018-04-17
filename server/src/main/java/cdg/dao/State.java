@@ -78,7 +78,11 @@ public class State extends Region {
 	
 	public byte[] getStateMapFile()
 	{
-		return null;
+		if (stateMapGeoJSON == null) {
+			return null;
+		}
+		//fake
+		return stateMapGeoJSON.getBytes(StandardCharsets.UTF_8);
 	}
 	
 	public byte[] getConDistrictMapFile()
@@ -133,7 +137,12 @@ public class State extends Region {
 	
 	public String getStateMapGeoJson()
 	{
-		return null;
+		//fake
+		return stateMapGeoJSON;
+	}
+	
+	public void setStateMapGeoJson(String geoJSON) {
+		stateMapGeoJSON = geoJSON;
 	}
 	
 	public String getCongressionalMapGeoJson()
