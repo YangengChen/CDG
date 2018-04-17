@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter, ElementRef } from '@angular/core';
-import { DropdownValue } from "../../objects/dropdownvalue";
+import { DropdownValue } from "../../cdg-objects/dropdownvalue";
 
 @Component({
   selector: 'cdg-dropdown',

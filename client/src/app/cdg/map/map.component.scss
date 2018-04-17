@@ -10,8 +10,12 @@
     padding: 0;
     height:100%;
   }
-  /deep/ agm-map {
-    width: 100%;
-    height:98%;
+  /deep/   mgl-map {
+      height: 100%;
+      width: 100%;
   }
 }
+   mgl-map {
+      height: 100%;
+      width: 100%;
+  }

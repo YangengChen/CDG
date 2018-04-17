@@ -52,21 +52,14 @@ public class State extends Region {
 		setPrecincts(new HashMap<>());
 	}
 	
-	/**
-	 * @return the conDistricts
-	 */
 	public Map<Integer, CongressionalDistrict> getConDistricts() {
 		return conDistricts;
 	}
-	/**
-	 * @param conDistricts the conDistricts to set
-	 */
+
 	public void setConDistricts(Map<Integer, CongressionalDistrict> conDistricts) {
 		this.conDistricts = conDistricts;
 	}
-	/**
-	 * @return the precincts
-	 */
+	
 	public Map<Integer,Precinct> getPrecincts() {
 		return precincts;
 	}
