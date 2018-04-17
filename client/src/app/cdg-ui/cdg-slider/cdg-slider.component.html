@@ -3,6 +3,7 @@
     <label style="display:block;" for="slider">{{name}}</label>
     <mat-slider
       [disabled]="disabled"
+      (change)="onChange($event)"
       id="slider"
       min="1" 
       max="100" 

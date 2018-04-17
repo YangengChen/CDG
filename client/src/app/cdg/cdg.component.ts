@@ -1,4 +1,4 @@
-import {Injectable, Component, OnInit, Input} from '@angular/core';
+import {Injectable, Component, OnInit, Input, Output} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import {LoginService } from "../pages/login/login.service";
 import { Router } from "@angular/router";
@@ -8,6 +8,8 @@ import { State } from "../cdg-objects/state";
 import { CdgMap } from "../cdg-objects/cdgmap";
 import { DropdownValue } from "../cdg-objects/dropdownvalue";
 import { MapService } from "./map/map.service";
+import { AppProperties }       from '../app.properties'
+
 @Component({
   selector: 'app-cdg',
   templateUrl: './cdg.component.html',
@@ -26,38 +28,59 @@ export class CdgComponent implements OnInit {
   selectedStateName:string;
   selectedStateId:number;
   selectedPrecinct: Precinct;
+  mapTypeListLabel:string;
+  savedMapListLabel:string;
+  stateListLabel:string;
+  compactnessSliderLabel:string;
+  contiguitySliderLabel:string;
+  equalPopulationSliderLabel:string;
+  partisanFairnessSliderLabel:string;
+  raicalFairnessSliderLabel:string;
+  generateDistrictsButtonLabel:string;
+  replayGenerationButtonLabel:string;
+  generateTabLabel:string;
+  informationTabLabel:string;
+  fileTabLabel:string;
+  mapColorPattern;
+
   constructor(
     private router:Router, 
     private loginService: LoginService, 
     private http: HttpClient,
     private genService: GenerationService,
-    private mapService :MapService) { 
+    private mapService :MapService,
+    private appProperties :AppProperties) { 
   }
   logout(){
     // TODO: NEEDS A LOGOUT
     this.router.navigateByUrl("/");
   }
   ngOnInit() {
+    this.setUpLabels(this.appProperties.getProperties());
     this.mapTypeList = [new DropdownValue<String>("State", "State"),new DropdownValue<String>("Precinct", "Precinct") ];
     this.stateList = [
       new DropdownValue<State>(new State("All", 0), "All"),
       new DropdownValue<State>(new State("Minnesota",1000), "Minnesota"),
-      new DropdownValue<State>(new State("Wisconson", 2000), "Wisconson"),
-      new DropdownValue<State>(new State("Washington", 3000), "Washington")
+      new DropdownValue<State>(new State("Washington", 2000), "Washington"),     
+      new DropdownValue<State>(new State("Wisconson", 3000), "Wisconson"),
      ] 
-     this.getState("1000"); 
-}
-
+  }
   precinctSelected(precinct){
     this.selectedPrecinct = precinct.f ;
     console.log(this.selectedPrecinct.CongDist);
   }
-
   changeState(event){
-    this.genConfig = new GenerationConfiguration()
-    this.genConfig.setState(event.name);
-    this.selectedStateName = event.name;
-    this.selectedStateId = event.id;
+    if(event.value.id == 0){
+      this.genConfig = null;
+      this.getState(event.value.id);
+    }
+    else{
+      this.genConfig = new GenerationConfiguration()
+      this.genConfig.setState(event.label);
+      this.selectedStateName = event.label;
+      this.selectedStateId = event.value.id;
+      this.getState(event.value.id);
+    }
   }
 
   getState(chosenState: string){
@@ -66,7 +89,6 @@ export class CdgComponent implements OnInit {
         this.mapObject = stateData;
     });
   }
-
   updateRacialFairness(weight:number){
     this.genConfig.setRacialFairWeight(weight);
   }
@@ -74,14 +96,14 @@ export class CdgComponent implements OnInit {
     this.genConfig.setCompactnessWeight(weight);
   }
   updateContiguity(weight:number){
-
     this.genConfig.setContiguityWeight(weight);
   }
   updateEqualPopulation(weight:number){
     this.genConfig.setEqualPopWeight(weight);
   }
-
-
+  updatePartisanFairness(weight:number){
+    this.genConfig.setPartisanFairness(weight);
+  }
   startGeneration(){
     if(this.genConfig != null){
       this.genService.startGeneration(this.genConfig)
@@ -94,4 +116,21 @@ export class CdgComponent implements OnInit {
       //TODO: ADD POPUP WARNING: NO STATE CHOSEN
     }
   }
+  setUpLabels(properties:any){
+    this.mapTypeListLabel = properties.mapTypeListLabel;
+    this.savedMapListLabel = properties.savedMapListLabel;
+    this.stateListLabel = properties.stateListLabel;
+    this.compactnessSliderLabel = properties.compactnessSliderLabel;
+    this.contiguitySliderLabel = properties.contiguitySliderLabel;
+    this.equalPopulationSliderLabel = properties.equalPopulationSliderLabel;
+    this.partisanFairnessSliderLabel = properties.partisanFairnessSliderLabel;
+    this.raicalFairnessSliderLabel = properties.raicalFairnessSliderLabel;
+    this.generateDistrictsButtonLabel = properties.generateDistrictsButtonLabel;
+    this.replayGenerationButtonLabel = properties.replayGenerationButtonLabel;
+    this.generateTabLabel = properties.generateTabLabel;
+    this.informationTabLabel = properties.informationTabLabel;
+    this.fileTabLabel = properties.fileTabLabel;
+    this.mapColorPattern = properties.mapColorPattern;
+  }
+
 }

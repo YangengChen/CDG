@@ -1,8 +1,7 @@
 package cdg.dao;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.StringWriter;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.sql.Blob;
 import java.util.ArrayList;
@@ -12,10 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
+import org.springframework.core.io.InputStreamResource;
 
 import cdg.domain.map.MapType;
 import cdg.dto.DistrictDTO;
@@ -39,6 +35,9 @@ public class State extends Region {
 	private Blob stateMapFile;
 	private Blob conDistrictMapFile;
 	private Blob precinctMapFile;
+	private String stateMapGeoJSON;
+	private String conDistrictMapGeoJSON;
+	private String precinctMapGeoJSON;
 	
 	public State()
 	{
@@ -63,19 +62,17 @@ public class State extends Region {
 	public Map<Integer,Precinct> getPrecincts() {
 		return precincts;
 	}
-	/**
-	 * @param precincts the precincts to set
-	 */
+
 	public void setPrecincts(Map<Integer,Precinct> precincts) {
 		this.precincts = precincts;
 	}
 	
-	public FileSystemResource getMapFile(MapType type)
+	public byte[] getMapFile(MapType type)
 	{
 		if (type == null)
-			throw new NullPointerException();
+			throw new IllegalArgumentException();
 		
-		File mapFile = null;
+		byte[] mapFile = null;
 		switch (type)
 		{
 			case STATE:
@@ -91,40 +88,33 @@ public class State extends Region {
 				mapFile = null;
 				break;
 		}
-		if (mapFile == null)
-			return null;
-		
-		return new FileSystemResource(mapFile);
+		return mapFile;
 	}
 	
-	public File getStateMapFile()
+	public byte[] getStateMapFile()
 	{
 		return null;
 	}
 	
-	public File getConDistrictMapFile()
+	public byte[] getConDistrictMapFile()
 	{
 		return null;
 	}
 	
-	public File getPrecinctMapFile()
+	public byte[] getPrecinctMapFile()
 	{
-		try 
-		{
-			Resource resource = new ClassPathResource("minnesota_precincts.geojson");
-			return resource.getFile();
-		}
-		catch (IOException ioe)
-		{
+		if (precinctMapGeoJSON == null) {
 			return null;
 		}
+		//fake
+		return precinctMapGeoJSON.getBytes(StandardCharsets.UTF_8);
 	}
 	
 	
 	public MapDTO getMap(MapType type)
 	{
 		if (type == null)
-			throw new NullPointerException();
+			throw new IllegalArgumentException();
 		
 		String geoJson = null;
 		switch (type)
@@ -164,18 +154,12 @@ public class State extends Region {
 	
 	public String getPrecinctMapGeoJson()
 	{
-		String geoJson = null;
-		try {
-			Resource resource = new ClassPathResource("minnesota_precincts.geojson");
-			StringWriter writer = new StringWriter();
-			IOUtils.copy(resource.getInputStream(), writer, StandardCharsets.UTF_8);
-			geoJson = writer.toString();
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		return geoJson;
+		//fake
+		return precinctMapGeoJSON;
+	}
+	
+	public void setPrecinctMapGeoJson(String geoJSON) {
+		precinctMapGeoJSON = geoJSON;
 	}
 	
 	public DistrictDTO getDataDTO()
@@ -189,7 +173,7 @@ public class State extends Region {
 	public MapDataDTO getMapData(MapType type)
 	{
 		if (type == null)
-			throw new NullPointerException();
+			throw new IllegalArgumentException();
 		
 		switch (type)
 		{
@@ -225,7 +209,7 @@ public class State extends Region {
 	private MapDataDTO populateDataDTO(Collection<Region> regions)
 	{
 		if (regions == null)
-			throw new NullPointerException();
+			throw new IllegalArgumentException();
 		MapDataDTO data = new MapDataDTO();
 		data.setState(this.getName());
 		List<DistrictDTO> districts = new ArrayList<>();
@@ -236,39 +220,27 @@ public class State extends Region {
 		data.setDistricts(districts);
 		return data;
 	}
-	/**
-	 * @return the stateMapFile
-	 */
+
 	public Blob getStateMapBlob() {
 		return stateMapFile;
 	}
-	/**
-	 * @param stateMapFile the stateMapFile to set
-	 */
+
 	public void setStateMapBlob(Blob stateMapFile) {
 		this.stateMapFile = stateMapFile;
 	}
-	/**
-	 * @return the conDistrictMapFile
-	 */
+
 	public Blob getConDistrictMapBlob() {
 		return conDistrictMapFile;
 	}
-	/**
-	 * @param conDistrictMapFile the conDistrictMapFile to set
-	 */
+
 	public void setConDistrictMapBlob(Blob conDistrictMapFile) {
 		this.conDistrictMapFile = conDistrictMapFile;
 	}
-	/**
-	 * @return the precinctMapFile
-	 */
+
 	public Blob getPrecinctMapBlob() {
 		return precinctMapFile;
 	}
-	/**
-	 * @param precinctMapFile the precinctMapFile to set
-	 */
+
 	public void setPrecinctMapBlob(Blob precinctMapFile) {
 		this.precinctMapFile = precinctMapFile;
 	}

@@ -2,30 +2,27 @@
   <nb-card-header>
     <div style="position:relative" id="header-container">
       <div style="width:200px; display:inline-block;">
-        MapType:
+        {{mapTypeListLabel}}:<br>
         <cdg-dropdown [values]="mapTypeList" name="MapType"></cdg-dropdown>
       </div>
       <div style="width:200px; display:inline-block;">
-        Saved Maps:
+        {{savedMapListLabel}}:<br>
         <cdg-dropdown  [values]="savedMapList" name="No Saved Maps" [disabled]="disabled"></cdg-dropdown>
       </div>
       <div style="padding-top:0.7rem;position:absolute;right:10px;display:inline-block;">
-        Districts Map
       </div>
     </div>
   </nb-card-header>
   <nb-card-body>
   <mgl-map
     [style]="'mapbox://styles/mapbox/streets-v10'"
-    [zoom]="[6]"
-    [center]="[-89, 46]"
-    (load)="map = $event"
-  >
+    [zoom]="[3]"
+    [center]="[-87.6500523,41.850033]"
+    (load)="map = $event">
    <mgl-geojson-source
      id="states"
      [(data)]="mapObject"
    ></mgl-geojson-source>
-
    <mgl-layer
       id="state-fills"
       type="fill"

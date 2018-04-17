@@ -4,5 +4,6 @@ public enum GenerationStatus {
 	INPROGRESS,
 	COMPLETE,
 	CANCELED,
+	NOTSTARTED,
 	ERROR
 }

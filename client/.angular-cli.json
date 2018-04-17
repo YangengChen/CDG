@@ -6,10 +6,11 @@
   "apps": [
     {
       "root": "src",
-      "outDir": "dist",
+      "outDir": "../server/src/main/resources/static",
       "assets": [
         "assets",
-        "favicon.ico"
+        "favicon.ico",
+        { "glob": "angular.properties.json", "input": "./", "output": "./assets/" }
       ],
       "index": "index.html",
       "main": "main.ts",

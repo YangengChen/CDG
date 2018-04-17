@@ -1,22 +1,23 @@
 package cdg.repository;
 
+import java.io.IOException;
+import java.io.StringWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.apache.commons.io.IOUtils;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Repository;
 
-import cdg.dao.CongressionalDistrict;
-import cdg.dao.GeoFiles;
 import cdg.dao.NameOnly;
 import cdg.dao.NameOnlyFake;
-import cdg.dao.Precinct;
 import cdg.dao.State;
-import cdg.domain.generation.GeometryService;
+import cdg.services.ImportService;
 
 @Repository
 public class FakeData implements StateRepository {
@@ -27,36 +28,60 @@ public class FakeData implements StateRepository {
 	{
 		fakeStates = new HashMap<>();
 		State state;
-		Map<Integer,CongressionalDistrict> districts;
-		Map<Integer,Precinct> precincts;
-		CongressionalDistrict conDist;
-		Precinct pre;
+		//minnesota - good boundary data
+		addFakeState("minnesota", 1000, "minnesota_precincts.geojson");
 		
-		state  = new State("minnesota", null, null);
-		state.setPublicID(1000);
-		districts = new HashMap<>();
-		conDist = new CongressionalDistrict("Min 11", null, null, null, 100);
-		conDist.setPublicID(11);
-		districts.put(1, conDist);
-		conDist = new CongressionalDistrict("Min 22", null, null, null, 200);
-		conDist.setPublicID(22);
-		districts.put(2, conDist);
-		state.setConDistricts(districts);
-		precincts = new HashMap<>();
-		pre = new Precinct("Min 33", null, null, null, null);
-		pre.setPublicID(33);
-		precincts.put(3, pre);
-		pre = new Precinct("Min 44", null, null, null, null);
-		pre.setPublicID(44);
-		precincts.put(4, pre);
-		state.setPrecincts(precincts);
-		fakeStates.put(1, state);
-		GeometryService.updateGeometry(state);
-		fakeStates.put(1000, state);
+		//addFakeState("washington", 2000, "washington_precincts.geojson");
+		state = new State("washington", null, null);
+		state.setPublicID(2000);
+		String geoJson = null;
+		try {
+			Resource resource = new ClassPathResource("washington_precincts.geojson");
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(resource.getInputStream(), writer, StandardCharsets.UTF_8);
+			geoJson = writer.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		state.setPrecinctMapGeoJson(geoJson);
+		fakeStates.put(state.getPublicID(), state);
 		
-
-		fakeStates.put(2, new State("washington",null,null));
-		fakeStates.put(3, new State("wisconsin",null,null));
+		//addFakeState("wisconsin", 3000, "wisconsin_precincts.geojson");
+		state = new State("wisconsin", null, null);
+		state.setPublicID(3000);
+		geoJson = null;
+		try {
+			Resource resource = new ClassPathResource("wisconsin_precincts.geojson");
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(resource.getInputStream(), writer, StandardCharsets.UTF_8);
+			geoJson = writer.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		state.setPrecinctMapGeoJson(geoJson);
+		fakeStates.put(state.getPublicID(), state);
+	}
+	
+	private void addFakeState(String name, int publicID, String pathName) {
+		String geoJson = null;
+		
+		try {
+			Resource resource = new ClassPathResource(pathName);
+			StringWriter writer = new StringWriter();
+			IOUtils.copy(resource.getInputStream(), writer, StandardCharsets.UTF_8);
+			geoJson = writer.toString();
+		} catch (IOException e) {
+			e.printStackTrace();
+			return;
+		}
+		State state = ImportService.createState(name, geoJson);
+		if (state == null) {
+			return;
+		}
+		state.setPublicID(publicID);
+		fakeStates.put(publicID, state);
 	}
 	
 	
@@ -91,6 +116,7 @@ public class FakeData implements StateRepository {
 		for (State state : fakeStates.values())
 		{
 			name = new NameOnlyFake();
+			name.setPublicId(state.getPublicID());
 			name.setName(state.getName());
 			result.add(name);
 		}

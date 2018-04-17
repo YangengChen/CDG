@@ -6,6 +6,9 @@ import { CdgModule } from './cdg/cdg.module';
 import { PagesModule } from './pages/pages.module';
 import { NbThemeModule } from '@nebular/theme';
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
+import { APP_INITIALIZER } from '@angular/core';
+import { AppProperties }       from './app.properties'
+import { HttpModule }      from '@angular/http';
 // import { NbAuthModule,
 //   NbAuthComponent,
 //   NbLoginComponent,
@@ -62,6 +65,7 @@ import 'hammerjs'
     HomeComponent,
   ],
   imports: [
+    HttpModule,
     BrowserModule,
     NbThemeModule.forRoot({ name: 'default' }),
     AppRoutingModule,
@@ -109,9 +113,12 @@ import 'hammerjs'
     MatTableModule,
     MatTabsModule,
     MatToolbarModule,
-MatTooltipModule,
+    MatTooltipModule,
   ],
-  providers: [],
+  providers: [
+    AppProperties,
+    { provide: APP_INITIALIZER, useFactory: (config: AppProperties) => () => config.load(), deps: [AppProperties], multi: true },
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

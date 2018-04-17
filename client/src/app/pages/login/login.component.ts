@@ -14,7 +14,7 @@ export class LoginComponent implements OnInit {
 
   login(){
     if(this.model.password == "password" && this.model.username == "username")
-      this.router.navigateByUrl("/cdg")
+      this.router.navigate(["/cdg"])
   }
 
   logout(){
@@ -22,6 +22,20 @@ export class LoginComponent implements OnInit {
   }
   ngOnInit() {
 
+  }
+
+  selectLoginTab(e){
+    console.log("Login");
+    // Set tab toggle
+    document.getElementById("loginTab").className = "active";
+    document.getElementById("registerTab").className = "";
+  }
+
+  selectRegisterTab(e){
+    console.log("Register");
+    // Set tab toggle
+    document.getElementById("loginTab").className = "";
+    document.getElementById("registerTab").className = "active";
   }
 
 }
