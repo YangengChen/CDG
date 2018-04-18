@@ -19,17 +19,19 @@ export class MapComponent implements OnInit{
   @Input() popupCords:mapboxgl.LngLatLike;
   @Input() currPrecinct:any;
   @Input() mapColorPattern:any;
-  disabled:boolean = false;
-
+  disableSavedMapList:boolean = false;
+  @Input() disableMapTypeList:boolean = false;
   stylePattern:any;
   popupFilter = ['==', 'name', '']
   @Output() clicked: EventEmitter<any>
+  @Output() mapTypeChanged: EventEmitter<any>
   constructor(private mapService: MapService) {
     this.clicked = new EventEmitter<any>();
+    this.mapTypeChanged = new EventEmitter<any>();
   }
   ngOnInit() { 
     if(this.savedMapList == null){
-      this.disabled = true;
+      this.disableSavedMapList = true;
       this.savedMapList = [new DropdownValue<String>("", "No Saved Maps")];
     }
     this.stylePattern =  {
@@ -51,6 +53,9 @@ export class MapComponent implements OnInit{
     this.popupCords = null;
     this.popupFilter = ['==', 'name', '']
     this.currPrecinct = null;
+  }
+  onMapTypeChange(event){
+    this.mapTypeChanged.emit(event.value);
   }
   mapClick(event){
     this.clicked.emit(event.feature);

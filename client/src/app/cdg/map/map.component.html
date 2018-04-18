@@ -3,11 +3,11 @@
     <div style="position:relative" id="header-container">
       <div style="width:200px; display:inline-block;">
         {{mapTypeListLabel}}:<br>
-        <cdg-dropdown [values]="mapTypeList" name="MapType"></cdg-dropdown>
+        <cdg-dropdown (change)="onMapTypeChange($event)" [values]="mapTypeList" name="MapType" [disabled]="disableMapTypeList"></cdg-dropdown>
       </div>
       <div style="width:200px; display:inline-block;">
         {{savedMapListLabel}}:<br>
-        <cdg-dropdown  [values]="savedMapList" name="No Saved Maps" [disabled]="disabled"></cdg-dropdown>
+        <cdg-dropdown  [values]="savedMapList" name="No Saved Maps" [disabled]="disableSavedMapList"></cdg-dropdown>
       </div>
       <div style="padding-top:0.7rem;position:absolute;right:10px;display:inline-block;">
       </div>

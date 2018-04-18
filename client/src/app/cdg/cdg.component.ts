@@ -57,7 +57,10 @@ export class CdgComponent implements OnInit {
   }
   ngOnInit() {
     this.setUpLabels(this.appProperties.getProperties());
-    this.mapTypeList = [new DropdownValue<String>("State", "State"),new DropdownValue<String>("Precinct", "Precinct") ];
+    this.mapTypeList = new Array<DropdownValue<String>>();
+    this.appProperties.getProperties().mapTypeListValues.forEach(mapTypeElement => {
+      this.mapTypeList.push(new DropdownValue<String>(mapTypeElement, mapTypeElement));
+    });
     this.stateList = [
       new DropdownValue<State>(new State("All", 0), "All"),
       new DropdownValue<State>(new State("Minnesota",1000), "Minnesota"),
@@ -117,6 +120,9 @@ export class CdgComponent implements OnInit {
     else{
       //TODO: ADD POPUP WARNING: NO STATE CHOSEN
     }
+  }
+  mapTypeChanged(type:string){
+    this.mapService.setType(type);
   }
   setUpLabels(properties:any){
     this.mapTypeListLabel = properties.mapTypeListLabel;

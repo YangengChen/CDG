@@ -63,12 +63,14 @@
       <nb-layout-column>
         <map 
           (clicked)="precinctSelected($event)" 
+          (mapTypeChanged)="mapTypeChanged($event)"
           [mapObject]="mapObject"
           [mapTypeList]="mapTypeList" 
           [savedMapList]="savedMapList"
           [savedMapListLabel]="savedMapListLabel"
           [mapTypeListLabel]="mapTypeListLabel"
           [mapColorPattern]="mapColorPattern"
+          [disableMapTypeList]="!genConfig"
           >
           </map>
       </nb-layout-column>

@@ -2,11 +2,11 @@
 	"mapTypeListLabel":"Map Type",
 	"savedMapListLabel":"Saved Maps",
 	"stateListLabel": "State List",
-	"compactnessSliderLabel":"Compactness",
-	"contiguitySliderLabel":"Contiguity",
-	"equalPopulationSliderLabel": "Equal Population",
-	"partisanFairnessSliderLabel": "Partisan Fairness",
-	"raicalFairnessSliderLabel": "Racial Fairness",
+	"compactnessSliderLabel":"Compactness Weight",
+	"contiguitySliderLabel":"Contiguity Weight",
+	"equalPopulationSliderLabel": "Equal Population Weight",
+	"partisanFairnessSliderLabel": "Partisan Fairness Weight",
+	"raicalFairnessSliderLabel": "Racial Fairness Weight",
 	"generateDistrictsButtonLabel" : "Generate Districts",
 	"replayGenerationButtonLabel": "Replay Generation",
 	"logoutButtonLabel":"Logout",
@@ -20,5 +20,6 @@
 		["15", "DarkGrey"], ["16", "DarkKhaki"], ["17", "DarkOliveGreen"], ["18", "DarkOrange"], ["19", "DarkTurquoise"],
 		["20", "DeepPink"],["21", "Gold"],["22", "GreenYellow "],["23", "HotPink  "],["24", "LightCoral"],
 		["25", "LightSkyBlue"], ["26", "Magenta"], ["27", "MediumAquaMarine"]
-	]
+	],
+	"mapTypeListValues":["STATE", "CON DIST", "PRECINCT"]
 }
