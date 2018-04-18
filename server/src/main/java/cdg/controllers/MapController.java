@@ -1,5 +1,6 @@
 package cdg.controllers;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -15,6 +16,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.google.common.collect.Lists;
+
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import cdg.dao.NameOnly;
@@ -24,6 +28,7 @@ import cdg.domain.map.MapTypeEnumConverter;
 import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
 import cdg.repository.FakeData;
+import cdg.services.MapService;
 
 @RestController
 @RequestMapping("/api/map")
@@ -55,8 +60,7 @@ public class MapController {
 	}
 	
 	@RequestMapping( value = "/file/{stateid}/{maptype}", method=RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<byte[]> getStaticStateMapFile(@PathVariable("stateid") String stateID, @PathVariable("maptype") MapType type)
-	{
+	public ResponseEntity<byte[]> getStaticStateMapFile(@PathVariable("stateid") String stateID, @PathVariable("maptype") MapType type) {
 		//get state from database
 		//fake data
 		State state = fakeRepo.findByPublicId(stateID, State.class);
@@ -75,8 +79,7 @@ public class MapController {
 	}
 	
 	@RequestMapping( value = "data/{stateid}/{maptype}", method=RequestMethod.GET)
-	public ResponseEntity<MapDataDTO> getStaticStateData(@PathVariable("stateid") String stateID, @PathVariable("maptype") MapType type)
-	{
+	public ResponseEntity<MapDataDTO> getStaticStateData(@PathVariable("stateid") String stateID, @PathVariable("maptype") MapType type) {
 		//get state from database
 		//fake data
 		State state = fakeRepo.findByPublicId(stateID, State.class);
@@ -89,6 +92,21 @@ public class MapController {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 				
 		return new ResponseEntity<>(data, HttpStatus.OK);
+	}
+	
+	@RequestMapping( value = "/file/unitedstates", method=RequestMethod.GET)
+	public ResponseEntity<byte[]> getUnitedStatesMap() {
+		//fake - get states from repo
+		Iterable<State> states = fakeRepo.findAll();
+		String usMap;
+		try {
+			usMap = MapService.generateUnitedStatesMap(Lists.newArrayList(states));
+		} catch (IllegalStateException ise) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		byte[] usMapFile = MapService.getMapAsBytes(usMap);
+		
+		return new ResponseEntity<>(usMapFile, HttpStatus.OK);
 	}
 	
 	@RequestMapping( value = "/states", method=RequestMethod.GET)

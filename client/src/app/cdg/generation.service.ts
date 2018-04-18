@@ -28,10 +28,10 @@ export class GenerationConfiguration {
         this.partisanFairWeight = 50;
         this.permConDist;
         this.permPrecinct;
-        this.state = "Hello";
+        this.stateId = "Hello";
     }
     setState(state:string){
-        this.state = state;
+        this.stateId = state;
     }
     setPermConDist(id:number){
         this.permConDist.push(id);

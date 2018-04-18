@@ -104,7 +104,16 @@ public class FakeData implements StateRepository {
 		if (fakeStates == null)
 			setFakeStates();
 		
-		return fakeStates.values();
+		//filter out states with no maps
+		List<State> results = new ArrayList<State>();
+		for (State state : fakeStates.values())
+		{
+			if (state.getStateMapGeoJson() != null) {
+				results.add(state);
+			}
+		}
+		
+		return results;
 	}
 	
 	public Collection<NameOnly> findAllProjectedBy()
