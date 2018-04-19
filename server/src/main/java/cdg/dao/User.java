@@ -5,21 +5,19 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonProperty.Access;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class User {
-    @Id
+    
     @GeneratedValue(strategy=GenerationType.AUTO)
     private Integer id;
-
     private String firstName;
     private String lastName;
+    
+    @Id
     private String email;
+    
     private String password;
 
 	public Integer getId() {
@@ -62,12 +60,12 @@ public class User {
 		this.password = password;
 	}
 	
-	public static String encryptPassword(String plainText) {
-		return BCrypt.hashpw(plainText, BCrypt.gensalt());
+	public void encryptPassword() {
+		this.password = BCrypt.hashpw(this.password, BCrypt.gensalt());
 	}
 	
-	public static boolean checkPassword(String plainText, String hashed) {
-		return BCrypt.checkpw(plainText, hashed);
+	public boolean validatePassword(String plainText) {
+		return BCrypt.checkpw(plainText, this.password);
 	}
 
 }

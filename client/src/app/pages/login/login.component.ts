@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { HttpClient } from '@angular/common/http';
 import { LoginService } from "./login.service";
 import { User } from "../../cdg-objects/user"
+import { FlashMessagesService } from 'ngx-flash-messages';
+import { environment } from '../../../environments/environment';
 
 @Component({
   selector: 'app-login',
@@ -14,17 +16,24 @@ export class LoginComponent implements OnInit {
   model: any = {};
   newUser : User;
 
-  constructor(private router: Router, private loginService: LoginService) {
+  constructor(private router: Router, private loginService: LoginService, private flashMessagesService: FlashMessagesService) {
     this.newUser = new User()
   }
 
   login(){
-    if(this.model.password == "password" && this.model.username == "username")
-      this.router.navigate(["/cdg"])
-  }
-
-  logout(){
-      this.router.navigateByUrl("/");
+    this.loginService.login(this.newUser).subscribe(
+      (data) =>{
+        console.log(data);
+        this.router.navigate(["/cdg"]);
+      },
+      (err) =>{
+        console.error(err);
+        this.flashMessagesService.show(environment.INVALID_CRED, {
+          classes: ['alert-danger'], 
+          timeout: 1000
+        });
+      }
+    )      
   }
 
   register(){
@@ -35,12 +44,15 @@ export class LoginComponent implements OnInit {
       },
       (err) =>{
         console.error(err);
+        this.flashMessagesService.show(environment.INVALID_CRED, {
+          classes: ['alert-danger'], 
+          timeout: 1000
+        });
       }
     )
   }
 
   ngOnInit() {
-
   }
 
   selectLoginTab(e){

@@ -1,5 +1,6 @@
 package cdg.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,7 +12,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import cdg.dao.User;
+import cdg.properties.CdgConstants;
 import cdg.repository.UserRepository;
+import cdg.services.UserService;
 
 import cdg.responses.CdgResponseBuilder;
 import cdg.responses.UserResponse;
@@ -31,42 +34,43 @@ public class UserController {
 	UserRepository userRepository;
 	Properties prop = new Properties();
 	
+	@Autowired 
+	private UserService userService;
+	
 	@RequestMapping( value = "/login", method=RequestMethod.POST)
-	public @ResponseBody ResponseEntity<UserResponse>  login(@RequestBody Credentials credentials, HttpSession session)
-	{
-		CdgUser loggedInUser = (CdgUser) session.getAttribute(SESSION_USER);
-		if(loggedInUser != null) {
-			return CdgResponseBuilder.generateErrorResponse("Already Logged In");
-		}
-		//Replace with repo call
-		CdgUser user = new CdgUser("USERNAME", credentials.getPassword());
-		if(credentials.compare(user.getPassword())) {
-			session.setAttribute(SESSION_USER, user);
-			return  CdgResponseBuilder.generateSuccessResponse(new UserResponse(user));
-		}
-		else {
-			return CdgResponseBuilder.generateErrorResponse("Incorrect Password");
+	public @ResponseBody ResponseEntity<User>  login(@RequestBody User user, HttpSession session) {
+		User loggedUser = userService.login(user);
+		if(session.getAttribute(CdgConstants.SESSION_USER) == null && loggedUser != null) {
+			session.setAttribute(CdgConstants.SESSION_USER, loggedUser);
+			return new ResponseEntity<>(user, HttpStatus.OK);
+		} else {
+			System.out.println("Here");
+			return new ResponseEntity<>(user, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 	
-	@RequestMapping(path="/register") // Map ONLY GET Requests
-	public ResponseEntity<UserResponse> register(@RequestBody User user,HttpSession session) {
-		user.setPassword(user.encryptPassword(user.getPassword()));
-		userRepository.save(user);
-		return CdgResponseBuilder.generateErrorResponse("User Registered");
-	} 
-	
-	@RequestMapping(value= "/logout", method=RequestMethod.GET)
-	public ResponseEntity<UserResponse> logout(HttpSession session)
-	{	
-		CdgUser user = (CdgUser) session.getAttribute(SESSION_USER);
-		if(user == null) {
-			return CdgResponseBuilder.generateErrorResponse("Not Logged In");
-		}
-		session.removeAttribute(SESSION_USER);
-		return CdgResponseBuilder.generateSuccessResponse(new UserResponse(user));
+	@RequestMapping(path="/register", method=RequestMethod.POST) // Map ONLY GET Requests
+	public ResponseEntity<User> register(@RequestBody User user,HttpSession session) {
+		User registeredUser = userService.register(user);
+		if(registeredUser != null) {
+			session.setAttribute(CdgConstants.SESSION_USER, registeredUser);
+			return new ResponseEntity<>(user, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(user, HttpStatus.INTERNAL_SERVER_ERROR);
+		}	
 	}
 	
+	@RequestMapping(path="/logout", method=RequestMethod.POST) // Map ONLY GET Requests
+	public @ResponseBody ResponseEntity<User> logout(HttpSession session) {
+		User sessionUser = (User) session.getAttribute(CdgConstants.SESSION_USER);
+		if(sessionUser != null) {
+			session.removeAttribute(CdgConstants.SESSION_USER);
+			return new ResponseEntity<>(HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}	
+	}
+
 	@RequestMapping(path="/all")
 	public @ResponseBody Iterable<User> getAllUsers() {
 		// This returns a JSON or XML with the users

@@ -5,4 +5,6 @@
 
 export const environment = {
   production: false
+  INVALID_CRED		       	: "Invalid Credentials",
+  INVALID_EMAIL		       	: "Email already registered",
 };

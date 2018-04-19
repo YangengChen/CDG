@@ -1,6 +1,6 @@
 import {Injectable, Component, OnInit, Input, Output} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {LoginService } from "../pages/login/login.service";
+import { LoginService } from "../pages/login/login.service";
 import { Router } from "@angular/router";
 import { GenerationService, GenerationConfiguration } from "./generation.service";
 import { Precinct} from "../cdg-objects/precinct";
@@ -52,8 +52,15 @@ export class CdgComponent implements OnInit {
     private appProperties :AppProperties) { 
   }
   logout(){
-    // TODO: NEEDS A LOGOUT
-    this.router.navigateByUrl("/");
+    this.loginService.logout().subscribe(
+      (data) =>{
+        console.log(data);
+        this.router.navigate(["/"]);
+      },
+      (err) =>{
+        console.error(err);
+      }
+    )
   }
   ngOnInit() {
     this.setUpLabels(this.appProperties.getProperties());
