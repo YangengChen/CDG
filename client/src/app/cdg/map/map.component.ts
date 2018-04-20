@@ -1,7 +1,9 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { MapService } from './map.service';
 import { DropdownValue } from "../../cdg-objects/dropdownvalue";
+import { AppProperties } from "../../app.properties";
 import * as mapboxgl from 'mapbox-gl';
+
 @Component({
   selector: 'map',
   templateUrl: './map.component.html',
@@ -10,6 +12,9 @@ import * as mapboxgl from 'mapbox-gl';
 export class MapComponent implements OnInit{
   map: mapboxgl.Map;
   stateName:string;
+  stylePattern:any;
+  popupFilter = ['==', 'name', '']
+  disableSavedMapList:boolean = false;
   @Input() mapTypeListLabel: string;
   @Input() savedMapListLabel:string;
   @Input() mapObject:mapboxgl.GeoJSONSource;
@@ -19,13 +24,15 @@ export class MapComponent implements OnInit{
   @Input() popupCords:mapboxgl.LngLatLike;
   @Input() currPrecinct:any;
   @Input() mapColorPattern:any;
-  disableSavedMapList:boolean = false;
+  @Input() algoRunning:boolean;
+  @Input() algoPaused:boolean;
   @Input() disableMapTypeList:boolean = false;
-  stylePattern:any;
-  popupFilter = ['==', 'name', '']
   @Output() clicked: EventEmitter<any>
   @Output() mapTypeChanged: EventEmitter<any>
-  constructor(private mapService: MapService) {
+  constructor(
+      private mapService: MapService,
+      private appProperties:AppProperties
+      ) {
     this.clicked = new EventEmitter<any>();
     this.mapTypeChanged = new EventEmitter<any>();
   }

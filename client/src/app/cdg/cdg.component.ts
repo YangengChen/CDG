@@ -23,7 +23,11 @@ export class CdgComponent implements OnInit {
   url = "http://localhost:8080/api/map/states";
   dat = ""
 
+  pauseImage:string; 
+  stopImage:string; 
   genConfig:GenerationConfiguration;
+  algoRunning: boolean;
+  algoPaused: boolean;
   mapObject: Object;
   selectedStateName:string;
   selectedStateId:number;
@@ -56,6 +60,10 @@ export class CdgComponent implements OnInit {
     this.router.navigateByUrl("/");
   }
   ngOnInit() {
+    this.algoPaused = false;
+    this.algoRunning = false;
+    this.pauseImage = this.appProperties.getProperties().pauseImage;
+    this.stopImage = this.appProperties.getProperties().stopImage;
     this.setUpLabels(this.appProperties.getProperties());
     this.mapTypeList = new Array<DropdownValue<String>>();
     this.appProperties.getProperties().mapTypeListValues.forEach(mapTypeElement => {
@@ -123,6 +131,15 @@ export class CdgComponent implements OnInit {
   }
   mapTypeChanged(type:string){
     this.mapService.setType(type);
+  }
+  pauseGenerationClicked(){
+    this.genService.pauseGeneration();
+  }
+  stopGenerationClicked(){
+    this.genService.stopGeneration();
+  }
+  playGenerationClicked(){
+    this.genService.playGeneration();
   }
   setUpLabels(properties:any){
     this.mapTypeListLabel = properties.mapTypeListLabel;

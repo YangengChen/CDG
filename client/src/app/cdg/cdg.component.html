@@ -18,6 +18,7 @@
                 {{stateListLabel}}:
                 <cdg-dropdown [values]="stateList" (change)="changeState($event)" name="States"></cdg-dropdown>
               </div>
+              <br>
               <div id="slider-container">
                 <cdg-slider  [disabled]="!genConfig" (change)="updateCompactness($event)" name="{{compactnessSliderLabel}}"></cdg-slider>
                 <cdg-slider  [disabled]="!genConfig" (change)="updateContiguity($event)" name="{{contiguitySliderLabel}}"></cdg-slider>
@@ -26,10 +27,16 @@
                 <cdg-slider  [disabled]="!genConfig" (change)="updateRacialFairness($event)" name="{{raicalFairnessSliderLabel}}"></cdg-slider>
               </div>
               <div id="generate-button">
-                <cdg-button [disabled]="!genConfig" (click)="startGeneration()" name="{{generateDistrictsButtonLabel}}"></cdg-button>
+                <cdg-button [disabled]="!genConfig || algoRunning" (click)="startGeneration()" name="{{generateDistrictsButtonLabel}}"></cdg-button>
+              </div>
+              <div class="map-button">
+                <cdg-button [disabled]="!algoRunning || !algoPaused" [img]="pauseImage"></cdg-button>
+              </div>
+              <div class="map-button">
+                <cdg-button [disabled]="!algoRunning" [img]="stopImage"></cdg-button>
               </div>
               <div id="replay-generate-button">
-                <cdg-button [disabled]="!genConfig" name="{{replayGenerationButtonLabel}}"></cdg-button>
+                <cdg-button [disabled]="!genConfig || algoRunning" name="{{replayGenerationButtonLabel}}"></cdg-button>
               </div>
             </div>
           </nb-tab>

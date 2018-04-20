@@ -7,15 +7,11 @@ import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 })
 export class CdgButtonComponent implements OnInit {
   @Input() name: string;
+  @Input() img:string;
   @Input() disabled:boolean = false;
   @Output()
   chosen: EventEmitter<string> = new EventEmitter<string>();
-
   constructor() { }
-
   ngOnInit() {
   }
-
-  
-
 }

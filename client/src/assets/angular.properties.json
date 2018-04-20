@@ -21,5 +21,7 @@
 		["20", "DeepPink"],["21", "Gold"],["22", "GreenYellow "],["23", "HotPink  "],["24", "LightCoral"],
 		["25", "LightSkyBlue"], ["26", "Magenta"], ["27", "MediumAquaMarine"]
 	],
-	"mapTypeListValues":["STATE", "CON DIST", "PRECINCT"]
+	"mapTypeListValues":["STATE", "CON DIST", "PRECINCT"],
+	"pauseImage":"./assets/pause.png",
+	"stopImage":"./assets/stop.png"
 }
