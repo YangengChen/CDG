@@ -31,17 +31,19 @@ import cdg.dao.State;
 public class ImportService {
 
 	//fake execution. needs to persist to database and add geojson and neighbors
-	public static State createState(String name, String geoJSON) {
-		if (name == null || geoJSON == null) {
+	public static State createState(String geoJSON) {
+		if (geoJSON == null) {
 			return null;
 		}
  		State state;
 		try {
 			String annotatedGeoJSON = annotateGeoJSONNeighbors(geoJSON);
-			state = generateState(name, annotatedGeoJSON);
-			
 			FeatureCollection stateFeatures = (FeatureCollection)GeoJSONFactory.create(annotatedGeoJSON);
 			Feature[] features = stateFeatures.getFeatures();
+			
+			String stateName = (String)features[0].getProperties().get("stateName");
+			String statePubID = (String)features[0].getProperties().get("stateID");
+			state = generateState(stateName, statePubID, annotatedGeoJSON);
 		
 			Map<Integer,CongressionalDistrict> districts = new HashMap<Integer,CongressionalDistrict>();
 			Map<Integer,Precinct> precincts = new HashMap<Integer,Precinct>();
@@ -69,9 +71,10 @@ public class ImportService {
 		return state;
 	}
 	
-	private static State generateState(String name, String geoJSON) {
+	private static State generateState(String name, String publicID, String geoJSON) {
 		State state = new State();
 		state.setName(name);
+		state.setPublicID(publicID);
 		//fake
 		state.setPrecinctMapGeoJson(geoJSON);
 		
@@ -95,8 +98,8 @@ public class ImportService {
 			currPrecinct = new Precinct();
 			//fake
 			currPrecinct.setId(precinctIDCounter++);
-			currPrecinct.setName((String)currProp.get("name"));
-			currPrecinct.setPublicID((String)currProp.get("ID"));
+			currPrecinct.setName((String)currProp.get("precinctName"));
+			currPrecinct.setPublicID((String)currProp.get("precinctID"));
 			currPrecinct.setGeoJsonGeometry(currGeom.toString());
 			
 			//ClassCast 
@@ -149,8 +152,11 @@ public class ImportService {
 				neighbor = precinctsPubID.get(currNeighbors.get(j));
 				valid = validateNeighbor(precinct, neighbor);
 				if (!valid) {
-					System.err.println("precinct " + precinct.getPublicID() + " precinct " + neighbor.getPublicID() + " NOT NEIGHBORS");
-					throw new IllegalArgumentException();
+					/* Approximate neighbors from script - invalid neighbor means the neighbor isn't considered
+					 * a neighbor by JTS, so just continue loop without creating neighbor association.
+					 * If an error is thrown, this means that JTS finds the geometry invalid, so the state
+					 * cannot be imported.*/
+					continue;
 				}
 				precinct.getNeighborRegions().put(neighbor.getId(), neighbor);
 			}
@@ -174,8 +180,7 @@ public class ImportService {
 			currGeom = reader.read(currGeomStr);
 			neighborGeom = reader.read(neighborGeomStr);
 		} catch (Exception e) {
-			System.err.println("precinct " + curr.getPublicID() + " precinct " + neighbor.getPublicID() + " " + e.getMessage());
-			return false;
+			throw new IllegalArgumentException();
 		}
 		if (!(currGeom instanceof com.vividsolutions.jts.geom.Polygonal) || !(neighborGeom instanceof com.vividsolutions.jts.geom.Polygonal)) {
 			throw new IllegalArgumentException();
@@ -184,9 +189,7 @@ public class ImportService {
 		try {
 			valid = currGeom.intersects(neighborGeom); 		//see JTS Geometry "intersects" definition
 		} catch (TopologyException te) {
-			System.err.println("precinct " + curr.getPublicID() + ": " + currGeom.isValid() + " precinct " + neighbor.getPublicID() 
-			+ ": " + neighborGeom.isValid() + " " + te.getMessage());
-			return false;
+			throw new IllegalArgumentException();
 		}
 		return valid;
 	}

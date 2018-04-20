@@ -27,45 +27,13 @@ public class FakeData implements StateRepository {
 	private void setFakeStates()
 	{
 		fakeStates = new HashMap<>();
-		State state;
-		//minnesota - good boundary data
-		addFakeState("minnesota", "1000", "minnesota_precincts.geojson");
-		addFakeState("alabama", "4000", "alabama_precincts.geojson");
-		
-		//addFakeState("washington", 2000, "washington_precincts.geojson");
-		state = new State("washington", null, null);
-		state.setPublicID("2000");
-		String geoJson = null;
-		try {
-			Resource resource = new ClassPathResource("washington_precincts.geojson");
-			StringWriter writer = new StringWriter();
-			IOUtils.copy(resource.getInputStream(), writer, StandardCharsets.UTF_8);
-			geoJson = writer.toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		state.setPrecinctMapGeoJson(geoJson);
-		fakeStates.put(state.getPublicID(), state);
-		
-		//addFakeState("wisconsin", 3000, "wisconsin_precincts.geojson");
-		state = new State("wisconsin", null, null);
-		state.setPublicID("3000");
-		geoJson = null;
-		try {
-			Resource resource = new ClassPathResource("wisconsin_precincts.geojson");
-			StringWriter writer = new StringWriter();
-			IOUtils.copy(resource.getInputStream(), writer, StandardCharsets.UTF_8);
-			geoJson = writer.toString();
-		} catch (IOException e) {
-			e.printStackTrace();
-			return;
-		}
-		state.setPrecinctMapGeoJson(geoJson);
-		fakeStates.put(state.getPublicID(), state);
+		addFakeState("arizona_precincts.geojson");
+		addFakeState("indiana_precincts.geojson");
+		addFakeState("minnesota_precincts.geojson");
+		addFakeState("mississippi_precincts.geojson");
 	}
 	
-	private void addFakeState(String name, String publicID, String pathName) {
+	private void addFakeState(String pathName) {
 		String geoJson = null;
 		
 		try {
@@ -77,12 +45,11 @@ public class FakeData implements StateRepository {
 			e.printStackTrace();
 			return;
 		}
-		State state = ImportService.createState(name, geoJson);
+		State state = ImportService.createState(geoJson);
 		if (state == null) {
 			return;
 		}
-		state.setPublicID(publicID);
-		fakeStates.put(publicID, state);
+		fakeStates.put(state.getPublicID(), state);
 	}
 	
 	

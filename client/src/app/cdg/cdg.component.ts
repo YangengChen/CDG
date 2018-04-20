@@ -59,11 +59,11 @@ export class CdgComponent implements OnInit {
     this.setUpLabels(this.appProperties.getProperties());
     this.mapTypeList = [new DropdownValue<String>("State", "State"),new DropdownValue<String>("Precinct", "Precinct") ];
     this.stateList = [
-      new DropdownValue<State>(new State("All", 0), "All"),
-      new DropdownValue<State>(new State("Minnesota",1000), "Minnesota"),
-      new DropdownValue<State>(new State("Washington", 2000), "Washington"),     
-      new DropdownValue<State>(new State("Wisconson", 3000), "Wisconson"),
-      new DropdownValue<State>(new State("Alabama",4000), "Alabama"),
+      new DropdownValue<State>(new State("All", "0"), "All"),
+      new DropdownValue<State>(new State("Minnesota", "27"), "Minnesota"),
+      new DropdownValue<State>(new State("Washington", "04"), "Arizona"),     
+      new DropdownValue<State>(new State("Wisconson", "28"), "Mississippi"),
+      new DropdownValue<State>(new State("Alabama", "18"), "Indiana"),
      ] 
   }
   precinctSelected(precinct){
