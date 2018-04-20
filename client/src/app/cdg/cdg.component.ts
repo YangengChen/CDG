@@ -57,13 +57,17 @@ export class CdgComponent implements OnInit {
   }
   ngOnInit() {
     this.setUpLabels(this.appProperties.getProperties());
-    this.mapTypeList = [new DropdownValue<String>("State", "State"),new DropdownValue<String>("Precinct", "Precinct") ];
+    this.mapTypeList = [
+      new DropdownValue<String>("state", "State"),
+      new DropdownValue<String>("congressional", "Congressional District"),
+      new DropdownValue<String>("precinct", "Precinct") 
+     ];
     this.stateList = [
       new DropdownValue<State>(new State("All", "0"), "All"),
       new DropdownValue<State>(new State("Minnesota", "27"), "Minnesota"),
-      new DropdownValue<State>(new State("Washington", "04"), "Arizona"),     
-      new DropdownValue<State>(new State("Wisconson", "28"), "Mississippi"),
-      new DropdownValue<State>(new State("Alabama", "18"), "Indiana"),
+      new DropdownValue<State>(new State("Arizona", "04"), "Arizona"),     
+      new DropdownValue<State>(new State("Mississippi", "28"), "Mississippi"),
+      new DropdownValue<State>(new State("Indiana", "18"), "Indiana"),
      ] 
   }
   precinctSelected(precinct){
@@ -71,9 +75,9 @@ export class CdgComponent implements OnInit {
     console.log(this.selectedPrecinct.districtID);
   }
   changeState(event){
-    if(event.value.id == 0){
+    if(event.value.id == "0"){
       this.genConfig = null;
-      this.getState(event.value.id);
+      this.getUnitedStates();
     }
     else{
       this.genConfig = new GenerationConfiguration()
@@ -82,6 +86,13 @@ export class CdgComponent implements OnInit {
       this.selectedStateId = event.value.id;
       this.getState(event.value.id);
     }
+  }
+  
+  getUnitedStates() {
+    this.mapService.getUnitedStates()
+     .subscribe(usData =>{
+     	this.mapObject = usData;
+     });
   }
 
   getState(chosenState: string){
