@@ -15,11 +15,11 @@
 	"fileTabLabel":"File",
 	"mapColorPattern":[
 		["1", "red"],["2", "blue"],["3", "green"],["4", "yellow"],["5", "purple"],
-		["6", "orange"], ["7", "black"], ["8", "white"], ["9", "navy"],
-		["10", "Chartreuse"],["11", "Cornsilk"],["12", "Cyan"],["13", "DarkCyan"],["14", "DarkGoldenRod"],
+		["6", "orange"], ["7", "navy"], ["8", "white"], ["9", "Cyan"],
+		["10", "Chartreuse"],["11", "Cornsilk"],["12", "MediumAquaMarine"],["13", "DarkCyan"],["14", "DarkGoldenRod"],
 		["15", "DarkGrey"], ["16", "DarkKhaki"], ["17", "DarkOliveGreen"], ["18", "DarkOrange"], ["19", "DarkTurquoise"],
 		["20", "DeepPink"],["21", "Gold"],["22", "GreenYellow "],["23", "HotPink  "],["24", "LightCoral"],
-		["25", "LightSkyBlue"], ["26", "Magenta"], ["27", "MediumAquaMarine"]
+		["25", "LightSkyBlue"], ["26", "Magenta"]
 	],
 	"mapTypeListValues":["STATE", "CON DIST", "PRECINCT"],
 	"pauseImage":"./assets/pause.png",

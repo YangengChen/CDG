@@ -46,7 +46,7 @@ export class MapComponent implements OnInit{
           type:'categorical',
           property: 'districtID',
           stops: this.mapColorPattern,
-          default:"green"
+          default:"black"
         },
         'fill-opacity': 0.5
       };
