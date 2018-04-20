@@ -110,7 +110,7 @@ public class MapService {
 		return stateMap;
 	}
 	
-	private static Geometry createStateGeometry(State state) throws IllegalStateException {
+	public static Geometry createStateGeometry(State state) throws IllegalStateException {
 		if (state == null) {
 			throw new IllegalArgumentException();
 		}
@@ -199,7 +199,26 @@ public class MapService {
 		return districtGeoms;
 	}
 	
+	public static String convertToGeoJSONGeometry(Geometry region) throws IllegalStateException {
+		if (region == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		GeoJSONWriter writer = new GeoJSONWriter();
+		try {
+			org.wololo.geojson.Geometry regionGeoJson = writer.write(region);
+			String geoJson = regionGeoJson.toString();
+			return geoJson;
+		} catch (Exception e) {
+			throw new IllegalStateException(e);
+		}
+	}
+	
 	public static Geometry createDistrictGeometry(CongressionalDistrict district) throws IllegalStateException {
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
+		
 		GeoJSONReader reader = new GeoJSONReader();
 		Geometry districtGeom = createDistrictGeometry(district, reader);
 		return districtGeom;

@@ -33,6 +33,7 @@ public class GenerateMapAlgorithm {
 		try {
 			CONDISTRICTMAP = new CongressionalDistrictMap(state, goodnessEval, constraintEval);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new IllegalArgumentException();
 		}
 		STATE = new GenerationState();

@@ -4,27 +4,27 @@ import java.util.List;
 
 public class GenerationConfiguration {
 	private String stateId;
-	private List<Integer> permConDist;
-	private List<Integer> permPrecinct;
+	private List<String> permConDist;
+	private List<String> permPrecinct;
 	private double compactnessWeight;
 	private double contiguityWeight;
 	private double equalPopWeight;
 	private double partisanFairWeight;
 	private double racialFairWeight;
 	
-	public List<Integer> getPermConDist() {
+	public List<String> getPermConDist() {
 		return permConDist;
 	}
 
-	public void setPermConDist(List<Integer> permConDist) {
+	public void setPermConDist(List<String> permConDist) {
 		this.permConDist = permConDist;
 	}
 
-	public List<Integer> getPermPrecinct() {
+	public List<String> getPermPrecinct() {
 		return permPrecinct;
 	}
 
-	public void setPermPrecinct(List<Integer> permPrecinct) {
+	public void setPermPrecinct(List<String> permPrecinct) {
 		this.permPrecinct = permPrecinct;
 	}
 

@@ -3,6 +3,7 @@ package cdg.services;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,16 +50,11 @@ public class ImportService {
 			Map<Integer,Precinct> precincts = new HashMap<Integer,Precinct>();
 			generatePrecinctsAndDistricts(features, state, districts, precincts);
 			generateNeighbors(features, precincts);
-			
-			//set mappings
 			state.setConDistricts(districts);
 			state.setPrecincts(precincts);
 			
-			//make GeoJSON maps
-			String congressionalDistrictMap = MapService.generateCongressionalDistrictMap(state, true);
-			state.setCongressionalMapGeoJson(congressionalDistrictMap);
-			String stateMap = MapService.generateStateMap(state);
-			state.setStateMapGeoJson(stateMap);
+			setGeometries(state);
+			setMaps(state);
 			
 			//store to database and use returned state value - will generate all mappings
 			//flush repository
@@ -192,6 +188,46 @@ public class ImportService {
 			throw new IllegalArgumentException();
 		}
 		return valid;
+	}
+	
+	private static void setMaps(State state) {
+		if (state == null || state.getConDistricts() == null) {
+			throw new IllegalArgumentException();
+		}
+		String congressionalDistrictMap = MapService.generateCongressionalDistrictMap(state, true);
+		state.setCongressionalMapGeoJson(congressionalDistrictMap);
+		String stateMap = MapService.generateStateMap(state);
+		state.setStateMapGeoJson(stateMap);
+	}
+	
+	private static void setGeometries(State state) {
+		if (state == null || state.getConDistricts() == null) {
+			throw new IllegalArgumentException();
+		}
+		setDistrictsGeoJSON(state.getConDistricts().values());
+		setStateGeoJSON(state);
+	}
+	
+	private static void setDistrictsGeoJSON(Collection<CongressionalDistrict> districts) {
+		if (districts == null) {
+			throw new IllegalArgumentException();
+		}
+		com.vividsolutions.jts.geom.Geometry districtGeom;
+		String districtGeoJson;
+		for (CongressionalDistrict district : districts) {
+			districtGeom = MapService.createDistrictGeometry(district);
+			districtGeoJson = MapService.convertToGeoJSONGeometry(districtGeom);
+			district.setGeoJsonGeometry(districtGeoJson);
+		}
+	}
+	
+	private static void setStateGeoJSON(State state) {
+		if (state == null) {
+			throw new IllegalArgumentException();
+		}
+		com.vividsolutions.jts.geom.Geometry stateGeom = MapService.createStateGeometry(state);
+		String stateGeoJson = MapService.convertToGeoJSONGeometry(stateGeom);
+		state.setGeoJsonGeometry(stateGeoJson);
 	}
 
 	private static String annotateGeoJSONNeighbors(String geoJSON) {
