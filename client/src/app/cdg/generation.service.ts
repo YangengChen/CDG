@@ -1,16 +1,24 @@
 import { Injectable, Input, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Constants } from "../constants";
 @Injectable()
+
 export class GenerationService{
-    generateUrl: string = "";
     constructor(private http: HttpClient){
     }
     startGeneration(config:GenerationConfiguration){
-        return this.http.post(this.generateUrl, config.getJsonified());
+        return this.http.post(Constants.START_URL, JSON.stringify(config),{headers:{'Content-Type': 'application/json'}});
     }
-
+    stopGeneration(){
+        this.http.get(Constants.STOP_URL);
+    }
+    pauseGeneration(){
+        this.http.get(Constants.PAUSE_URL);
+    }
+    playGeneration(){
+        this.http.get(Constants.PLAY_URL);
+    }
 }
-
 export class GenerationConfiguration {
     private stateId: string;
     private permConDist: Array<number>;
@@ -19,10 +27,19 @@ export class GenerationConfiguration {
     contiguityWeight:Number;
     equalPopWeight: Number;
     racialFairWeight: Number;
-    partisanFairnessWeight:Number;
-    constructor(){}
-    setState(stateId:string){
-        this.stateId = stateId;
+    partisanFairWeight:Number;
+    constructor(){
+        this.compactnessWeight = 50;
+        this.contiguityWeight = 50;
+        this.equalPopWeight = 50;
+        this.racialFairWeight = 50;
+        this.partisanFairWeight = 50;
+        this.permConDist;
+        this.permPrecinct;
+        this.stateId = "Hello";
+    }
+    setState(state:string){
+        this.stateId = state;
     }
     setPermConDist(id:number){
         this.permConDist.push(id);
@@ -39,7 +56,7 @@ export class GenerationConfiguration {
             this.permPrecinct.splice(this.permPrecinct.indexOf(id), 1);
     }
     setPartisanFairness(weight:Number){
-        this.partisanFairnessWeight = weight;
+        this.partisanFairWeight = weight;
     }
     setCompactnessWeight(weight: Number){
         this.compactnessWeight = weight;

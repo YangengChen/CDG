@@ -71,13 +71,13 @@
     			<artifactId>jts2geojson</artifactId>
     			<version>0.10.0</version>
 		</dependency>
-		
+        
 		<dependency>
-            <groupId>org.geotools</groupId>
+		
             <artifactId>gt-shapefile</artifactId>
+            <groupId>org.geotools</groupId>
             <version>${geotools.version}</version>
         </dependency>
-        
         <dependency>
             <groupId>org.geotools</groupId>
             <artifactId>gt-swing</artifactId>

@@ -26,6 +26,38 @@ import cdg.dao.State;
 @Service
 public class MapService {
 	
+	public static String generateStateMap(State state) throws IllegalStateException {
+		if (state == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		Map<Integer,CongressionalDistrict> districts = state.getConDistricts();
+		if (districts == null) {
+			throw new IllegalStateException();
+		}
+		Collection<Geometry> districtGeoms = getAllDistrictGeometries(districts.values(), false);
+		GeometryFactory stateFactory = JTSFactoryFinder.getGeometryFactory(null);
+		GeometryCollection districtCombo = (GeometryCollection)stateFactory.buildGeometry(districtGeoms);
+		Geometry stateGeom;
+		try {
+			stateGeom = districtCombo.union();
+		} catch (TopologyException te) {
+			System.err.println(te.getMessage());
+			throw new IllegalStateException();
+		}
+		if (!(stateGeom instanceof Polygonal)) {
+			throw new IllegalStateException();
+		}
+		
+		GeoJSONWriter writer = new GeoJSONWriter();
+		Map<String, Object> properties = new HashMap<String, Object>();
+		org.wololo.geojson.Geometry geoJson = writer.write(stateGeom);
+		Feature feature = new Feature(geoJson, properties);
+		String stateMap = feature.toString();
+		
+		return stateMap;
+	}
+	
 	public static String generateCongressionalDistrictMap(State state, boolean regenerateDistricts) throws IllegalStateException {
 		if (state == null) {
 			throw new IllegalArgumentException();
@@ -47,9 +79,9 @@ public class MapService {
 			currFeature = new Feature(currGeoJson, properties);
 			features.add(currFeature);
 		}
-		
 		FeatureCollection featureCollection = writer.write(features);
 		String congressionalDistrictMap = featureCollection.toString();
+		
 		return congressionalDistrictMap;
 	}
 	
