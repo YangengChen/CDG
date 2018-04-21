@@ -9,6 +9,7 @@ export class CdgSliderComponent implements OnInit {
   sliderValue:number = 50;
   @Input() name: string;
   @Input() disabled:boolean = false;
+  @Input() img:string;
   @Output() change:EventEmitter<number>;
   constructor() {
     this.change = new EventEmitter<number>();

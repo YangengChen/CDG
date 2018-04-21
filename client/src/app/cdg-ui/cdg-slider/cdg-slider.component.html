@@ -1,6 +1,6 @@
 <div id="cdg-slider-container">
   <span style="display:inline-block;">
-    <label style="display:block;" for="slider">{{name}}: {{sliderValue}}%</label>
+    <label style="display:block;" for="slider"><a *ngIf="name">{{name}}: {{sliderValue}}%</a><img *ngIf="img" src="{{picture}}"></label>
     <mat-slider
       [disabled]="disabled"
       (change)="onChange($event)"

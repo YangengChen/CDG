@@ -1,5 +1,8 @@
   <div>
-    <button [disabled]="disabled" class="btn btn-primary" type="button">
+    <button *ngIf="name" [disabled]="disabled" class="btn btn-primary" type="button">
       {{name}}
+    </button>
+    <button *ngIf="img" [disabled]="disabled" class="btn btn-primary" type="button">
+      <img  src="{{img}}">
     </button>
   </div>
