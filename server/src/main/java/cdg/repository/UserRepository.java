@@ -1,12 +1,14 @@
 package cdg.repository;
 
+import java.util.List;
+
 import org.springframework.data.repository.CrudRepository;
 
-import cdg.dao.User;;
-
-// This will be AUTO IMPLEMENTED by Spring into a Bean called userRepository
-// CRUD refers Create, Read, Update, Delete
+import cdg.dao.User;
 
 public interface UserRepository extends CrudRepository<User, Long> {
 
+	User findOneByEmail(String email);
+
 }
+

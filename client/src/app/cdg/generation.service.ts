@@ -1,16 +1,24 @@
 import { Injectable, Input, Output } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
+import { Constants } from "../constants";
 @Injectable()
+
 export class GenerationService{
-    generateUrl: string = "http://localhost:8080/api/generation/start";
     constructor(private http: HttpClient){
     }
     startGeneration(config:GenerationConfiguration){
-        return this.http.post(this.generateUrl, JSON.stringify(config),{headers:{'Content-Type': 'application/json'}});
+        return this.http.post(Constants.START_URL, JSON.stringify(config),{headers:{'Content-Type': 'application/json'}});
     }
-
+    stopGeneration(){
+        this.http.get(Constants.STOP_URL);
+    }
+    pauseGeneration(){
+        this.http.get(Constants.PAUSE_URL);
+    }
+    playGeneration(){
+        this.http.get(Constants.PLAY_URL);
+    }
 }
-
 export class GenerationConfiguration {
     private stateId: string;
     private permConDist: Array<number>;
@@ -28,10 +36,10 @@ export class GenerationConfiguration {
         this.partisanFairWeight = 50;
         this.permConDist;
         this.permPrecinct;
-        this.state = "Hello";
+        this.stateId = "Hello";
     }
     setState(state:string){
-        this.state = state;
+        this.stateId = state;
     }
     setPermConDist(id:number){
         this.permConDist.push(id);

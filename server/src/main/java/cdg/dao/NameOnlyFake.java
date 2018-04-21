@@ -1,7 +1,7 @@
 package cdg.dao;
 
 public class NameOnlyFake implements NameOnly {
-	private String publicId;
+	private String publicID;
 	private String name;
 	
 	public void setName(String name)
@@ -13,11 +13,11 @@ public class NameOnlyFake implements NameOnly {
 		return name;
 	}
 	@Override
-	public String getPublicId() {
-		return publicId;
+	public String getPublicID() {
+		return publicID;
 	}
-	public void setPublicId(String publicId) {
-		this.publicId = publicId;
+	public void setPublicID(String publicID) {
+		this.publicID = publicID;
 	}
 
 }

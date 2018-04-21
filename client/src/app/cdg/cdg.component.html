@@ -14,22 +14,33 @@
           <nb-tabset class="full-width">
           <nb-tab tabTitle="Generate">
             <div id="generate-tool-container">
+              Compare Toggle:
+              <mat-slide-toggle (change)="compareToggle($event)"></mat-slide-toggle>
+              <div *ngIf="compare" id="pick-state-button">
+                Compare Map:
+                <cdg-dropdown [values]="stateList" (change)="compareChangeState($event)" name="States"></cdg-dropdown>
+              </div>
+              <br>
               <div id="pick-state-button">
                 {{stateListLabel}}:
                 <cdg-dropdown [values]="stateList" (change)="changeState($event)" name="States"></cdg-dropdown>
               </div>
+              <br>
               <div id="slider-container">
-                <cdg-slider  [disabled]="!genConfig" (change)="updateCompactness($event)" name="{{compactnessSliderLabel}}"></cdg-slider>
-                <cdg-slider  [disabled]="!genConfig" (change)="updateContiguity($event)" name="{{contiguitySliderLabel}}"></cdg-slider>
-                <cdg-slider  [disabled]="!genConfig" (change)="updateEqualPopulation($event)" name="{{equalPopulationSliderLabel}}"></cdg-slider>
-                <cdg-slider  [disabled]="!genConfig" (change)="updatePartisanFairness($event)" name="{{partisanFairnessSliderLabel}}"></cdg-slider>
-                <cdg-slider  [disabled]="!genConfig" (change)="updateRacialFairness($event)" name="{{raicalFairnessSliderLabel}}"></cdg-slider>
+                <cdg-slider  [disabled]="!genConfig || compare" (change)="updateCompactness($event)" name="{{compactnessSliderLabel}}"></cdg-slider>
+                <cdg-slider  [disabled]="!genConfig || compare" (change)="updateContiguity($event)" name="{{contiguitySliderLabel}}"></cdg-slider>
+                <cdg-slider  [disabled]="!genConfig || compare" (change)="updateEqualPopulation($event)" name="{{equalPopulationSliderLabel}}"></cdg-slider>
+                <cdg-slider  [disabled]="!genConfig || compare" (change)="updatePartisanFairness($event)" name="{{partisanFairnessSliderLabel}}"></cdg-slider>
+                <cdg-slider  [disabled]="!genConfig || compare" (change)="updateRacialFairness($event)" name="{{raicalFairnessSliderLabel}}"></cdg-slider>
               </div>
               <div id="generate-button">
-                <cdg-button [disabled]="!genConfig" (click)="startGeneration()" name="{{generateDistrictsButtonLabel}}"></cdg-button>
+                <cdg-button [disabled]="(!genConfig || compare)|| algoRunning" (click)="startGeneration()" name="{{generateDistrictsButtonLabel}}"></cdg-button>
               </div>
-              <div id="replay-generate-button">
-                <cdg-button [disabled]="!genConfig" name="{{replayGenerationButtonLabel}}"></cdg-button>
+              <div class="map-button">
+                <cdg-button [disabled]="!algoRunning || !algoPaused" [img]="pauseImage"></cdg-button>
+              </div>
+              <div class="map-button">
+                <cdg-button [disabled]="!algoRunning" [img]="stopImage"></cdg-button>
               </div>
             </div>
           </nb-tab>
@@ -51,8 +62,8 @@
             <div id="information-container" class="container">
             <div id="file-buttons">
               <cdg-button name="Load File" class="file-button"></cdg-button>
-              <cdg-button name="Save Map" class="file-button"></cdg-button>
-              <cdg-button name="Export Map" class="file-button"></cdg-button>
+              <cdg-button (click)="saveMap()" name="Save Map" class="file-button"></cdg-button>
+              <cdg-button (click)="exportMap()"name="Export Map" class="file-button"></cdg-button>
             </div>
             </div>
           </nb-tab>
@@ -63,12 +74,28 @@
       <nb-layout-column>
         <map 
           (clicked)="precinctSelected($event)" 
+          (mapTypeChanged)="mapTypeChanged($event)"
+          (savedMapChanged)="savedMapChanged"
           [mapObject]="mapObject"
           [mapTypeList]="mapTypeList" 
           [savedMapList]="savedMapList"
           [savedMapListLabel]="savedMapListLabel"
           [mapTypeListLabel]="mapTypeListLabel"
           [mapColorPattern]="mapColorPattern"
+          [disableMapTypeList]="!genConfig"
+          >
+          </map>
+      </nb-layout-column>
+          <nb-layout-column *ngIf="compare">
+        <map 
+          (savedMapChanged)="savedMapChanged"
+          [mapObject]="compareMapObject"
+          [mapTypeList]="mapTypeList" 
+          [mapTypeListLabel]="mapTypeListLabel"
+          [savedMapList]="savedMapList"
+          [savedMapListLabel]="savedMapListLabel"
+          [mapColorPattern]="mapColorPattern"
+          [disableMapTypeList]="!genConfig"
           >
           </map>
       </nb-layout-column>

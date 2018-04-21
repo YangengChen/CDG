@@ -4,5 +4,8 @@
 // The list of which env maps to which file can be found in `.angular-cli.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  INVALID_CRED		       	: "Invalid Credentials!",
+  INVALID_EMAIL		       	: "Email already registered!",
+  SUCCESS_REGISTER			: "Successfully registered!"
 };

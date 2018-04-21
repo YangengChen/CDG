@@ -6,8 +6,10 @@ import { Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
   styleUrls: ['./cdg-slider.component.scss']
 })
 export class CdgSliderComponent implements OnInit {
+  sliderValue:number = 50;
   @Input() name: string;
   @Input() disabled:boolean = false;
+  @Input() img:string;
   @Output() change:EventEmitter<number>;
   constructor() {
     this.change = new EventEmitter<number>();
@@ -15,5 +17,8 @@ export class CdgSliderComponent implements OnInit {
   ngOnInit() {}
   onChange(event){
     this.change.emit(event.value);
+  }
+  onMove(event){
+    this.sliderValue = event.value;
   }
 }

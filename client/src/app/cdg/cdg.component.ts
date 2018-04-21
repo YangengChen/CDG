@@ -1,6 +1,6 @@
 import {Injectable, Component, OnInit, Input, Output} from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import {LoginService } from "../pages/login/login.service";
+import { LoginService } from "../pages/login/login.service";
 import { Router } from "@angular/router";
 import { GenerationService, GenerationConfiguration } from "./generation.service";
 import { Precinct} from "../cdg-objects/precinct";
@@ -9,7 +9,7 @@ import { CdgMap } from "../cdg-objects/cdgmap";
 import { DropdownValue } from "../cdg-objects/dropdownvalue";
 import { MapService } from "./map/map.service";
 import { AppProperties }       from '../app.properties'
-
+import { saveAs } from 'file-saver/FileSaver';
 @Component({
   selector: 'app-cdg',
   templateUrl: './cdg.component.html',
@@ -17,17 +17,26 @@ import { AppProperties }       from '../app.properties'
 })
 export class CdgComponent implements OnInit {
   @Input() items:[{title:"Testing"}, {title:"menu"}];
+
+  //Object Variables
+  mapObject: Object;
+  compareMapObject:Object;
+
+  //Logic Variables
   stateList: DropdownValue<State>[];
   savedMapList:DropdownValue<any>[];
   mapTypeList:DropdownValue<String>[];
-  url = "http://localhost:8080/api/map/states";
-  dat = ""
-
+  compare:boolean;
+  pauseImage:string; 
+  stopImage:string; 
   genConfig:GenerationConfiguration;
-  mapObject: Object;
+  algoRunning: boolean;
+  algoPaused: boolean;
   selectedStateName:string;
   selectedStateId:number;
   selectedPrecinct: Precinct;
+
+  //View Variables
   mapTypeListLabel:string;
   savedMapListLabel:string;
   stateListLabel:string;
@@ -52,12 +61,25 @@ export class CdgComponent implements OnInit {
     private appProperties :AppProperties) { 
   }
   logout(){
-    // TODO: NEEDS A LOGOUT
-    this.router.navigateByUrl("/");
+    this.loginService.logout().subscribe(
+      (data) =>{
+        this.router.navigate(["/"]);
+      },
+      (err) =>{
+      }
+    )
   }
   ngOnInit() {
+    this.compare = false;
+    this.algoPaused = false;
+    this.algoRunning = false;
+    this.pauseImage = this.appProperties.getProperties().pauseImage;
+    this.stopImage = this.appProperties.getProperties().stopImage;
     this.setUpLabels(this.appProperties.getProperties());
-    this.mapTypeList = [new DropdownValue<String>("State", "State"),new DropdownValue<String>("Precinct", "Precinct") ];
+    this.mapTypeList = new Array<DropdownValue<String>>();
+    this.appProperties.getProperties().mapTypeListValues.forEach(mapTypeElement => {
+      this.mapTypeList.push(new DropdownValue<String>(mapTypeElement, mapTypeElement));
+    });
     this.stateList = [
       new DropdownValue<State>(new State("All", 0), "All"),
       new DropdownValue<State>(new State("Minnesota",1000), "Minnesota"),
@@ -83,7 +105,6 @@ export class CdgComponent implements OnInit {
       this.getState(event.value.id);
     }
   }
-
   getState(chosenState: string){
     this.mapService.getState(chosenState)
     .subscribe(stateData =>{
@@ -117,6 +138,40 @@ export class CdgComponent implements OnInit {
     else{
       //TODO: ADD POPUP WARNING: NO STATE CHOSEN
     }
+  }
+  mapTypeChanged(type:string){
+    this.mapService.setType(type);
+  }
+  savedMapChanged(savedMap:string){
+    
+  }
+  compareSavedMapChanged(compareSavedMap:string){
+
+  }
+  compareChangeStates(event){
+
+  }
+  compareToggle(event){
+    this.compare = event.checked;
+  }
+  pauseGenerationClicked(){
+    this.genService.pauseGeneration();
+  }
+  stopGenerationClicked(){
+    this.genService.stopGeneration();
+  }
+  playGenerationClicked(){
+    this.genService.playGeneration();
+  }
+  savedMapClick(event){
+    this.mapService.saveMap()
+  }
+  exportMap(){
+        let blob = new Blob([this.mapObject], { type: 'application/json' });
+        saveAs(blob, "test");
+  }
+  saveMap(){
+
   }
   setUpLabels(properties:any){
     this.mapTypeListLabel = properties.mapTypeListLabel;

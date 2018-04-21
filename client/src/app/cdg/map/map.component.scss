@@ -15,7 +15,19 @@
       width: 100%;
   }
 }
-   mgl-map {
-      height: 100%;
-      width: 100%;
-  }
+
+  mgl-map {
+    height: 100%;
+    width: 100%;
+}
+
+.map-dropdown{
+  width:200px;
+  display: inline-block;
+}
+
+.map-button{
+  width:100px;
+  display: inline-block;
+  right:px;
+}
