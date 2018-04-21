@@ -15,19 +15,24 @@ import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+
 
 @Entity
 @Table(name = "Regions")
 @Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "type")
+//@DiscriminatorColumn(name = "type")
 public class Region {
 	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY)
 	private int id;
 	private String publicID;
 	private String name;
+	@Transient
 	private String geoJsonGeometry;
+	@Transient
 	private ElectionResult presidentialVoteTotals;
+	@Transient
 	private Map<Integer,Region> neighborRegions;
 	
 	public Region()

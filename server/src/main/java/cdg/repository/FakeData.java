@@ -13,6 +13,7 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Repository;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import cdg.dao.NameOnly;
 import cdg.dao.NameOnlyFake;
@@ -20,7 +21,10 @@ import cdg.dao.State;
 import cdg.services.ImportService;
 
 @Repository
-public class FakeData implements StateRepository {
+public class FakeData {
+	
+	@Autowired
+	ImportService importService;
 	
 	private Map<String,State> fakeStates;
 	
@@ -77,7 +81,7 @@ public class FakeData implements StateRepository {
 			e.printStackTrace();
 			return;
 		}
-		State state = ImportService.createState(name, geoJson);
+		State state = importService.createState(name, geoJson);
 		if (state == null) {
 			return;
 		}
@@ -86,7 +90,7 @@ public class FakeData implements StateRepository {
 	}
 	
 	
-	@Override
+//	@Override
 	public <T> T findByPublicId(String publicId, Class<T> type) {
 		if (type.equals(State.class))
 		{
@@ -117,14 +121,14 @@ public class FakeData implements StateRepository {
 		for (State state : fakeStates.values())
 		{
 			name = new NameOnlyFake();
-			name.setPublicId(state.getPublicID());
+			name.setPublicID(state.getPublicID());
 			name.setName(state.getName());
 			result.add(name);
 		}
 		return result;
 	}
 
-	@Override
+//	@Override
 	public List<State> findByName(String name) {
 		// TODO Auto-generated method stub
 		return null;

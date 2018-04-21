@@ -8,8 +8,8 @@ import cdg.domain.region.Party;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-@Entity
-@Table( name = "ElectionResults")
+//@Entity
+//@Table( name = "ElectionResults")
 public class ElectionResult {
 	private Map<Party,Integer> voteTotals;
 	

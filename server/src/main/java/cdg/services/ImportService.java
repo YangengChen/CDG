@@ -12,6 +12,7 @@ import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Service;
@@ -23,6 +24,9 @@ import org.wololo.jts2geojson.GeoJSONReader;
 
 import com.vividsolutions.jts.geom.TopologyException;
 
+import cdg.repository.StateRepository;
+import cdg.repository.DistrictRepository;
+import cdg.repository.PrecinctRepository;
 import cdg.dao.CongressionalDistrict;
 import cdg.dao.Precinct;
 import cdg.dao.State;
@@ -30,8 +34,15 @@ import cdg.dao.State;
 @Service
 public class ImportService {
 
+	@Autowired
+	StateRepository stateRepo;
+	@Autowired
+	DistrictRepository districtRepo;
+	@Autowired
+	PrecinctRepository precinctRepo;
+	
 	//fake execution. needs to persist to database and add geojson and neighbors
-	public static State createState(String name, String geoJSON) {
+	public State createState(String name, String geoJSON) {
 		if (name == null || geoJSON == null) {
 			return null;
 		}
@@ -59,6 +70,7 @@ public class ImportService {
 			state.setStateMapGeoJson(stateMap);
 			
 			//store to database and use returned state value - will generate all mappings
+			state = stateRepo.saveAndFlush(state);
 			//flush repository
 		} catch (Exception e) {
 			//remove any partial data from database
@@ -69,18 +81,19 @@ public class ImportService {
 		return state;
 	}
 	
-	private static State generateState(String name, String geoJSON) {
+	private State generateState(String name, String geoJSON) {
 		State state = new State();
 		state.setName(name);
 		//fake
 		state.setPrecinctMapGeoJson(geoJSON);
 		
 		//store to database and use returned state value
+		state = stateRepo.saveAndFlush(state);
 		//flush repository
 		return state;
 	}
 	
-	private static void generatePrecinctsAndDistricts(Feature[] features, State state, Map<Integer,CongressionalDistrict> districts, Map<Integer,Precinct> precincts) {
+	private void generatePrecinctsAndDistricts(Feature[] features, State state, Map<Integer,CongressionalDistrict> districts, Map<Integer,Precinct> precincts) {
 		Map<String,CongressionalDistrict> districtsPubID = new HashMap<String,CongressionalDistrict>();
 		Map<String,Object> currProp;
 		Geometry currGeom;
@@ -94,7 +107,7 @@ public class ImportService {
 			currGeom = features[i].getGeometry();
 			currPrecinct = new Precinct();
 			//fake
-			currPrecinct.setId(precinctIDCounter++);
+//			currPrecinct.setId(precinctIDCounter++);
 			currPrecinct.setName((String)currProp.get("name"));
 			currPrecinct.setPublicID((String)currProp.get("ID"));
 			currPrecinct.setGeoJsonGeometry(currGeom.toString());
@@ -105,16 +118,18 @@ public class ImportService {
 			if (currDistrict == null) {
 				currDistrict = new CongressionalDistrict();
 				//fake
-				currDistrict.setId(distIDCounter++);
+//				currDistrict.setId(distIDCounter++);
 				currDistrict.setName("Congressional District " + currDistPubID);
 				currDistrict.setPublicID(currDistPubID);
 				//store to database and use returned district value
+				currDistrict = districtRepo.saveAndFlush(currDistrict);
 				//flush repository
 				districtsPubID.put(currDistrict.getPublicID(), currDistrict);
 				districts.put(currDistrict.getId(), currDistrict);
 			}
 			
 			//store to database and use returned precinct value
+			currPrecinct = precinctRepo.saveAndFlush(currPrecinct);
 			//flush repository
 			precincts.put(currPrecinct.getId(), currPrecinct);
 			
@@ -126,7 +141,7 @@ public class ImportService {
 		}
 	}
 
-	private static void generateNeighbors(Feature[] features, Map<Integer,Precinct> precincts) {
+	private void generateNeighbors(Feature[] features, Map<Integer,Precinct> precincts) {
 		if (features == null || precincts == null || features.length != precincts.size()) {
 			throw new IllegalArgumentException();
 		}
@@ -157,7 +172,7 @@ public class ImportService {
 		}
 	}
 	
-	private static boolean validateNeighbor(Precinct curr, Precinct neighbor) {
+	private boolean validateNeighbor(Precinct curr, Precinct neighbor) {
 		if (curr == null || neighbor == null) {
 			throw new IllegalArgumentException();
 		}
@@ -191,7 +206,7 @@ public class ImportService {
 		return valid;
 	}
 
-	private static String annotateGeoJSONNeighbors(String geoJSON) {
+	private String annotateGeoJSONNeighbors(String geoJSON) {
 		if (geoJSON == null) {
 			throw new IllegalArgumentException();
 		}

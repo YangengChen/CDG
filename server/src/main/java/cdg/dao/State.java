@@ -18,33 +18,34 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
+import javax.persistence.Transient;
+import javax.persistence.CascadeType;
 
 @Entity
 @Table(name = "States")
 public class State extends Region {
-	@OneToMany(mappedBy="state", cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy="state", cascade= {CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval=true)
 	@MapKey(name = "id")
 	private Map<Integer,CongressionalDistrict> conDistricts;
-	@OneToMany(mappedBy="state", cascade=CascadeType.ALL, orphanRemoval=true)
+	@OneToMany(mappedBy="state", cascade= {CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval=true)
 	@MapKey(name = "id")
 	private Map<Integer,Precinct> precincts;
 	private Blob stateMapFile;
 	private Blob conDistrictMapFile;
 	private Blob precinctMapFile;
+	@Transient
 	private String stateMapGeoJSON;
+	@Transient
 	private String conDistrictMapGeoJSON;
+	@Transient
 	private String precinctMapGeoJSON;
 	
 	public State()
 	{
 		super();
-		conDistricts = new HashMap<>();
-		setPrecincts(new HashMap<>());
 	}
 	public State(String name, String geoJsonGeometry, ElectionResult presidentialVoteTotals) {
 		super(name, geoJsonGeometry, presidentialVoteTotals);
-		conDistricts = new HashMap<>();
-		setPrecincts(new HashMap<>());
 	}
 	
 	public Map<Integer, CongressionalDistrict> getConDistricts() {
