@@ -1,5 +1,7 @@
 package cdg.services;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -17,7 +19,7 @@ public class UserService {
 	}
 	
 	public User register(User user) {
-		if(userRepository.findOne(user.getEmail()) == null) {
+		if(userRepository.findOneByEmail(user.getEmail()) == null) {
 			user.encryptPassword();
 			userRepository.save(user);
 			return user;
@@ -27,7 +29,7 @@ public class UserService {
 	}
 	
 	public User login(User user) {
-		User registeredUser = userRepository.findOne(user.getEmail());
+		User registeredUser = userRepository.findOneByEmail(user.getEmail());
 		if(registeredUser != null && registeredUser.validatePassword(user.getPassword())) {
 			return registeredUser;
 		} else {

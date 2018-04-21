@@ -1,30 +1,39 @@
 package cdg.dao;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Transient;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
+import cdg.domain.generation.MapGenerator;
+
 @Entity // This tells Hibernate to make a table out of this class
 public class User {
-    
+	
+	@Id
     @GeneratedValue(strategy=GenerationType.AUTO)
-    private Integer id;
+    private Long id;
+    
     private String firstName;
     private String lastName;
     
-    @Id
+    @Column(unique=true)
     private String email;
     
     private String password;
 
-	public Integer getId() {
+    @Transient
+    private MapGenerator generator;
+    
+	public Long getId() {
 		return id;
 	}
 
-	public void setId(Integer id) {
+	public void setId(Long id) {
 		this.id = id;
 	}
 
@@ -66,6 +75,14 @@ public class User {
 	
 	public boolean validatePassword(String plainText) {
 		return BCrypt.checkpw(plainText, this.password);
+	}
+	
+	public MapGenerator getGenerator() {
+		return generator;
+	}
+	
+	public void setGenerator(MapGenerator generator) {
+		this.generator = generator;
 	}
 
 }

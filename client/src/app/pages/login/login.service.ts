@@ -8,13 +8,13 @@ export class LoginService {
   constructor(private http: HttpClient) {}
 
   login(user){
-    return this.http.post(endpoints.LOGIN_ENDPOINT,user);
+    return this.http.post(endpoints.LOGIN_ENDPOINT,user,{withCredentials: true})
   }
   register(user){
-    return this.http.post(endpoints.REGISTER_ENDPOINT,user);
+    return this.http.post(endpoints.REGISTER_ENDPOINT,user,{withCredentials: true});
   }
   logout(){
-    return this.http.get(endpoints.LOGOUT_ENDPOINT);
+    console.log("logout")
+    return this.http.post(endpoints.LOGOUT_ENDPOINT, null,{withCredentials: true});
   }
-
 }

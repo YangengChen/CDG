@@ -63,11 +63,9 @@ export class CdgComponent implements OnInit {
   logout(){
     this.loginService.logout().subscribe(
       (data) =>{
-        console.log(data);
         this.router.navigate(["/"]);
       },
       (err) =>{
-        console.error(err);
       }
     )
   }
