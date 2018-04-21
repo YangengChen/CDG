@@ -1,6 +1,6 @@
 package cdg.domain.generation;
 
 public enum NextDistrictPolicy {
-	LOWESTGOODNESSFIRST,
+	LOWESTGOODNESS,
 	RANDOM
 }
