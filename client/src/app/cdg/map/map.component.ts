@@ -28,13 +28,15 @@ export class MapComponent implements OnInit{
   @Input() algoPaused:boolean;
   @Input() disableMapTypeList:boolean = false;
   @Output() clicked: EventEmitter<any>
-  @Output() mapTypeChanged: EventEmitter<any>
+  @Output() mapTypeChanged: EventEmitter<any>;
+  @Output() savedMapChanged: EventEmitter<any>;
   constructor(
       private mapService: MapService,
       private appProperties:AppProperties
       ) {
     this.clicked = new EventEmitter<any>();
     this.mapTypeChanged = new EventEmitter<any>();
+    this.savedMapChanged = new EventEmitter<any>();
   }
   ngOnInit() { 
     if(this.savedMapList == null){
@@ -63,6 +65,9 @@ export class MapComponent implements OnInit{
   }
   onMapTypeChange(event){
     this.mapTypeChanged.emit(event.value);
+  }
+  onSavedMapChanged(event){
+    this.savedMapChanged.emit(event.value);
   }
   mapClick(event){
     this.clicked.emit(event.feature);

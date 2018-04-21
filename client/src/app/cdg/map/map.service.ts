@@ -11,4 +11,7 @@ export class MapService {
   setType(type:string){
     this.mapType = type;
   }
+  saveMap(){
+    return this.http.get(Constants.SAVE_URL);
+  }
 }

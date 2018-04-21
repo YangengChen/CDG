@@ -1,7 +1,7 @@
 <nb-card>
   <nb-card-header>
     <div style="position:relative" id="header-container">
-      <div class="map-dropdown">
+      <div *ngIf="mapTypeList" class="map-dropdown">
         {{mapTypeListLabel}}:<br>
         <cdg-dropdown (change)="onMapTypeChange($event)" [values]="mapTypeList" name="MapType" [disabled]="disableMapTypeList"></cdg-dropdown>
       </div>
