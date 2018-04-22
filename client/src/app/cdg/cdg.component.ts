@@ -1,28 +1,31 @@
-import {Injectable, Component, OnInit, Input, Output} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { LoginService } from "../pages/login/login.service";
-import { Router } from "@angular/router";
-import { GenerationService, GenerationConfiguration } from "./generation.service";
-import { Precinct} from "../cdg-objects/precinct";
-import { State } from "../cdg-objects/state";
-import { CdgMap } from "../cdg-objects/cdgmap";
-import { DropdownValue } from "../cdg-objects/dropdownvalue";
-import { MapService } from "./map/map.service";
-import { AppProperties }       from '../app.properties'
-import { saveAs } from 'file-saver/FileSaver';
+import 'hammerjs'
+import {  Injectable, 
+         Component, 
+         OnInit, 
+         Input, 
+         Output }                   from '@angular/core';
+import { Observable }               from 'rxjs/Rx';
+import { HttpClient }               from '@angular/common/http';
+import { LoginService }             from "../pages/login/login.service";
+import { Router }                   from "@angular/router";
+import { GenerationService,
+         GenerationConfiguration }  from "./generation.service";
+import { Precinct}                  from "../cdg-objects/precinct";
+import { State }                    from "../cdg-objects/state";
+import { CdgMap }                   from "../cdg-objects/cdgmap";
+import { DropdownValue }            from "../cdg-objects/dropdownvalue";
+import { MapService }               from "./map/map.service";
+import { AppProperties }            from '../app.properties'
+import { saveAs }                   from 'file-saver/FileSaver';
 @Component({
   selector: 'app-cdg',
   templateUrl: './cdg.component.html',
   styleUrls: ['./cdg.component.scss']
 })
 export class CdgComponent implements OnInit {
-  @Input() items:[{title:"Testing"}, {title:"menu"}];
 
-  //Object Variables
   mapObject: Object;
   compareMapObject:Object;
-
-  //Logic Variables
   stateList: DropdownValue<State>[];
   savedMapList:DropdownValue<any>[];
   mapTypeList:DropdownValue<String>[];
@@ -35,8 +38,6 @@ export class CdgComponent implements OnInit {
   selectedStateName:string;
   selectedStateId:number;
   selectedPrecinct: Precinct;
-
-  //View Variables
   mapTypeListLabel:string;
   savedMapListLabel:string;
   stateListLabel:string;
@@ -50,8 +51,7 @@ export class CdgComponent implements OnInit {
   generateTabLabel:string;
   informationTabLabel:string;
   fileTabLabel:string;
-  mapColorPattern;
-
+  compactness:Number;
   constructor(
     private router:Router, 
     private loginService: LoginService, 
@@ -80,6 +80,8 @@ export class CdgComponent implements OnInit {
     this.appProperties.getProperties().mapTypeListValues.forEach(mapTypeElement => {
       this.mapTypeList.push(new DropdownValue<String>(mapTypeElement[1], mapTypeElement[0]));
     });
+    this.mapService.getStateList()
+    .subscribe(stateList => {});
     this.stateList = [
       new DropdownValue<State>(new State("All", "0"), "All"),
       new DropdownValue<State>(new State("Minnesota", "27"), "Minnesota"),
@@ -114,7 +116,8 @@ export class CdgComponent implements OnInit {
   }
 
   getState(chosenState: string){
-    this.mapService.getState(chosenState)
+
+    this.mapService.getMap(chosenState)
     .subscribe(stateData =>{
         this.mapObject = stateData;
     });
@@ -135,7 +138,6 @@ export class CdgComponent implements OnInit {
     this.genConfig.setPartisanFairness(weight);
   }
   startGeneration(){
-    console.log(this.genConfig.getJsonified());
     if(this.genConfig != null){
       this.genService.startGeneration(this.genConfig)
       .subscribe(data =>{
@@ -146,6 +148,22 @@ export class CdgComponent implements OnInit {
     else{
       //TODO: ADD POPUP WARNING: NO STATE CHOSEN
     }
+  }
+  beginGenerationStatusCheck(){
+    Observable.interval(5).subscribe( x => {
+      this.genService.checkStatus()
+      .subscribe( finished =>{
+        if(finished){
+          this.getFinishedMap();
+        }
+      })
+    })
+  }
+  getFinishedMap(){
+    this.mapService.getFinishedMap()
+    .subscribe( finishedMap => {
+      this.mapObject = finishedMap;
+    })
   }
   mapTypeChanged(type:string){
     this.mapService.setType(type);
@@ -181,6 +199,11 @@ export class CdgComponent implements OnInit {
   saveMap(){
 
   }
+  mapReset(){
+    this.genConfig.restartConfig();
+    this.compactness = this.genConfig.getCompactnessWeight();
+    console.log(this.compactness);
+  }
   setUpLabels(properties:any){
     this.mapTypeListLabel = properties.mapTypeListLabel;
     this.savedMapListLabel = properties.savedMapListLabel;
@@ -195,7 +218,6 @@ export class CdgComponent implements OnInit {
     this.generateTabLabel = properties.generateTabLabel;
     this.informationTabLabel = properties.informationTabLabel;
     this.fileTabLabel = properties.fileTabLabel;
-    this.mapColorPattern = properties.mapColorPattern;
   }
 
 }

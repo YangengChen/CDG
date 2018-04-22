@@ -23,5 +23,8 @@
 	],
 	"mapTypeListValues":[["STATE","state"], ["CON DIST","congressional"], ["PRECINCT","precinct"]],
 	"pauseImage":"./assets/pause.png",
-	"stopImage":"./assets/stop.png"
+	"stopImage":"./assets/stop.png",
+	"restartImage":"./assets/restart.png",
+	"defaultMapColor":"black",
+	"mapOpacity": 0.5
 }
