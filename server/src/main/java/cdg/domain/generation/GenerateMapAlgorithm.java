@@ -33,6 +33,7 @@ public class GenerateMapAlgorithm {
 		try {
 			CONDISTRICTMAP = new CongressionalDistrictMap(state, goodnessEval, constraintEval);
 		} catch (Exception e) {
+			e.printStackTrace();
 			throw new IllegalArgumentException();
 		}
 		STATE = new GenerationState();
@@ -119,13 +120,54 @@ public class GenerateMapAlgorithm {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
 		}
+		
+		double startStateGoodness = CONDISTRICTMAP.getTotalGoodness();
+		STATE.setStartTotalGoodness(startStateGoodness);
+		while (continueWithGeneration()) {
+			STATE.incrementGenIteration();
+			chooseNextStartingDistrict();
+			operateOnDistrict();
+		}
+		
 		STATE.stopTime();
 		return true;
 	}
 	
-	private void chooseNextCandidatePrecinct()
+	private void operateOnDistrict() {
+		double startDistrictGoodness = CONDISTRICTMAP.getGoodness(STATE.getCurrDistrictID());
+		STATE.setCurrDistrictStartGoodness(startDistrictGoodness);
+		do {
+			STATE.incrementDistrictIteration();
+			boolean precinctChosen = chooseNextCandidatePrecinct();
+			if (precinctChosen) {
+				moveCandidatePrecinct();
+				validatePrecinctMove();
+			}
+		}
+		while (continueWithDistrict());
+	}
+	
+	private void chooseNextStartingDistrict() {
+		int distID = -1;
+		switch (POLICY) {
+			case RANDOM:
+				distID = CONDISTRICTMAP.getRandomDistrict();
+				break;
+			case LOWESTGOODNESS:
+				distID = CONDISTRICTMAP.getLowestGoodnessDistrict();
+				break;
+			default:
+				throw new IllegalStateException();
+		}
+		if (distID < 0) {
+			throw new IllegalStateException();
+		}
+		STATE.setCurrDistrictID(distID);
+	}
+	
+	private boolean chooseNextCandidatePrecinct()
 	{
-		
+		return false;
 	}
 	
 	private void moveCandidatePrecinct()

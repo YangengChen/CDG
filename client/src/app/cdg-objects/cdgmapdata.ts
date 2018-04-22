@@ -1,5 +1,5 @@
 export interface CdgMapData {
     label: String;
     mapType:String;
-    id:number;
+    id: String;
 }

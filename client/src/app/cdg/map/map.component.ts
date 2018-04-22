@@ -50,7 +50,7 @@ export class MapComponent implements OnInit{
           stops: this.mapColorPattern,
           default:"black"
         },
-        'fill-opacity': 0.5
+        'fill-opacity': 0.3,
       };
   }
   onPrecinctHover(event){

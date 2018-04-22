@@ -78,14 +78,14 @@ export class CdgComponent implements OnInit {
     this.setUpLabels(this.appProperties.getProperties());
     this.mapTypeList = new Array<DropdownValue<String>>();
     this.appProperties.getProperties().mapTypeListValues.forEach(mapTypeElement => {
-      this.mapTypeList.push(new DropdownValue<String>(mapTypeElement, mapTypeElement));
+      this.mapTypeList.push(new DropdownValue<String>(mapTypeElement[1], mapTypeElement[0]));
     });
     this.stateList = [
-      new DropdownValue<State>(new State("All", 0), "All"),
-      new DropdownValue<State>(new State("Minnesota",1000), "Minnesota"),
-      new DropdownValue<State>(new State("Washington", 2000), "Washington"),     
-      new DropdownValue<State>(new State("Wisconson", 3000), "Wisconson"),
-      new DropdownValue<State>(new State("Alabama",4000), "Alabama"),
+      new DropdownValue<State>(new State("All", "0"), "All"),
+      new DropdownValue<State>(new State("Minnesota", "27"), "Minnesota"),
+      new DropdownValue<State>(new State("Arizona", "04"), "Arizona"),     
+      new DropdownValue<State>(new State("Mississippi", "28"), "Mississippi"),
+      new DropdownValue<State>(new State("Indiana", "18"), "Indiana"),
      ] 
   }
   precinctSelected(precinct){
@@ -93,9 +93,9 @@ export class CdgComponent implements OnInit {
     console.log(this.selectedPrecinct.districtID);
   }
   changeState(event){
-    if(event.value.id == 0){
+    if(event.value.id == "0"){
       this.genConfig = null;
-      this.getState(event.value.id);
+      this.getUnitedStates();
     }
     else{
       this.genConfig = new GenerationConfiguration()
@@ -105,6 +105,14 @@ export class CdgComponent implements OnInit {
       this.getState(event.value.id);
     }
   }
+  
+  getUnitedStates() {
+    this.mapService.getUnitedStates()
+     .subscribe(usData =>{
+     	this.mapObject = usData;
+     });
+  }
+
   getState(chosenState: string){
     this.mapService.getState(chosenState)
     .subscribe(stateData =>{

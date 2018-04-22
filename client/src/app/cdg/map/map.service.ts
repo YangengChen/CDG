@@ -11,6 +11,11 @@ export class MapService {
   setType(type:string){
     this.mapType = type;
   }
+  
+  getUnitedStates() {
+  	return this.http.get(Constants.GET_US_URL);
+  }
+  
   saveMap(){
     return this.http.get(Constants.SAVE_URL);
   }

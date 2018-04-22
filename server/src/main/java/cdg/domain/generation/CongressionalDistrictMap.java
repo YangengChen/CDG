@@ -1,5 +1,6 @@
 package cdg.domain.generation;
 
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -8,10 +9,15 @@ import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
 
+import org.wololo.jts2geojson.GeoJSONReader;
+
 import com.google.common.collect.BiMap;
 import com.google.common.collect.HashBiMap;
+import com.vividsolutions.jts.geom.Geometry;
 
 import cdg.dao.CongressionalDistrict;
+import cdg.dao.Precinct;
+import cdg.dao.Region;
 import cdg.dao.State;
 
 public class CongressionalDistrictMap {
@@ -31,8 +37,12 @@ public class CongressionalDistrictMap {
 			throw new IllegalArgumentException();
 		}
 		this.state = state;
-		validateEvaluators();
-		MAXID = generateCustomMap(state.getConDistricts().values());
+		validateEvaluators(goodnessEval, constraintEval);
+		Map<Integer,CongressionalDistrict> allDistricts = state.getConDistricts();
+		if (allDistricts == null) {
+			throw new IllegalStateException();
+		}
+		MAXID = generateCustomMap(allDistricts.values());
 		initMap();
 		evaluateAllGoodness(goodnessEval);
 		initHelpers(constraintEval);
@@ -47,30 +57,102 @@ public class CongressionalDistrictMap {
 		return (key - 1);
 	}
 	
-	private void validateEvaluators() {
+	private void validateEvaluators(GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval) {
 		
 	}
 	
 	private void initMap() {
 		mapPrecincts();
 		mapBorderPrecincts();
-		mapNeighborPrecincts();
 	}
 	
+	/* Lazy load precincts for each congressional district.  Each precinct object will be the only copy 
+	 * for the algorithm run. Make sure the same objects are used in bidirectional mappings 
+	 */
 	private void mapPrecincts()
 	{
-
+		GeoJSONReader reader = new GeoJSONReader();
+		Map<Integer,Precinct> allPrecincts = new HashMap<Integer,Precinct>();
+		Map<Integer,Precinct> currPrecincts;
+		for (CongressionalDistrict district : districts.values()) {
+			mapGeometry(district,reader);
+			currPrecincts = district.getPrecincts(); 					//lazy loaded
+			if (currPrecincts == null) {
+				throw new IllegalStateException();
+			}
+			allPrecincts.putAll(currPrecincts);
+			for (Precinct precinct : currPrecincts.values()) {
+				precinct.setConDistrict(district);  						//make sure the object is the same
+				mapGeometry(precinct,reader);
+			}
+		}
+		mapNeighborPrecincts(allPrecincts);
+	}
+	
+	private void mapGeometry(Region region, GeoJSONReader reader) {
+		if (region.getGeoJsonGeometry() == null) {
+			throw new IllegalStateException();
+		}
+		try {
+			Geometry currGeom = reader.read(region.getGeoJsonGeometry());
+			region.setGeometry(currGeom);
+		} catch (Exception e) {
+			throw new IllegalStateException();
+		}
+	}
+	
+	/* Lazy load neighbor precincts for each precinct. Re-map neighbors use the current pool of precinct objects.
+	 */
+	private void mapNeighborPrecincts(Map<Integer,Precinct> allPrecincts) {
+		Map<Integer,Region> currNeighbors;
+		Map<Integer,Region> remappedNeighbors;
+		Precinct rmNeighbor;
+		for (Precinct precinct : allPrecincts.values()) {
+			currNeighbors = precinct.getNeighborRegions();					//lazy loaded
+			if (currNeighbors == null) {
+				throw new IllegalStateException();
+			}
+			remappedNeighbors = new HashMap<Integer,Region>();
+			for (Region neighbor : currNeighbors.values()) {
+				if (!(neighbor instanceof Precinct)) {
+					throw new IllegalStateException();
+				}
+				rmNeighbor = allPrecincts.get(neighbor.getId());
+				if (rmNeighbor == null) {
+					throw new IllegalStateException();
+				}
+				remappedNeighbors.put(rmNeighbor.getId(), rmNeighbor);
+			}
+			precinct.setNeighborRegions(remappedNeighbors);
+		}
 	}
 	
 	private void mapBorderPrecincts()
 	{
-		
+		Map<Integer,Precinct> precincts;
+		Map<Integer,Precinct> borderPrecincts;
+		for (CongressionalDistrict district : districts.values()) {
+			precincts = district.getPrecincts();
+			borderPrecincts = new HashMap<Integer,Precinct>();
+			for (Precinct precinct : precincts.values()) {
+				if (isBorderPrecinct(precinct)) {
+					borderPrecincts.put(precinct.getId(), precinct);
+				}
+			}
+			district.setBorderPrecincts(borderPrecincts);
+		}
 	}
 	
-	private void mapNeighborPrecincts()
-	{
-		
-	}
+	private boolean isBorderPrecinct(Precinct precinct) {
+		CongressionalDistrict currDistrict = precinct.getConDistrict();
+		Map<Integer,Region> neighbors = precinct.getNeighborRegions();		
+		for (Region neighbor : neighbors.values()) {
+			if (((Precinct)neighbor).getConDistrict() != currDistrict) {  
+				return true;
+			}
+		}
+		return false;
+ 	}
 	
 	private void initHelpers(ConstraintEvaluator evaluator)
 	{

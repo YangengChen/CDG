@@ -21,7 +21,7 @@ function annotateNeighbors() {
 		currNeighborIDs = [];
 		var neighborID;
 		for (var j = 0; j < currNeighbors.length; j++) {
-			neighborID = geometries[currNeighbors[j]].properties["ID"];
+			neighborID = geometries[currNeighbors[j]].properties["precinctID"];
 			currNeighborIDs.push(neighborID);
 		}
 		geoJSON.features[i].properties["neighbors"] = currNeighborIDs;

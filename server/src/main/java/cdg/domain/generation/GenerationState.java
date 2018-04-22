@@ -28,6 +28,10 @@ public class GenerationState implements Cloneable {
 	public void setCurrDistrictIteration(int currDistrictIteration) {
 		this.currDistrictIteration = currDistrictIteration;
 	}
+	
+	public void incrementDistrictIteration() {
+		currDistrictIteration++;
+	}
 
 	public double getCurrDistrictStartGoodness() {
 		return currDistrictStartGoodness;
@@ -51,6 +55,10 @@ public class GenerationState implements Cloneable {
 
 	public void setCurrGenIteration(int currGenIteration) {
 		this.currGenIteration = currGenIteration;
+	}
+	
+	public void incrementGenIteration() {
+		currGenIteration++;
 	}
 
 	public int getCandidatePrecinctUID() {
