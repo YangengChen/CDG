@@ -6,7 +6,7 @@ export class MapService {
   mapType:string = "state"
   constructor(private http: HttpClient) {}
   getState(state:string){
-    return this.http.get(Constants.GET_STATE_URL.concat(state).concat("/".concat(this.mapType)));
+    return this.http.get(Constants.GET_STATE_URL.concat("/").concat(state).concat("/").concat(this.mapType));
   }
   setType(type:string){
     this.mapType = type;
