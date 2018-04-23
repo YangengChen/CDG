@@ -31,6 +31,8 @@ import cdg.repository.PrecinctRepository;
 import cdg.dao.CongressionalDistrict;
 import cdg.dao.Precinct;
 import cdg.dao.State;
+import cdg.properties.CdgConstants;
+import cdg.properties.CdgPropertiesManager;
 
 @Service
 public class ImportService {
@@ -41,6 +43,8 @@ public class ImportService {
 	DistrictRepository districtRepo;
 	@Autowired
 	PrecinctRepository precinctRepo;
+	@Autowired
+	CdgPropertiesManager propertiesManager;
 	
 	//fake execution. needs to persist to database and add geojson and neighbors
 	public State createState(String geoJSON) {
@@ -105,7 +109,7 @@ public class ImportService {
 			currPrecinct.setPublicID((String)currProp.get("precinctID"));
 			currPrecinct.setGeoJsonGeometry(currGeom.toString());
 			
-			currDistPubID = (String)currProp.get("districtID");
+			currDistPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.GEOJSON_DISTRICT_IDENTIFIER));
 			currDistrict = districtsPubID.get(currDistPubID);
 			if (currDistrict == null) {
 				currDistrict = new CongressionalDistrict();
@@ -239,13 +243,13 @@ public class ImportService {
 		if (geoJSON == null) {
 			throw new IllegalArgumentException();
 		}
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName("nashorn");
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_ENGINE);
 		Bindings bindings = engine.createBindings();
-		bindings.put("geoString", geoJSON);
+		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_JSON_BINDING, geoJSON);
 		Reader script = null;
 		String result = null;
 		try {
-			Resource resource = new ClassPathResource("annotateNeighbors.js");
+			Resource resource = new ClassPathResource(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_PATH);
 			script = new InputStreamReader(resource.getInputStream());
 			result = (String)engine.eval(script,bindings);
 			if (result == null) {
