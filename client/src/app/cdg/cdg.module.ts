@@ -10,7 +10,6 @@ import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { BrowserModule } from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-
 import { 
   NbSidebarModule, 
   NbLayoutModule, 

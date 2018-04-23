@@ -18,7 +18,7 @@
               <mat-slide-toggle (change)="compareToggle($event)"></mat-slide-toggle>
               <div *ngIf="compare" id="pick-state-button">
                 Compare Map:
-                <cdg-dropdown [values]="stateList" (change)="compareChangeState($event)" name="States"></cdg-dropdown>
+                <cdg-dropdown [values]="stateList" (change)="changeCompareState($event)" name="States"></cdg-dropdown>
               </div>
               <br>
               <div id="pick-state-button">
@@ -91,13 +91,16 @@
       </nb-layout-column>
           <nb-layout-column *ngIf="compare">
         <map 
-          (savedMapChanged)="savedMapChanged"
+          (mapTypeChanged)="compareMapTypeChanged($event)"
+          (savedMapChanged)="compareSavedMapChanged"
           [mapObject]="compareMapObject"
           [mapTypeList]="mapTypeList" 
-          [mapTypeListLabel]="mapTypeListLabel"
           [savedMapList]="savedMapList"
           [savedMapListLabel]="savedMapListLabel"
-          [disableMapTypeList]="!genConfig"
+          [mapTypeListLabel]="mapTypeListLabel"
+          [disableResetButton]="true" 
+          [disableMapTypeList]="compareSelectedStateId == 0"
+   
           >
           </map>
       </nb-layout-column>

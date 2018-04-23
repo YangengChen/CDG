@@ -11,7 +11,7 @@ export class Constants{
     public static get SAVE_URL(): string{return "http://localhost:8080/api/map/save"}
     public static get LOGOUT_URL(): string {return "localhost:8080/api/user/logout"}
     public static get LOGIN_URL(): string {return "localhost:8080/api/user/login"}
-    public static get ALL_DROPDOWN_VALUE(): DropdownValue<State> {return  new DropdownValue<State>(new State("All", 0), "All")}
+    public static get ALL_DROPDOWN_VALUE(): DropdownValue<State> {return  new DropdownValue<State>(new State("All", "0"), "All")}
     public static get NO_SAVED_MAPS(): DropdownValue<String> {return new DropdownValue<String>("", "No Saved Maps")}
     public static get FULLMAP_ID(): string {return "0"}
     public static get STATELIST_URL():string {return "localhost:8080/api/map/states"}
@@ -20,6 +20,6 @@ export class Constants{
     public static get FINISHED_URL(): string {return ""};
     public static get COLOR_PROPERTY(): string {return "districtID"}
     public static GET_MAP_DATA_URL(state:string): string {return "localhost:8080/api/map/data/".concat(state).concat("/state")}
-    public static GET_STATE_URL(state:string, type:string): string {return "http://localhost:8080/api/map/file".concat(state).concat("/".concat(type))}
+    public static GET_STATE_URL(state:string, type:string): string {return "http://localhost:8080/api/map/file/".concat(state).concat("/".concat(type))}
 
 }

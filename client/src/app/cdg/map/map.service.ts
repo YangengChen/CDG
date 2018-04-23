@@ -3,10 +3,9 @@ import { HttpClient } from '@angular/common/http';
 import { Constants } from "../../constants";
 @Injectable()
 export class MapService {
-  mapType:string = Constants.INIT_MAP_TYPE;
   constructor(private http: HttpClient) {}
-  getMap(state:string){
-    return this.http.get(Constants.GET_STATE_URL(state, this.mapType));
+  getMap(state:string, type:string){
+    return this.http.get(Constants.GET_STATE_URL(state, type));
   }
   getData(state:string){
     return this.http.get(Constants.GET_MAP_DATA_URL(state));
@@ -14,12 +13,9 @@ export class MapService {
   getFullMap(){
     return this.http.get(Constants.UNITED_STATES_URL);
   }
-  setType(type:string){
-    this.mapType = type;
-  }
-  
+
   getUnitedStates() {
-  	return this.http.get(Constants.GET_US_URL);
+  	return this.http.get(Constants.UNITED_STATES_URL);
   }
   
   saveMap(){

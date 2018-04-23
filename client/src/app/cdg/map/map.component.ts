@@ -61,7 +61,7 @@ export class MapComponent implements OnInit{
           stops: properties.mapColorPattern,
           default: properties.defaultMapColor
         },
-        'fill-opacity': properties.mapOpacity
+        'fill-opacity': properties.mapOpacity,
       };
   }
   onPrecinctHover(event){
