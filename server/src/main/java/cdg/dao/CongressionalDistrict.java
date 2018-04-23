@@ -78,7 +78,9 @@ public class CongressionalDistrict extends Region {
 		CongressionalDistrictDTO data = new CongressionalDistrictDTO();
 		data.setID(this.getPublicID());
 		data.setName(this.getName());
-		data.setNumPrecincts(precincts.size());
+		if (precincts != null) {
+			data.setNumPrecincts(precincts.size());
+		}
 		data.setGoodness(this.goodnessValue);
 		return data;
 	}

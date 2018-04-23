@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import cdg.dao.State;
+import cdg.dao.User;
 import cdg.domain.generation.CdgConstraintEvaluator;
 import cdg.domain.generation.CdgGoodnessEvaluator;
 import cdg.domain.generation.ConstraintEvaluator;
@@ -41,7 +42,7 @@ public class GenerationController {
 		if (config == null) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.BAD_REQUEST);
 		}
-		CdgUser user = (CdgUser) session.getAttribute(SESSION_USER);
+		User user = (User) session.getAttribute(SESSION_USER);
 		if (user == null) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.UNAUTHORIZED);
 		}
@@ -51,6 +52,9 @@ public class GenerationController {
 		}
 		
 		MapGenerator generator = user.getGenerator();
+		if (generator == null) {
+			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		ConstraintEvaluator constraintEval;
 		GoodnessEvaluator goodnessEval;
 		try {
@@ -75,12 +79,15 @@ public class GenerationController {
 	@RequestMapping( value = "/cancel", method=RequestMethod.POST)
 	public ResponseEntity<GenerationStatus> cancelGeneration(HttpSession session)
 	{
-		CdgUser user = (CdgUser) session.getAttribute(SESSION_USER);
+		User user = (User) session.getAttribute(SESSION_USER);
 		if (user == null) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.UNAUTHORIZED);
 		}
 		
 		MapGenerator generator = user.getGenerator();
+		if (generator == null) {
+			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		generator.stopGeneration();
 		
 		return new ResponseEntity<GenerationStatus>(GenerationStatus.CANCELED, HttpStatus.OK);
@@ -89,12 +96,15 @@ public class GenerationController {
 	@RequestMapping( value = "/status", method=RequestMethod.GET)
 	public ResponseEntity<GenerationResponse> getGenerationStatus(HttpSession session)
 	{
-		CdgUser user = (CdgUser) session.getAttribute(SESSION_USER);
+		User user = (User) session.getAttribute(SESSION_USER);
 		if (user == null) {
 			return new ResponseEntity<GenerationResponse>(new GenerationResponse(GenerationStatus.ERROR), HttpStatus.UNAUTHORIZED);
 		}
 		
 		MapGenerator generator = user.getGenerator();
+		if (generator == null) {
+			return new ResponseEntity<GenerationResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 		GenerationResponse response = generator.getGenerationState();
 		return new ResponseEntity<GenerationResponse>(response, HttpStatus.OK);
 	}

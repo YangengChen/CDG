@@ -205,20 +205,26 @@ public class State extends Region {
 	
 	public MapDataDTO getStateData()
 	{
-		List<Region> districts = Arrays.asList(this);
-		return populateDataDTO(districts);
+		List<Region> regions = Arrays.asList(this);
+		return populateDataDTO(regions);
 	}
 	
 	public MapDataDTO getCongressionalData()
 	{
-		List<Region> districts = new ArrayList<>(conDistricts.values());
-		return populateDataDTO(districts);
+		if (conDistricts == null) {
+			return null;
+		}
+		List<Region> regions = new ArrayList<>(conDistricts.values());
+		return populateDataDTO(regions);
 	}
 	
 	public MapDataDTO getPrecinctData()
 	{
-		List<Region> districts = new ArrayList<>(precincts.values());
-		return populateDataDTO(districts);
+		if (precincts == null) {
+			return null;
+		}
+		List<Region> regions = new ArrayList<>(precincts.values());
+		return populateDataDTO(regions);
 	}
 	
 	private MapDataDTO populateDataDTO(Collection<Region> regions)
@@ -227,12 +233,12 @@ public class State extends Region {
 			throw new IllegalArgumentException();
 		MapDataDTO data = new MapDataDTO();
 		data.setState(this.getName());
-		List<DistrictDTO> districts = new ArrayList<>();
-		for (Region dist : regions)
+		List<DistrictDTO> regionDTOs = new ArrayList<>();
+		for (Region reg : regions)
 		{
-			districts.add(dist.getDataDTO());
+			regionDTOs.add(reg.getDataDTO());
 		}
-		data.setDistricts(districts);
+		data.setDistricts(regionDTOs);
 		return data;
 	}
 

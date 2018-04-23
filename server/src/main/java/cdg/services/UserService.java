@@ -21,7 +21,7 @@ public class UserService {
 	public User register(User user) {
 		if(userRepository.findOneByEmail(user.getEmail()) == null) {
 			user.encryptPassword();
-			userRepository.save(user);
+			user = userRepository.save(user);
 			return user;
 		} else {			
 			return null;
