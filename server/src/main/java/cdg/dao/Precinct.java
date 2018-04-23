@@ -25,27 +25,18 @@ public class Precinct extends Region {
 		this.state = state;
 	}
 	
-	/**
-	 * @return the conDistrict
-	 */
 	public CongressionalDistrict getConDistrict() {
 		return conDistrict;
 	}
-	/**
-	 * @param conDistrict the conDistrict to set
-	 */
+
 	public void setConDistrict(CongressionalDistrict conDistrict) {
 		this.conDistrict = conDistrict;
 	}
-	/**
-	 * @return the state
-	 */
+
 	public State getState() {
 		return state;
 	}
-	/**
-	 * @param state the state to set
-	 */
+
 	public void setState(State state) {
 		this.state = state;
 	}

@@ -24,19 +24,20 @@ import cdg.domain.generation.GoodnessEvaluator;
 import cdg.domain.generation.MapGenerator;
 import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
+import cdg.properties.CdgConstants;
 import cdg.repository.FakeData;
 import cdg.responses.GenerationResponse;
 
 @RestController
-@RequestMapping("/api/generation")
-@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping(CdgConstants.GENERATION_CONTROLLER_PATH_PREFIX)
+@CrossOrigin(origins = CdgConstants.CROSS_ORIGIN_LOCATION)
 public class GenerationController {
 	//fake
 	public static double MAX_GOODNESS = 100;
 	@Autowired
 	private FakeData stateRepo;
 
-	@RequestMapping( value = "/start", method=RequestMethod.POST)
+	@RequestMapping( value = CdgConstants.GENERATION_START_PATH, method=RequestMethod.POST)
 	public ResponseEntity<GenerationStatus> startGeneration(@RequestBody GenerationConfiguration config, HttpSession session)
 	{
 		if (config == null) {
@@ -76,7 +77,7 @@ public class GenerationController {
 		return new ResponseEntity<GenerationStatus>(GenerationStatus.INPROGRESS, HttpStatus.OK);
 	}
 	
-	@RequestMapping( value = "/cancel", method=RequestMethod.POST)
+	@RequestMapping( value = CdgConstants.GENERATION_CANCEL_PATH, method=RequestMethod.POST)
 	public ResponseEntity<GenerationStatus> cancelGeneration(HttpSession session)
 	{
 		User user = (User) session.getAttribute(SESSION_USER);
@@ -93,7 +94,7 @@ public class GenerationController {
 		return new ResponseEntity<GenerationStatus>(GenerationStatus.CANCELED, HttpStatus.OK);
 	}
 	
-	@RequestMapping( value = "/status", method=RequestMethod.GET)
+	@RequestMapping( value = CdgConstants.GENERATION_STATUS_PATH, method=RequestMethod.GET)
 	public ResponseEntity<GenerationResponse> getGenerationStatus(HttpSession session)
 	{
 		User user = (User) session.getAttribute(SESSION_USER);
@@ -109,24 +110,24 @@ public class GenerationController {
 		return new ResponseEntity<GenerationResponse>(response, HttpStatus.OK);
 	}
 	
-	@RequestMapping( value = "/map", method=RequestMethod.GET)
+	@RequestMapping( value = CdgConstants.GENERATION_MAP_PATH, method=RequestMethod.GET)
 	public MapDTO getGeneratedMap() {
 		return null;
 	}
 	
-	@RequestMapping( value = "/save/map", method=RequestMethod.POST)
+	@RequestMapping( value = CdgConstants.GENERATION_SAVE_MAP_PATH, method=RequestMethod.POST)
 	public void saveGeneratedMap(@RequestBody MapDTO mapToSave)
 	{
 		
 	}
 	
-	@RequestMapping( value = "/data", method=RequestMethod.GET)
+	@RequestMapping( value = CdgConstants.GENERATION_MAP_DATA_PATH, method=RequestMethod.GET)
 	public MapDataDTO getGeneratedData() 
 	{
 		return null;
 	}
 	
-	@RequestMapping( value = "/save/data", method=RequestMethod.POST)
+	@RequestMapping( value = CdgConstants.GENERATION_SAVE_MAP_DATA_PATH, method=RequestMethod.POST)
 	public void saveGeneratedData(@RequestBody MapDataDTO dataToSave) 
 	{
 

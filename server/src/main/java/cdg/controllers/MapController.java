@@ -26,12 +26,13 @@ import cdg.domain.map.MapType;
 import cdg.domain.map.MapTypeEnumConverter;
 import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
+import cdg.properties.CdgConstants;
 import cdg.repository.FakeData;
 import cdg.services.MapService;
 
 @RestController
-@RequestMapping("/api/map")
-@CrossOrigin(origins = "http://localhost:4200")
+@RequestMapping(CdgConstants.MAP_CONTROLLER_PATH_PREFIX)
+@CrossOrigin(origins = CdgConstants.CROSS_ORIGIN_LOCATION)
 public class MapController {
 	//Fake data repository
 	@Autowired
@@ -42,8 +43,8 @@ public class MapController {
 	    dataBinder.registerCustomEditor(MapType.class, new MapTypeEnumConverter());
 	}
 	
-	@RequestMapping( value = "/geojson/{stateid}/{maptype}", method=RequestMethod.GET)
-	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable("stateid") String stateID, @PathVariable("maptype") MapType type) {
+	@RequestMapping( value = CdgConstants.MAP_STATIC_MAP_PATH, method=RequestMethod.GET)
+	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable(CdgConstants.MAP_STATEID_PATH_VARIABLE) String stateID, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) {
 		//get state from database
 		//fake data
 		State state = fakeRepo.findByPublicId(stateID, State.class);
@@ -58,8 +59,8 @@ public class MapController {
 		return new ResponseEntity<>(map, HttpStatus.OK);
 	}
 	
-	@RequestMapping( value = "/file/{stateid}/{maptype}", method=RequestMethod.GET, produces = "application/json")
-	public ResponseEntity<byte[]> getStaticStateMapFile(@PathVariable("stateid") String stateID, @PathVariable("maptype") MapType type) {
+	@RequestMapping( value = CdgConstants.MAP_STATIC_MAP_FILE_PATH, method=RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<byte[]> getStaticStateMapFile(@PathVariable(CdgConstants.MAP_STATEID_PATH_VARIABLE) String stateID, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) {
 		//get state from database
 		//fake data
 		State state = fakeRepo.findByPublicId(stateID, State.class);
@@ -77,8 +78,8 @@ public class MapController {
 		return new ResponseEntity<>(file, httpHeaders, HttpStatus.OK);	
 	}
 	
-	@RequestMapping( value = "data/{stateid}/{maptype}", method=RequestMethod.GET)
-	public ResponseEntity<MapDataDTO> getStaticStateData(@PathVariable("stateid") String stateID, @PathVariable("maptype") MapType type) {
+	@RequestMapping( value = CdgConstants.MAP_STATIC_MAP_DATA_PATH, method=RequestMethod.GET)
+	public ResponseEntity<MapDataDTO> getStaticStateData(@PathVariable(CdgConstants.MAP_STATEID_PATH_VARIABLE) String stateID, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) {
 		//get state from database
 		//fake data
 		State state = fakeRepo.findByPublicId(stateID, State.class);
@@ -93,7 +94,7 @@ public class MapController {
 		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
 	
-	@RequestMapping( value = "/file/unitedstates", method=RequestMethod.GET)
+	@RequestMapping( value = CdgConstants.MAP_US_MAP_PATH, method=RequestMethod.GET)
 	public ResponseEntity<byte[]> getUnitedStatesMap() {
 		//fake - get states from repo
 		Iterable<State> states = fakeRepo.findAll();
@@ -108,7 +109,7 @@ public class MapController {
 		return new ResponseEntity<>(usMapFile, HttpStatus.OK);
 	}
 	
-	@RequestMapping( value = "/states", method=RequestMethod.GET)
+	@RequestMapping( value = CdgConstants.MAP_ALL_STATES_PATH, method=RequestMethod.GET)
 	public List<NameOnly> getAllStates() {
 		//Get all state's name fields from database, ordered alphabetically
 		//fake data

@@ -46,7 +46,6 @@ public class ImportService {
 	@Autowired
 	CdgPropertiesManager propertiesManager;
 	
-	//fake execution. needs to persist to database and add geojson and neighbors
 	public State createState(String geoJSON) {
 		if (geoJSON == null) {
 			return null;
@@ -57,8 +56,8 @@ public class ImportService {
 			FeatureCollection stateFeatures = (FeatureCollection)GeoJSONFactory.create(annotatedGeoJSON);
 			Feature[] features = stateFeatures.getFeatures();
 			
-			String stateName = (String)features[0].getProperties().get("stateName");
-			String statePubID = (String)features[0].getProperties().get("stateID");
+			String stateName = (String)features[0].getProperties().get(propertiesManager.getProperty(CdgConstants.STATE_NAME_FIELD));
+			String statePubID = (String)features[0].getProperties().get(propertiesManager.getProperty(CdgConstants.STATE_IDENTIFIER_FIELD));
 			state = generateState(stateName, statePubID, annotatedGeoJSON);
 		
 			Map<Integer,CongressionalDistrict> districts = new HashMap<Integer,CongressionalDistrict>();
@@ -105,15 +104,15 @@ public class ImportService {
 			currProp = features[i].getProperties();
 			currGeom = features[i].getGeometry();
 			currPrecinct = new Precinct();
-			currPrecinct.setName((String)currProp.get("precinctName"));
-			currPrecinct.setPublicID((String)currProp.get("precinctID"));
+			currPrecinct.setName((String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_NAME_FIELD)));
+			currPrecinct.setPublicID((String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD)));
 			currPrecinct.setGeoJsonGeometry(currGeom.toString());
 			
-			currDistPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.GEOJSON_DISTRICT_IDENTIFIER));
+			currDistPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.DISTRICT_IDENTIFIER_FIELD));
 			currDistrict = districtsPubID.get(currDistPubID);
 			if (currDistrict == null) {
 				currDistrict = new CongressionalDistrict();
-				currDistrict.setName("Congressional District " + currDistPubID);
+				currDistrict.setName(CdgConstants.DISTRICT_NAME_PREFIX + currDistPubID);
 				currDistrict.setPublicID(currDistPubID);
 				//store to database and use returned district value
 				currDistrict = districtRepo.saveAndFlush(currDistrict);
@@ -125,7 +124,6 @@ public class ImportService {
 			currPrecinct = precinctRepo.saveAndFlush(currPrecinct);
 			precincts.put(currPrecinct.getId(), currPrecinct);
 			
-			//set mappings
 			currPrecinct.setConDistrict(currDistrict);
 			currPrecinct.setState(state);
 			currDistrict.getPrecincts().put(currPrecinct.getId(), currPrecinct);
@@ -137,18 +135,16 @@ public class ImportService {
 		if (features == null || precincts == null || features.length != precincts.size()) {
 			throw new IllegalArgumentException();
 		}
-		
 		Map<String,Precinct> precinctsPubID = new HashMap<String,Precinct>();
 		for (Precinct precinct : precincts.values()) {
 			precinctsPubID.put(precinct.getPublicID(), precinct);
 		}
-		
 		Map<String,Object> currProp;
 		List<String> currNeighbors;
 		int i = 0;
 		for (Precinct precinct : precincts.values()) {
 			currProp = features[i++].getProperties();
-			currNeighbors = (List<String>)currProp.get("neighbors"); //public keys of neighbors
+			currNeighbors = (List<String>)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_NEIGHBORS_FIELD)); //public keys of neighbors
 			
 			Precinct neighbor;
 			boolean valid;
@@ -246,6 +242,10 @@ public class ImportService {
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_ENGINE);
 		Bindings bindings = engine.createBindings();
 		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_JSON_BINDING, geoJSON);
+		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_CLIENT_BINDING, CdgConstants.TOPOJSON_CLIENT_SCRIPT_PATH);
+		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_SERVER_BINDING, CdgConstants.TOPOJSON_SERVER_SCRIPT_PATH);
+		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_NEIGHBOR_KEY_BINDING, propertiesManager.getProperty(CdgConstants.PRECINCT_NEIGHBORS_FIELD));
+		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_PRECINCT_KEY_BINDING, propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD));
 		Reader script = null;
 		String result = null;
 		try {
