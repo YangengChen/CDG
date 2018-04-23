@@ -24,7 +24,6 @@ import { saveAs }                   from 'file-saver/FileSaver';
   styleUrls: ['./cdg.component.scss']
 })
 export class CdgComponent implements OnInit {
-
   mapObject: Object;
   compareMapObject:Object;
   compareSelectedStateId: string;
@@ -77,17 +76,14 @@ export class CdgComponent implements OnInit {
     this.compare = false;
     this.algoPaused = false;
     this.algoRunning = false;
-    this.selectedMapType ="state"
-    this.selectedStateId = "0";
-    this.compareSelectedMapType = "state"
-    this.compareSelectedStateId = "0";
+    this.selectedMapType = Constants.INIT_MAP_TYPE;
+    this.selectedStateId = Constants.FULLMAP_ID;
+    this.compareSelectedMapType = Constants.INIT_MAP_TYPE;
+    this.compareSelectedStateId = Constants.FULLMAP_ID;
     this.pauseImage = this.appProperties.getProperties().pauseImage;
     this.stopImage = this.appProperties.getProperties().stopImage;
     this.setUpLabels(this.appProperties.getProperties());
     this.mapTypeList = new Array<DropdownValue<String>>();
-    this.appProperties.getProperties().mapTypeListValues.forEach(mapTypeElement => {
-      this.mapTypeList.push(new DropdownValue<String>(mapTypeElement[1], mapTypeElement[0]));
-    });
     this.stateList = new Array<DropdownValue<State>>();
     this.stateList.push(Constants.UNITED_STATES_DROPDOWNVALUE);
     this.mapService.getStateList()
@@ -95,6 +91,9 @@ export class CdgComponent implements OnInit {
       stateList.forEach((element:any) => {
         this.stateList.push(new DropdownValue<State>(new State(element.name, element.publicID), element.name));
       });
+    });
+    this.appProperties.getProperties().mapTypeListValues.forEach(mapTypeElement => {
+      this.mapTypeList.push(new DropdownValue<String>(mapTypeElement[1], mapTypeElement[0]));
     });
     this.getUnitedStates();
     this.getCompareUnitedStates();
@@ -104,7 +103,7 @@ export class CdgComponent implements OnInit {
     console.log(this.selectedPrecinct.districtID);
   }
   changeState(event){
-    if(event.value.id == "0"){
+    if(event.value.id == Constants.INIT_MAP_TYPE){
       this.genConfig = null;
       this.getUnitedStates();
     }
@@ -116,10 +115,9 @@ export class CdgComponent implements OnInit {
       this.getState();
     }
   }
-  
   changeCompareState(event){
-    if(event.value.id == "0"){
-      this.compareSelectedStateId = "0"
+    if(event.value.id == Constants.INIT_MAP_TYPE){
+      this.compareSelectedStateId = Constants.INIT_MAP_TYPE
       this.getCompareUnitedStates();
     }
     else{
@@ -127,7 +125,6 @@ export class CdgComponent implements OnInit {
       this.getCompareState();
     }
   }
-
   getCompareUnitedStates() {
     this.mapService.getUnitedStates()
      .subscribe(usData =>{
@@ -232,8 +229,8 @@ export class CdgComponent implements OnInit {
     this.mapService.saveMap()
   }
   exportMap(){
-        let blob = new Blob([JSON.stringify(this.mapObject)], { type: 'application/json' });
-        saveAs(blob, "CDG_Map.json");
+        let blob = new Blob([JSON.stringify(this.mapObject)], { type: Constants.EXPORT_HEADERS });
+        saveAs(blob, this.appProperties.getProperties().exportMapName);
   }
   saveMap(){
 

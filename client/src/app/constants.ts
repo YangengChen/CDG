@@ -19,6 +19,10 @@ export class Constants{
     public static get STATELIST_KEY(): string {return "states"};
     public static get FINISHED_URL(): string {return ""};
     public static get COLOR_PROPERTY(): string {return "districtID"}
+    public static get EXPORT_HEADERS(): string {return "application/json"}
+    public static get EXPORT_FILE_NAME(): string {return "CDG_Map.json"}
+    public static get INVALID_CRED():string {return""}
+    public static get SUCCESS_REGISTER(): string{ return""}
     public static GET_MAP_DATA_URL(state:string): string {return "http://localhost:8080/api/map/data/".concat(state).concat("/state")}
     public static GET_STATE_URL(state:string, type:string): string {return "http://localhost:8080/api/map/file/".concat(state).concat("/".concat(type))}
 

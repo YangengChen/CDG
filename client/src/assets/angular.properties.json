@@ -26,5 +26,6 @@
 	"stopImage":"./assets/stop.png",
 	"restartImage":"./assets/restart.png",
 	"defaultMapColor":"black",
-	"mapOpacity": 0.5
+	"mapOpacity": 0.5,
+	"exportMapName": "CDG_Map.json"
 }
