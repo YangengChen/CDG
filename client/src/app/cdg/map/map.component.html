@@ -9,6 +9,9 @@
         {{savedMapListLabel}}:<br>
         <cdg-dropdown  [values]="savedMapList" name="No Saved Maps" [disabled]="disableSavedMapList"></cdg-dropdown>
       </div>
+      <div class="map-button">
+        <cdg-button [disabled]="disableResetButton" [img]="restartImage" (click)="resetMap()"></cdg-button>
+      </div>
     </div>
   </nb-card-header>
   <nb-card-body>
@@ -21,6 +24,12 @@
      id="states"
      [(data)]="mapObject"
    ></mgl-geojson-source>
+   <mgl-layer 
+      id="state-lines" 
+      type="line"
+      source="states" 
+      [paint]="{'line-color':'black'}">
+   </mgl-layer>
    <mgl-layer
       id="state-fills"
       type="fill"
@@ -29,21 +38,16 @@
       (mouseLeave)="onPrecinctExit()"
       [paint]="stylePattern">
       <mgl-popup *ngIf="currPrecinct" [(lngLat)]="popupCords" >
-      Precinct: {{currPrecinct.Precinct}}
-      <br>
-      PrecinctID: {{currPrecinct.PrecinctID}}
-      <br>
-      County: {{currPrecinct.County}}
-      <br>
-      CountyID: {{currPrecinct.CountyID}}
-      <br>
-      CongressionalDistrict: {{currPrecinct.districtID}}
-      <br>
-      MNSenDist: {{currPrecinct.MNSenDist}}
-      <br>
-      MNLegDist: {{currPrecinct.MNSenDist}}
-      <br>
-      CtyComDist: {{currPrecinct.CtyComDist}}
+      <a *ngIf="currPrecinct.districtID"> Congresisonal District: {{currPrecinct.districtID}}<br></a>
+      <a *ngIf="currPrecinct.county"> County: {{currPrecinct.county}} <br></a>
+      <a *ngIf="currPrecinct.precinctName"> Precinct: {{currPrecinct.precinctName}}<br> </a>
+      <a *ngIf="currPrecinct.precinctID"> PrecinctID: {{currPrecinct.precinctID}} <br></a>
+      <a *ngIf="currPrecinct.population"> Population: {{currPrecinct.population}}<br></a>
+      <a *ngIf="currPrecinct.electionYear"> Election Year: {{currPrecinct.electionYear}}<br> </a>
+      <a *ngIf="currPrecinct.prsTOTAL"> Total Presidental Votes: {{currPrecinct.prsTOTAL}} <br></a>
+      <a *ngIf="currPrecinct.prsDFL"> Democratic Presidental Votes: {{currPrecinct.prsDFL}} <br></a>
+      <a *ngIf="currPrecinct.prsR"> Republican Presidental Votes: {{currPrecinct.prsTOTAL}} <br></a>
+      <a *ngIf="currPrecinct.prsOTH"> Other Presidental Votes: {{currPrecinct.prsOTH}}<br> </a>
     </mgl-popup>
     </mgl-layer>
   </mgl-map>

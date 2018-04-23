@@ -1,8 +1,13 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { MapService } from './map.service';
-import { DropdownValue } from "../../cdg-objects/dropdownvalue";
-import { AppProperties } from "../../app.properties";
-import * as mapboxgl from 'mapbox-gl';
+import {  Component, 
+          OnInit, 
+          Input, 
+          Output, 
+          EventEmitter }  from '@angular/core';
+import { MapService }     from './map.service';
+import { DropdownValue }  from "../../cdg-objects/dropdownvalue";
+import { AppProperties }  from "../../app.properties";
+import * as mapboxgl      from 'mapbox-gl';
+import { Constants }      from "../../constants";
 
 @Component({
   selector: 'map',
@@ -13,6 +18,7 @@ export class MapComponent implements OnInit{
   map: mapboxgl.Map;
   stateName:string;
   stylePattern:any;
+  restartImage:string;
   popupFilter = ['==', 'name', '']
   disableSavedMapList:boolean = false;
   @Input() mapTypeListLabel: string;
@@ -27,9 +33,11 @@ export class MapComponent implements OnInit{
   @Input() algoRunning:boolean;
   @Input() algoPaused:boolean;
   @Input() disableMapTypeList:boolean = false;
+  @Input() disableResetButton:boolean = false;
   @Output() clicked: EventEmitter<any>
   @Output() mapTypeChanged: EventEmitter<any>;
   @Output() savedMapChanged: EventEmitter<any>;
+  @Output() mapReset: EventEmitter<any>;
   constructor(
       private mapService: MapService,
       private appProperties:AppProperties
@@ -37,20 +45,23 @@ export class MapComponent implements OnInit{
     this.clicked = new EventEmitter<any>();
     this.mapTypeChanged = new EventEmitter<any>();
     this.savedMapChanged = new EventEmitter<any>();
+    this.mapReset = new EventEmitter<any>();
   }
   ngOnInit() { 
+    let properties = this.appProperties.getProperties();
+    this.restartImage = properties.restartImage;
     if(this.savedMapList == null){
       this.disableSavedMapList = true;
-      this.savedMapList = [new DropdownValue<String>("", "No Saved Maps")];
+      this.savedMapList = [Constants.NO_SAVED_MAPS];
     }
     this.stylePattern =  {
         'fill-color': {
           type:'categorical',
-          property: 'districtID',
-          stops: this.mapColorPattern,
-          default:"black"
+          property: Constants.COLOR_PROPERTY,
+          stops: properties.mapColorPattern,
+          default: properties.defaultMapColor
         },
-        'fill-opacity': 0.3,
+        'fill-opacity': properties.mapOpacity,
       };
   }
   onPrecinctHover(event){
@@ -71,5 +82,8 @@ export class MapComponent implements OnInit{
   }
   mapClick(event){
     this.clicked.emit(event.feature);
+  }
+  resetMap(){
+    this.mapReset.emit();
   }
 }

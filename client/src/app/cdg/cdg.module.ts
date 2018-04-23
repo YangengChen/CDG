@@ -8,7 +8,8 @@ import {  MatSliderModule, MatSlideToggleModule} from "@angular/material";
 import { GenerationService } from "./generation.service";
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
-
+import { BrowserModule } from '@angular/platform-browser';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { 
   NbSidebarModule, 
   NbLayoutModule, 
@@ -24,6 +25,7 @@ import { MapComponent } from './map/map.component';
 import {AgmCoreModule} from '@agm/core';
 @NgModule({
   imports: [
+    BrowserModule,
     MatSliderModule,
     MatSlideToggleModule,
     LeafletModule,

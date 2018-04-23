@@ -1,28 +1,33 @@
-import {Injectable, Component, OnInit, Input, Output} from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { LoginService } from "../pages/login/login.service";
-import { Router } from "@angular/router";
-import { GenerationService, GenerationConfiguration } from "./generation.service";
-import { Precinct} from "../cdg-objects/precinct";
-import { State } from "../cdg-objects/state";
-import { CdgMap } from "../cdg-objects/cdgmap";
-import { DropdownValue } from "../cdg-objects/dropdownvalue";
-import { MapService } from "./map/map.service";
-import { AppProperties }       from '../app.properties'
-import { saveAs } from 'file-saver/FileSaver';
+import 'hammerjs'
+import {  Injectable, 
+         Component, 
+         OnInit, 
+         Input, 
+         Output }                   from '@angular/core';
+import { Observable }               from 'rxjs/Rx';
+import { HttpClient }               from '@angular/common/http';
+import { LoginService }             from "../pages/login/login.service";
+import { Router }                   from "@angular/router";
+import { GenerationService,
+         GenerationConfiguration }  from "./generation.service";
+import { Precinct}                  from "../cdg-objects/precinct";
+import { State }                    from "../cdg-objects/state";
+import { CdgMap }                   from "../cdg-objects/cdgmap";
+import { DropdownValue }            from "../cdg-objects/dropdownvalue";
+import { MapService }               from "./map/map.service";
+import { AppProperties }            from '../app.properties'
+import { saveAs }                   from 'file-saver/FileSaver';
 @Component({
   selector: 'app-cdg',
   templateUrl: './cdg.component.html',
   styleUrls: ['./cdg.component.scss']
 })
 export class CdgComponent implements OnInit {
-  @Input() items:[{title:"Testing"}, {title:"menu"}];
 
-  //Object Variables
   mapObject: Object;
   compareMapObject:Object;
-
-  //Logic Variables
+  compareSelectedStateId: string;
+  compareSelectedMapType:string;
   stateList: DropdownValue<State>[];
   savedMapList:DropdownValue<any>[];
   mapTypeList:DropdownValue<String>[];
@@ -32,11 +37,10 @@ export class CdgComponent implements OnInit {
   genConfig:GenerationConfiguration;
   algoRunning: boolean;
   algoPaused: boolean;
+  selectedMapType:string;
   selectedStateName:string;
-  selectedStateId:number;
+  selectedStateId:string;
   selectedPrecinct: Precinct;
-
-  //View Variables
   mapTypeListLabel:string;
   savedMapListLabel:string;
   stateListLabel:string;
@@ -50,8 +54,7 @@ export class CdgComponent implements OnInit {
   generateTabLabel:string;
   informationTabLabel:string;
   fileTabLabel:string;
-  mapColorPattern;
-
+  compactness:Number;
   constructor(
     private router:Router, 
     private loginService: LoginService, 
@@ -73,6 +76,10 @@ export class CdgComponent implements OnInit {
     this.compare = false;
     this.algoPaused = false;
     this.algoRunning = false;
+    this.selectedMapType ="state"
+    this.selectedStateId = "0";
+    this.compareSelectedMapType = "state"
+    this.compareSelectedStateId = "0";
     this.pauseImage = this.appProperties.getProperties().pauseImage;
     this.stopImage = this.appProperties.getProperties().stopImage;
     this.setUpLabels(this.appProperties.getProperties());
@@ -80,6 +87,8 @@ export class CdgComponent implements OnInit {
     this.appProperties.getProperties().mapTypeListValues.forEach(mapTypeElement => {
       this.mapTypeList.push(new DropdownValue<String>(mapTypeElement[1], mapTypeElement[0]));
     });
+    this.mapService.getStateList()
+    .subscribe(stateList => {});
     this.stateList = [
       new DropdownValue<State>(new State("All", "0"), "All"),
       new DropdownValue<State>(new State("Minnesota", "27"), "Minnesota"),
@@ -87,6 +96,8 @@ export class CdgComponent implements OnInit {
       new DropdownValue<State>(new State("Mississippi", "28"), "Mississippi"),
       new DropdownValue<State>(new State("Indiana", "18"), "Indiana"),
      ] 
+    this.getUnitedStates();
+    this.getCompareUnitedStates();
   }
   precinctSelected(precinct){
     this.selectedPrecinct = precinct.f ;
@@ -102,10 +113,28 @@ export class CdgComponent implements OnInit {
       this.genConfig.setState(event.label);
       this.selectedStateName = event.label;
       this.selectedStateId = event.value.id;
-      this.getState(event.value.id);
+      this.getState();
     }
   }
   
+  changeCompareState(event){
+    if(event.value.id == "0"){
+      this.compareSelectedStateId = "0"
+      this.getCompareUnitedStates();
+    }
+    else{
+      this.compareSelectedStateId = event.value.id;
+      this.getCompareState();
+    }
+  }
+
+  getCompareUnitedStates() {
+    this.mapService.getUnitedStates()
+     .subscribe(usData =>{
+     	this.compareMapObject = usData;
+     });
+  }
+
   getUnitedStates() {
     this.mapService.getUnitedStates()
      .subscribe(usData =>{
@@ -113,9 +142,10 @@ export class CdgComponent implements OnInit {
      });
   }
 
-  getState(chosenState: string){
-    this.mapService.getState(chosenState)
+  getState(){
+    this.mapService.getMap(this.selectedStateId, this.selectedMapType)
     .subscribe(stateData =>{
+      console.log(stateData);
         this.mapObject = stateData;
     });
   }
@@ -135,7 +165,6 @@ export class CdgComponent implements OnInit {
     this.genConfig.setPartisanFairness(weight);
   }
   startGeneration(){
-    console.log(this.genConfig.getJsonified());
     if(this.genConfig != null){
       this.genService.startGeneration(this.genConfig)
       .subscribe(data =>{
@@ -147,8 +176,36 @@ export class CdgComponent implements OnInit {
       //TODO: ADD POPUP WARNING: NO STATE CHOSEN
     }
   }
+  beginGenerationStatusCheck(){
+    Observable.interval(5).subscribe( x => {
+      this.genService.checkStatus()
+      .subscribe( finished =>{
+        if(finished){
+          this.getFinishedMap();
+        }
+      })
+    })
+  }
+  getFinishedMap(){
+    this.mapService.getFinishedMap()
+    .subscribe( finishedMap => {
+      this.mapObject = finishedMap;
+    })
+  }
   mapTypeChanged(type:string){
-    this.mapService.setType(type);
+    this.selectedMapType = type;
+    this.getState();
+  }
+  compareMapTypeChanged(type:string){
+    this.compareSelectedMapType = type;
+    this.getCompareState();
+  }
+  getCompareState(){
+    this.mapService.getMap(this.compareSelectedStateId, this.compareSelectedMapType)
+    .subscribe(stateData =>{
+      console.log(stateData);
+        this.compareMapObject = stateData;
+    });
   }
   savedMapChanged(savedMap:string){
     
@@ -175,11 +232,16 @@ export class CdgComponent implements OnInit {
     this.mapService.saveMap()
   }
   exportMap(){
-        let blob = new Blob([this.mapObject], { type: 'application/json' });
-        saveAs(blob, "test");
+        let blob = new Blob([JSON.stringify(this.mapObject)], { type: 'application/json' });
+        saveAs(blob, "CDG_Map.json");
   }
   saveMap(){
 
+  }
+  mapReset(){
+    this.genConfig.restartConfig();
+    this.compactness = this.genConfig.getCompactnessWeight();
+    console.log(this.compactness);
   }
   setUpLabels(properties:any){
     this.mapTypeListLabel = properties.mapTypeListLabel;
@@ -195,7 +257,6 @@ export class CdgComponent implements OnInit {
     this.generateTabLabel = properties.generateTabLabel;
     this.informationTabLabel = properties.informationTabLabel;
     this.fileTabLabel = properties.fileTabLabel;
-    this.mapColorPattern = properties.mapColorPattern;
   }
 
 }

@@ -10,13 +10,16 @@ export class GenerationService{
         return this.http.post(Constants.START_URL, JSON.stringify(config),{headers:{'Content-Type': 'application/json'}});
     }
     stopGeneration(){
-        this.http.get(Constants.STOP_URL);
+        this.http.post(Constants.STOP_URL, {});
     }
     pauseGeneration(){
-        this.http.get(Constants.PAUSE_URL);
+        this.http.post(Constants.PAUSE_URL, {});
     }
     playGeneration(){
-        this.http.get(Constants.PLAY_URL);
+        this.http.post(Constants.PLAY_URL, {});
+    }
+    checkStatus(){
+        return this.http.get(Constants.STATUS_URL);
     }
 }
 export class GenerationConfiguration {
@@ -36,7 +39,6 @@ export class GenerationConfiguration {
         this.partisanFairWeight = 50;
         this.permConDist;
         this.permPrecinct;
-        this.stateId = "Hello";
     }
     setState(state:string){
         this.stateId = state;
@@ -71,7 +73,28 @@ export class GenerationConfiguration {
     setRacialFairWeight(weight:Number){
         this.racialFairWeight = weight;
     }
-    getJsonified(){
-        return JSON.stringify(this);
+    getPartisanFairnessWeight(){
+        return this.partisanFairWeight;
+    }
+    getCompactnessWeight(){
+        return this.compactnessWeight;
+    }
+    getContiguityWeight(){
+        return this.contiguityWeight;
+    }
+    getEqualPopWeight(){
+        return this.equalPopWeight;
+    }
+    getRacialFairWeight(){
+        return this.racialFairWeight;
+    }
+    restartConfig(){
+        this.compactnessWeight = 50;
+        this.contiguityWeight = 50;
+        this.equalPopWeight = 50;
+        this.racialFairWeight = 50;
+        this.partisanFairWeight = 50;
+        this.permConDist = Array<number>();
+        this.permPrecinct = Array<number>();
     }
 }
