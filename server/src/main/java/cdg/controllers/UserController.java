@@ -11,12 +11,16 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import cdg.dao.User;
+import cdg.domain.generation.MapGenerator;
+import cdg.dto.UserDTO;
 import cdg.properties.CdgConstants;
 import cdg.repository.UserRepository;
 import cdg.services.UserService;
 
 
 import java.util.Properties;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 
@@ -33,31 +37,37 @@ public class UserController {
 	private UserService userService;
 	
 	@RequestMapping(value="/login", method=RequestMethod.POST)
-	public @ResponseBody ResponseEntity<User> login(@RequestBody User user, HttpSession session) {
+	public @ResponseBody ResponseEntity<UserDTO> login(@RequestBody UserDTO user, HttpServletRequest request, HttpSession session) {
+		session.invalidate();
+		session = request.getSession();
 		System.out.println("login session: " + session.toString());
-		User loggedUser = userService.login(user);
+		User loggedUser = userService.login(new User(user));
 		if(session.getAttribute(CdgConstants.SESSION_USER) == null && loggedUser != null) {
+			loggedUser.setGenerator(new MapGenerator());
 			session.setAttribute(CdgConstants.SESSION_USER, loggedUser);
-			return new ResponseEntity<>(user, HttpStatus.OK);
+			return new ResponseEntity<>(loggedUser.getDTO(), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(user, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 	}
 	
 	@RequestMapping(value="/register", method=RequestMethod.POST) // Map ONLY GET Requests
-	public ResponseEntity<User> register(@RequestBody User user,HttpSession session) {
-		User registeredUser = userService.register(user);
+	public ResponseEntity<UserDTO> register(@RequestBody UserDTO user, HttpServletRequest request, HttpSession session) {
+		session.invalidate();
+		session = request.getSession();
+		User registeredUser = userService.register(new User(user));
 		if(registeredUser != null) {
+			registeredUser.setGenerator(new MapGenerator());
 			session.setAttribute(CdgConstants.SESSION_USER, registeredUser);
 			System.out.println("register session: " + session.toString());
-			return new ResponseEntity<>(user, HttpStatus.OK);
+			return new ResponseEntity<>(registeredUser.getDTO(), HttpStatus.OK);
 		} else {
-			return new ResponseEntity<>(user, HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}	
 	}
 	
 	@RequestMapping(value="/logout", method=RequestMethod.POST) // Map ONLY GET Requests
-	public @ResponseBody ResponseEntity<User> logout(HttpSession session) {
+	public @ResponseBody ResponseEntity<UserDTO> logout(HttpSession session) {
 		User sessionUser = (User) session.getAttribute(CdgConstants.SESSION_USER);
 		System.out.println("logout session: " + session.toString());
 		if(sessionUser != null) {
@@ -66,7 +76,7 @@ public class UserController {
 			return new ResponseEntity<>(HttpStatus.OK);
 		} else {
 			System.out.println("Error");
-			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}	
 	}
 

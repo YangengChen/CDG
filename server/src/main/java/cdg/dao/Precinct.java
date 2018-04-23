@@ -55,7 +55,9 @@ public class Precinct extends Region {
 		PrecinctDTO data = new PrecinctDTO();
 		data.setID(this.getPublicID());
 		data.setName(this.getName());
-		data.setDistrictID(conDistrict.getPublicID());
+		if (conDistrict != null) {
+			data.setDistrictID(conDistrict.getPublicID());
+		}
 		return data;
 	}
 }
