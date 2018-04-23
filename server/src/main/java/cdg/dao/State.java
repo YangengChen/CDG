@@ -93,7 +93,6 @@ public class State extends Region {
 		if (stateMapGeoJSON == null) {
 			return null;
 		}
-		//fake
 		return stateMapGeoJSON.getBytes(StandardCharsets.UTF_8);
 	}
 	
@@ -102,7 +101,6 @@ public class State extends Region {
 		if (conDistrictMapGeoJSON == null) {
 			return null;
 		}
-		//fake
 		return conDistrictMapGeoJSON.getBytes(StandardCharsets.UTF_8);
 	}
 	
@@ -111,7 +109,6 @@ public class State extends Region {
 		if (precinctMapGeoJSON == null) {
 			return null;
 		}
-		//fake
 		return precinctMapGeoJSON.getBytes(StandardCharsets.UTF_8);
 	}
 	
@@ -149,7 +146,6 @@ public class State extends Region {
 	
 	public String getStateMapGeoJson()
 	{
-		//fake
 		return stateMapGeoJSON;
 	}
 	
@@ -159,7 +155,6 @@ public class State extends Region {
 	
 	public String getCongressionalMapGeoJson()
 	{
-		//fake
 		return conDistrictMapGeoJSON;
 	}
 	
@@ -169,7 +164,6 @@ public class State extends Region {
 	
 	public String getPrecinctMapGeoJson()
 	{
-		//fake
 		return precinctMapGeoJSON;
 	}
 	
@@ -205,20 +199,26 @@ public class State extends Region {
 	
 	public MapDataDTO getStateData()
 	{
-		List<Region> districts = Arrays.asList(this);
-		return populateDataDTO(districts);
+		List<Region> regions = Arrays.asList(this);
+		return populateDataDTO(regions);
 	}
 	
 	public MapDataDTO getCongressionalData()
 	{
-		List<Region> districts = new ArrayList<>(conDistricts.values());
-		return populateDataDTO(districts);
+		if (conDistricts == null) {
+			return null;
+		}
+		List<Region> regions = new ArrayList<>(conDistricts.values());
+		return populateDataDTO(regions);
 	}
 	
 	public MapDataDTO getPrecinctData()
 	{
-		List<Region> districts = new ArrayList<>(precincts.values());
-		return populateDataDTO(districts);
+		if (precincts == null) {
+			return null;
+		}
+		List<Region> regions = new ArrayList<>(precincts.values());
+		return populateDataDTO(regions);
 	}
 	
 	private MapDataDTO populateDataDTO(Collection<Region> regions)
@@ -227,12 +227,12 @@ public class State extends Region {
 			throw new IllegalArgumentException();
 		MapDataDTO data = new MapDataDTO();
 		data.setState(this.getName());
-		List<DistrictDTO> districts = new ArrayList<>();
-		for (Region dist : regions)
+		List<DistrictDTO> regionDTOs = new ArrayList<>();
+		for (Region reg : regions)
 		{
-			districts.add(dist.getDataDTO());
+			regionDTOs.add(reg.getDataDTO());
 		}
-		data.setDistricts(districts);
+		data.setDistricts(regionDTOs);
 		return data;
 	}
 

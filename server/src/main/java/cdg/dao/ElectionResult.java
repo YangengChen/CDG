@@ -22,6 +22,7 @@ public class ElectionResult {
 	{
 		voteTotals.put(party, voteTotal);
 	}
+	
 	public Integer getTotal(Party party)
 	{
 		return voteTotals.get(party);

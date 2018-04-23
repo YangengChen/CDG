@@ -1,5 +1,5 @@
-load("classpath:topojson.js");
-load("classpath:topojson-server.js");
+load(topojsonClient);
+load(topojsonServer);
 var geoJSON,
 topoJSON;
 
@@ -21,9 +21,9 @@ function annotateNeighbors() {
 		currNeighborIDs = [];
 		var neighborID;
 		for (var j = 0; j < currNeighbors.length; j++) {
-			neighborID = geometries[currNeighbors[j]].properties["precinctID"];
+			neighborID = geometries[currNeighbors[j]].properties[precinctIDField];
 			currNeighborIDs.push(neighborID);
 		}
-		geoJSON.features[i].properties["neighbors"] = currNeighborIDs;
+		geoJSON.features[i].properties[neighborField] = currNeighborIDs;
 	}
 }
