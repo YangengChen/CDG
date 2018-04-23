@@ -16,6 +16,7 @@ import { CdgMap }                   from "../cdg-objects/cdgmap";
 import { DropdownValue }            from "../cdg-objects/dropdownvalue";
 import { MapService }               from "./map/map.service";
 import { AppProperties }            from '../app.properties'
+import { Constants }                from "../constants";
 import { saveAs }                   from 'file-saver/FileSaver';
 @Component({
   selector: 'app-cdg',
@@ -87,15 +88,14 @@ export class CdgComponent implements OnInit {
     this.appProperties.getProperties().mapTypeListValues.forEach(mapTypeElement => {
       this.mapTypeList.push(new DropdownValue<String>(mapTypeElement[1], mapTypeElement[0]));
     });
+    this.stateList = new Array<DropdownValue<State>>();
+    this.stateList.push(Constants.UNITED_STATES_DROPDOWNVALUE);
     this.mapService.getStateList()
-    .subscribe(stateList => {});
-    this.stateList = [
-      new DropdownValue<State>(new State("All", "0"), "All"),
-      new DropdownValue<State>(new State("Minnesota", "27"), "Minnesota"),
-      new DropdownValue<State>(new State("Arizona", "04"), "Arizona"),     
-      new DropdownValue<State>(new State("Mississippi", "28"), "Mississippi"),
-      new DropdownValue<State>(new State("Indiana", "18"), "Indiana"),
-     ] 
+    .subscribe((stateList:any) => {
+      stateList.forEach((element:any) => {
+        this.stateList.push(new DropdownValue<State>(new State(element.name, element.publicID), element.name));
+      });
+    });
     this.getUnitedStates();
     this.getCompareUnitedStates();
   }

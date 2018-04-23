@@ -22,6 +22,7 @@ export class MapService {
     return this.http.get(Constants.SAVE_URL);
   }
   getStateList(){
+    console.log("STATELIST: " + Constants.STATELIST_URL);
     return this.http.get(Constants.STATELIST_URL);
   }
   getFinishedMap(){
