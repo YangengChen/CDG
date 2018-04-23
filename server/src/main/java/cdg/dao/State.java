@@ -15,10 +15,13 @@ import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 
 @Entity
@@ -30,14 +33,17 @@ public class State extends Region {
 	@OneToMany(mappedBy="state", cascade= {CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval=true)
 	@MapKey(name = "id")
 	private Map<Integer,Precinct> precincts;
-	private Blob stateMapFile;
-	private Blob conDistrictMapFile;
-	private Blob precinctMapFile;
 	@Transient
+	//@Lob
+	//@Basic(fetch = FetchType.LAZY)
 	private String stateMapGeoJSON;
 	@Transient
+	//@Lob
+	//@Basic(fetch = FetchType.LAZY)
 	private String conDistrictMapGeoJSON;
 	@Transient
+	//@Lob
+	//@Basic(fetch = FetchType.LAZY)
 	private String precinctMapGeoJSON;
 	
 	public State()
@@ -234,29 +240,5 @@ public class State extends Region {
 		}
 		data.setDistricts(regionDTOs);
 		return data;
-	}
-
-	public Blob getStateMapBlob() {
-		return stateMapFile;
-	}
-
-	public void setStateMapBlob(Blob stateMapFile) {
-		this.stateMapFile = stateMapFile;
-	}
-
-	public Blob getConDistrictMapBlob() {
-		return conDistrictMapFile;
-	}
-
-	public void setConDistrictMapBlob(Blob conDistrictMapFile) {
-		this.conDistrictMapFile = conDistrictMapFile;
-	}
-
-	public Blob getPrecinctMapBlob() {
-		return precinctMapFile;
-	}
-
-	public void setPrecinctMapBlob(Blob precinctMapFile) {
-		this.precinctMapFile = precinctMapFile;
 	}
 }

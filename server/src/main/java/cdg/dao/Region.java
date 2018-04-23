@@ -15,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.Lob;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
@@ -29,7 +30,7 @@ public class Region {
 	private int id;
 	private String publicID;
 	private String name;
-	@Transient
+	@Lob
 	private String geoJsonGeometry;
 	@Transient
 	private Geometry geometry;
