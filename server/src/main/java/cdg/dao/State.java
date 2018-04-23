@@ -93,7 +93,6 @@ public class State extends Region {
 		if (stateMapGeoJSON == null) {
 			return null;
 		}
-		//fake
 		return stateMapGeoJSON.getBytes(StandardCharsets.UTF_8);
 	}
 	
@@ -102,7 +101,6 @@ public class State extends Region {
 		if (conDistrictMapGeoJSON == null) {
 			return null;
 		}
-		//fake
 		return conDistrictMapGeoJSON.getBytes(StandardCharsets.UTF_8);
 	}
 	
@@ -111,7 +109,6 @@ public class State extends Region {
 		if (precinctMapGeoJSON == null) {
 			return null;
 		}
-		//fake
 		return precinctMapGeoJSON.getBytes(StandardCharsets.UTF_8);
 	}
 	
@@ -149,7 +146,6 @@ public class State extends Region {
 	
 	public String getStateMapGeoJson()
 	{
-		//fake
 		return stateMapGeoJSON;
 	}
 	
@@ -159,7 +155,6 @@ public class State extends Region {
 	
 	public String getCongressionalMapGeoJson()
 	{
-		//fake
 		return conDistrictMapGeoJSON;
 	}
 	
@@ -169,7 +164,6 @@ public class State extends Region {
 	
 	public String getPrecinctMapGeoJson()
 	{
-		//fake
 		return precinctMapGeoJSON;
 	}
 	

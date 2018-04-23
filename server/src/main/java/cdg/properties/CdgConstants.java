@@ -40,6 +40,7 @@ public class CdgConstants {
 	
 	//domain constants
 	public static final String DISTRICT_NAME_PREFIX = "Congressional District ";
+	public static final double MAX_GOODNESS = 100;
 
 	//properties file keys
 	public static final String STATE_NAME_FIELD = "geojson_stateName";

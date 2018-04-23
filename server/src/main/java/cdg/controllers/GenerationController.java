@@ -32,8 +32,6 @@ import cdg.responses.GenerationResponse;
 @RequestMapping(CdgConstants.GENERATION_CONTROLLER_PATH_PREFIX)
 @CrossOrigin(origins = CdgConstants.CROSS_ORIGIN_LOCATION)
 public class GenerationController {
-	//fake
-	public static double MAX_GOODNESS = 100;
 	@Autowired
 	private FakeData stateRepo;
 
@@ -60,7 +58,7 @@ public class GenerationController {
 		GoodnessEvaluator goodnessEval;
 		try {
 			constraintEval = CdgConstraintEvaluator.toConstraintEvaluator(config);
-			goodnessEval = CdgGoodnessEvaluator.toGoodnessEvaluator(MAX_GOODNESS, config);
+			goodnessEval = CdgGoodnessEvaluator.toGoodnessEvaluator(CdgConstants.MAX_GOODNESS, config);
 		} catch (IllegalArgumentException iae) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.BAD_REQUEST);
 		}

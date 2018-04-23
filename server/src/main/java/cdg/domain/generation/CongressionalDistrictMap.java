@@ -29,9 +29,6 @@ public class CongressionalDistrictMap {
 	private Random randGenerator;
 	private final int MAXID;
 	
-	//@Autowired
-	//StateRepository stateRepo;
-	
 	public CongressionalDistrictMap(State state, GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval) {
 		if (goodnessEval == null || constraintEval == null || state == null) {
 			throw new IllegalArgumentException();

@@ -81,6 +81,40 @@ public class ImportService {
 		return state;
 	}
 	
+	/*
+	 * Annotate each precinct GeoJSON geometry with its neighboring precints.
+	 * Calls a script in resources to annotate the GeoJSON.  
+	 * This script converts GeoJSON to topoJSON and uses the TopoJSON client library to find neighbors.
+	 */
+	private String annotateGeoJSONNeighbors(String geoJSON) {
+		if (geoJSON == null) {
+			throw new IllegalArgumentException();
+		}
+		ScriptEngine engine = new ScriptEngineManager().getEngineByName(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_ENGINE);
+		Bindings bindings = engine.createBindings();
+		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_JSON_BINDING, geoJSON);
+		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_CLIENT_BINDING, CdgConstants.TOPOJSON_CLIENT_SCRIPT_PATH);
+		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_SERVER_BINDING, CdgConstants.TOPOJSON_SERVER_SCRIPT_PATH);
+		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_NEIGHBOR_KEY_BINDING, propertiesManager.getProperty(CdgConstants.PRECINCT_NEIGHBORS_FIELD));
+		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_PRECINCT_KEY_BINDING, propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD));
+		Reader script = null;
+		String result = null;
+		try {
+			Resource resource = new ClassPathResource(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_PATH);
+			script = new InputStreamReader(resource.getInputStream());
+			result = (String)engine.eval(script,bindings);
+			if (result == null) {
+				throw new IllegalArgumentException();
+			}
+		} catch (IOException ioe) {
+			throw new IllegalStateException();
+		} catch (ScriptException e) {
+			System.err.println(e.getMessage());
+			throw new IllegalArgumentException();
+		}
+		return result;
+	}	
+	
 	private State generateState(String name, String publicID, String geoJSON) {
 		State state = new State();
 		state.setName(name);
@@ -98,37 +132,50 @@ public class ImportService {
 		Map<String,Object> currProp;
 		Geometry currGeom;
 		Precinct currPrecinct;
+		String currPrecinctName;
+		String currPrecinctPubID;
 		CongressionalDistrict currDistrict;
 		String currDistPubID;
 		for (int i = 0; i < features.length; i++) {
 			currProp = features[i].getProperties();
 			currGeom = features[i].getGeometry();
-			currPrecinct = new Precinct();
-			currPrecinct.setName((String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_NAME_FIELD)));
-			currPrecinct.setPublicID((String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD)));
-			currPrecinct.setGeoJsonGeometry(currGeom.toString());
+			currPrecinctName = (String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_NAME_FIELD));
+			currPrecinctPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD));
+			currPrecinct = generatePrecinct(currPrecinctPubID, currPrecinctName, currGeom.toString());
+			precincts.put(currPrecinct.getId(), currPrecinct);
 			
 			currDistPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.DISTRICT_IDENTIFIER_FIELD));
 			currDistrict = districtsPubID.get(currDistPubID);
 			if (currDistrict == null) {
-				currDistrict = new CongressionalDistrict();
-				currDistrict.setName(CdgConstants.DISTRICT_NAME_PREFIX + currDistPubID);
-				currDistrict.setPublicID(currDistPubID);
-				//store to database and use returned district value
-				currDistrict = districtRepo.saveAndFlush(currDistrict);
+				currDistrict = generateDistrict(currDistPubID);
 				districtsPubID.put(currDistrict.getPublicID(), currDistrict);
 				districts.put(currDistrict.getId(), currDistrict);
 			}
-			
-			//store to database and use returned precinct value
-			currPrecinct = precinctRepo.saveAndFlush(currPrecinct);
-			precincts.put(currPrecinct.getId(), currPrecinct);
 			
 			currPrecinct.setConDistrict(currDistrict);
 			currPrecinct.setState(state);
 			currDistrict.getPrecincts().put(currPrecinct.getId(), currPrecinct);
 			currDistrict.setState(state);
 		}
+	}
+	
+	private Precinct generatePrecinct(String publicID, String name, String geoJSON) {
+		Precinct precinct = new Precinct();
+		precinct.setName(name);
+		precinct.setPublicID(publicID);
+		precinct.setGeoJsonGeometry(geoJSON);
+		//store to database and use returned precinct value
+		precinct = precinctRepo.saveAndFlush(precinct);
+		return precinct;
+	}
+	
+	private CongressionalDistrict generateDistrict(String publicID) {
+		CongressionalDistrict district = new CongressionalDistrict();
+		district.setName(CdgConstants.DISTRICT_NAME_PREFIX + publicID);
+		district.setPublicID(publicID);
+		//store to database and use returned district value
+		district = districtRepo.saveAndFlush(district);
+		return district;
 	}
 
 	private void generateNeighbors(Feature[] features, Map<Integer,Precinct> precincts) {
@@ -233,34 +280,4 @@ public class ImportService {
 		String stateGeoJson = MapService.convertToGeoJSONGeometry(stateGeom);
 		state.setGeoJsonGeometry(stateGeoJson);
 	}
-	
-
-	private String annotateGeoJSONNeighbors(String geoJSON) {
-		if (geoJSON == null) {
-			throw new IllegalArgumentException();
-		}
-		ScriptEngine engine = new ScriptEngineManager().getEngineByName(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_ENGINE);
-		Bindings bindings = engine.createBindings();
-		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_JSON_BINDING, geoJSON);
-		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_CLIENT_BINDING, CdgConstants.TOPOJSON_CLIENT_SCRIPT_PATH);
-		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_SERVER_BINDING, CdgConstants.TOPOJSON_SERVER_SCRIPT_PATH);
-		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_NEIGHBOR_KEY_BINDING, propertiesManager.getProperty(CdgConstants.PRECINCT_NEIGHBORS_FIELD));
-		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_PRECINCT_KEY_BINDING, propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD));
-		Reader script = null;
-		String result = null;
-		try {
-			Resource resource = new ClassPathResource(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_PATH);
-			script = new InputStreamReader(resource.getInputStream());
-			result = (String)engine.eval(script,bindings);
-			if (result == null) {
-				throw new IllegalArgumentException();
-			}
-		} catch (IOException ioe) {
-			throw new IllegalStateException();
-		} catch (ScriptException e) {
-			System.err.println(e.getMessage());
-			throw new IllegalArgumentException();
-		}
-		return result;
-	}	
 }

@@ -33,7 +33,7 @@ public class UserController {
 	private UserService userService;
 	
 	@RequestMapping(value=CdgConstants.USER_LOGIN_PATH, method=RequestMethod.POST)
-	public @ResponseBody ResponseEntity<UserDTO> login(@RequestBody UserDTO user, HttpServletRequest request, HttpSession session) {
+	public ResponseEntity<UserDTO> login(@RequestBody UserDTO user, HttpServletRequest request, HttpSession session) {
 		session.invalidate();
 		session = request.getSession();
 		User loggedUser = userService.login(new User(user));
@@ -61,7 +61,7 @@ public class UserController {
 	}
 	
 	@RequestMapping(value=CdgConstants.USER_LOGOUT_PATH, method=RequestMethod.POST)
-	public @ResponseBody ResponseEntity<UserDTO> logout(HttpSession session) {
+	public ResponseEntity<UserDTO> logout(HttpSession session) {
 		User sessionUser = (User) session.getAttribute(CdgConstants.SESSION_USER);
 		if(sessionUser != null) {
 			session.removeAttribute(CdgConstants.SESSION_USER);
@@ -72,7 +72,7 @@ public class UserController {
 	}
 
 	@RequestMapping(path=CdgConstants.USER_ALL_USERS_PATH)
-	public @ResponseBody Iterable<User> getAllUsers() {
+	public Iterable<User> getAllUsers() {
 		// This returns a JSON or XML with the users
 		return userRepository.findAll();
 	}	
