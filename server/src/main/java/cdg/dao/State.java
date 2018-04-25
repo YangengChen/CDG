@@ -1,11 +1,9 @@
 package cdg.dao;
 
 import java.nio.charset.StandardCharsets;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -20,7 +18,6 @@ import javax.persistence.Lob;
 import javax.persistence.Table;
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.Transient;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 
@@ -33,17 +30,14 @@ public class State extends Region {
 	@OneToMany(mappedBy="state", cascade= {CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval=true)
 	@MapKey(name = "id")
 	private Map<Integer,Precinct> precincts;
-	@Transient
-	//@Lob
-	//@Basic(fetch = FetchType.LAZY)
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
 	private String stateMapGeoJSON;
-	@Transient
-	//@Lob
-	//@Basic(fetch = FetchType.LAZY)
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
 	private String conDistrictMapGeoJSON;
-	@Transient
-	//@Lob
-	//@Basic(fetch = FetchType.LAZY)
+	@Lob
+	@Basic(fetch = FetchType.LAZY)
 	private String precinctMapGeoJSON;
 	
 	public State()
@@ -70,76 +64,84 @@ public class State extends Region {
 		this.precincts = precincts;
 	}
 	
+	public String getStateMapGeoJSON()
+	{
+		return stateMapGeoJSON;
+	}
+	
+	public void setStateMapGeoJSON(String geoJSON) {
+		stateMapGeoJSON = geoJSON;
+	}
+	
+	public String getConDistrictMapGeoJSON()
+	{
+		return conDistrictMapGeoJSON;
+	}
+	
+	public void setConDistrictMapGeoJSON(String geoJSON) {
+		conDistrictMapGeoJSON = geoJSON;
+	}
+	
+	public String getPrecinctMapGeoJSON()
+	{
+		return precinctMapGeoJSON;
+	}
+	
+	public void setPrecinctMapGeoJSON(String geoJSON) {
+		precinctMapGeoJSON = geoJSON;
+	}
+	
+	public String getGeoJSON(MapType type) {
+		if (type == null)
+			throw new IllegalArgumentException();
+
+		String geoJSON = null;
+		switch (type)
+		{
+			case STATE:
+				geoJSON = getStateMapGeoJSON();
+				break;
+			case CONGRESSIONAL:
+				geoJSON = getConDistrictMapGeoJSON();
+				break;
+			case PRECINCT:
+				geoJSON = getPrecinctMapGeoJSON();
+				break;
+			default:
+				geoJSON = null;
+				break;
+		}
+		return geoJSON;
+	}
+	
 	public byte[] getMapFile(MapType type)
 	{
 		if (type == null)
 			throw new IllegalArgumentException();
-		
-		byte[] mapFile = null;
-		switch (type)
-		{
-			case STATE:
-				mapFile = getStateMapFile();
-				break;
-			case CONGRESSIONAL:
-				mapFile = getConDistrictMapFile();
-				break;
-			case PRECINCT:
-				mapFile = getPrecinctMapFile();
-				break;
-			default:
-				mapFile = null;
-				break;
+
+		String geoJSON = getGeoJSON(type);
+		if (geoJSON == null) {
+			return null;
 		}
+		
+		byte[] mapFile = getMapFile(geoJSON);
 		return mapFile;
 	}
 	
-	public byte[] getStateMapFile()
+	private byte[] getMapFile(String geoJson)
 	{
-		if (stateMapGeoJSON == null) {
+		if (geoJson == null) {
 			return null;
 		}
-		return stateMapGeoJSON.getBytes(StandardCharsets.UTF_8);
+		return geoJson.getBytes(StandardCharsets.UTF_8);
 	}
-	
-	public byte[] getConDistrictMapFile()
-	{
-		if (conDistrictMapGeoJSON == null) {
-			return null;
-		}
-		return conDistrictMapGeoJSON.getBytes(StandardCharsets.UTF_8);
-	}
-	
-	public byte[] getPrecinctMapFile()
-	{
-		if (precinctMapGeoJSON == null) {
-			return null;
-		}
-		return precinctMapGeoJSON.getBytes(StandardCharsets.UTF_8);
-	}
-	
 	
 	public MapDTO getMap(MapType type)
 	{
 		if (type == null)
 			throw new IllegalArgumentException();
 		
-		String geoJson = null;
-		switch (type)
-		{
-			case STATE:
-				geoJson = getStateMapGeoJson();
-				break;
-			case CONGRESSIONAL:
-				geoJson = getCongressionalMapGeoJson();
-				break;
-			case PRECINCT:
-				geoJson = getPrecinctMapGeoJson();
-				break;
-			default:
-				geoJson = null;
-				break;
-		}
+		String geoJson = getGeoJSON(type);
 		if (geoJson == null)
 			return null;
 		
@@ -148,33 +150,6 @@ public class State extends Region {
 		map.setGeoJson(geoJson);
 		
 		return map;
-	}
-	
-	public String getStateMapGeoJson()
-	{
-		return stateMapGeoJSON;
-	}
-	
-	public void setStateMapGeoJson(String geoJSON) {
-		stateMapGeoJSON = geoJSON;
-	}
-	
-	public String getCongressionalMapGeoJson()
-	{
-		return conDistrictMapGeoJSON;
-	}
-	
-	public void setCongressionalMapGeoJson(String geoJSON) {
-		conDistrictMapGeoJSON = geoJSON;
-	}
-	
-	public String getPrecinctMapGeoJson()
-	{
-		return precinctMapGeoJSON;
-	}
-	
-	public void setPrecinctMapGeoJson(String geoJSON) {
-		precinctMapGeoJSON = geoJSON;
 	}
 	
 	public DistrictDTO getDataDTO()
@@ -211,19 +186,21 @@ public class State extends Region {
 	
 	public MapDataDTO getCongressionalData()
 	{
-		if (conDistricts == null) {
+		Map<Integer,CongressionalDistrict> currDistricts = getConDistricts();
+		if (currDistricts == null) {
 			return null;
 		}
-		List<Region> regions = new ArrayList<>(conDistricts.values());
+		List<Region> regions = new ArrayList<>(currDistricts.values());
 		return populateDataDTO(regions);
 	}
 	
 	public MapDataDTO getPrecinctData()
 	{
-		if (precincts == null) {
+		Map<Integer,Precinct> currPrecincts = getPrecincts();
+		if (currPrecincts == null) {
 			return null;
 		}
-		List<Region> regions = new ArrayList<>(precincts.values());
+		List<Region> regions = new ArrayList<>(currPrecincts.values());
 		return populateDataDTO(regions);
 	}
 	

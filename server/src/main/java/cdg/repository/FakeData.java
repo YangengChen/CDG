@@ -35,6 +35,7 @@ public class FakeData {
 		addFakeState("indiana_precincts.geojson");
 		addFakeState("minnesota_precincts.geojson");
 		addFakeState("mississippi_precincts.geojson");
+		addFakeState("washington_precincts.geojson");
 	}
 	
 	private void addFakeState(String pathName) {

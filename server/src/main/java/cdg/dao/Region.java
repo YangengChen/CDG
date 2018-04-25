@@ -1,23 +1,26 @@
 package cdg.dao;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import com.vividsolutions.jts.geom.Geometry;
 
 import cdg.dto.DistrictDTO;
 
-import javax.persistence.DiscriminatorColumn;
+import javax.persistence.Basic;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinTable;
 import javax.persistence.Lob;
-import javax.persistence.OneToMany;
+import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
+import javax.persistence.JoinColumn;
 
 
 @Entity
@@ -27,22 +30,28 @@ import javax.persistence.Transient;
 public class Region {
 	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY)
+	@Column(name="id", updatable = false, nullable = false)
 	private int id;
+	@Column(updatable = false, nullable = false)
 	private String publicID;
 	private String name;
 	@Lob
+	@Basic(fetch = FetchType.LAZY)
 	private String geoJsonGeometry;
 	@Transient
 	private Geometry geometry;
 	@Transient
 	private ElectionResult presidentialVoteTotals;
-	@Transient
+	@ManyToMany
+    @JoinTable(
+        name = "Neighbors", 
+        joinColumns = { @JoinColumn(name = "neighborOneID", referencedColumnName = "id", nullable = false) }, 
+        inverseJoinColumns = { @JoinColumn(name = "neighborTwoID", referencedColumnName = "id", nullable = false) }
+    )
 	private Map<Integer,Region> neighborRegions;
 	
-	public Region()
-	{
-		neighborRegions = new HashMap<>();
-	}
+	public Region() {}
+	
 	public Region(String name, String geoJsonGeometry, ElectionResult presidentialVoteTotals) {
 		this();
 		this.name = name;

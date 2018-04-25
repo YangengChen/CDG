@@ -36,6 +36,8 @@ import cdg.services.MapService;
 public class MapController {
 	@Autowired
 	FakeData stateRepo;
+	@Autowired
+	MapService mapService;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
@@ -89,7 +91,7 @@ public class MapController {
 		Iterable<State> states = stateRepo.findAll();
 		String usMap;
 		try {
-			usMap = MapService.generateUnitedStatesMap(Lists.newArrayList(states));
+			usMap = mapService.generateUnitedStatesMap(Lists.newArrayList(states));
 		} catch (IllegalStateException ise) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

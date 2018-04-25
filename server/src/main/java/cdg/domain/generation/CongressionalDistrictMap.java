@@ -1,6 +1,5 @@
 package cdg.domain.generation;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -107,7 +106,7 @@ public class CongressionalDistrictMap {
 		for (Precinct precinct : allPrecincts.values()) {
 			currNeighbors = precinct.getNeighborRegions();					//lazy loaded
 			if (currNeighbors == null) {
-				throw new IllegalStateException();
+				continue;
 			}
 			remappedNeighbors = new HashMap<Integer,Region>();
 			for (Region neighbor : currNeighbors.values()) {
