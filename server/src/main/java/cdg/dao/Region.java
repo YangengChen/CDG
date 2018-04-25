@@ -22,7 +22,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
 
-import org.hibernate.annotations.LazyGroup;
+//import org.hibernate.annotations.LazyGroup;
 
 import javax.persistence.JoinColumn;
 
@@ -41,7 +41,7 @@ public class Region {
 	private String name;
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
-	@LazyGroup("geo")
+	//@LazyGroup("geo")
 	private byte[] geoJson;
 	@Transient
 	private Geometry geometry;

@@ -3,6 +3,7 @@ package cdg.controllers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -49,9 +50,11 @@ public class MapController {
 	
 	@RequestMapping( value = CdgConstants.MAP_STATIC_MAP_PATH, method=RequestMethod.GET)
 	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable(CdgConstants.MAP_STATEID_PATH_VARIABLE) String stateID, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) {
-		State state = stateRepo.findByPublicId(stateID, State.class);
-		if (state == null)
+		Optional<State> stateOpt = stateRepoReal.findByPublicID(stateID, State.class);
+		if (!stateOpt.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		State state = stateOpt.get();
 
 		MapDTO map = state.getMap(type);
 		if (map == null)
@@ -62,9 +65,11 @@ public class MapController {
 	
 	@RequestMapping( value = CdgConstants.MAP_STATIC_MAP_FILE_PATH, method=RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<byte[]> getStaticStateMapFile(@PathVariable(CdgConstants.MAP_STATEID_PATH_VARIABLE) String stateID, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) {
-		State state = stateRepo.findByPublicId(stateID, State.class);
-		if (state == null)
+		Optional<State> stateOpt = stateRepoReal.findByPublicID(stateID, State.class);
+		if (!stateOpt.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		State state = stateOpt.get();
 
 		byte[] file = state.getMapFile(type);
 		if (file == null)
@@ -78,9 +83,11 @@ public class MapController {
 	
 	@RequestMapping( value = CdgConstants.MAP_STATIC_MAP_DATA_PATH, method=RequestMethod.GET)
 	public ResponseEntity<MapDataDTO> getStaticStateData(@PathVariable(CdgConstants.MAP_STATEID_PATH_VARIABLE) String stateID, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) {
-		State state = stateRepo.findByPublicId(stateID, State.class);
-		if (state == null)
+		Optional<State> stateOpt = stateRepoReal.findByPublicID(stateID, State.class);
+		if (!stateOpt.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		State state = stateOpt.get();
 
 		MapDataDTO data = state.getMapData(type);
 		if (data == null)
@@ -111,5 +118,10 @@ public class MapController {
 		names.addAll(stateNames);
 		
 		return names;
+	}
+
+	@RequestMapping( value = "/importall", method=RequestMethod.GET)
+	public void importAllData() {
+		stateRepo.initialize();
 	}
 }

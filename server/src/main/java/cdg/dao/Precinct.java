@@ -4,15 +4,16 @@ import cdg.dto.DistrictDTO;
 import cdg.dto.PrecinctDTO;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.ManyToOne;
 
 @Entity
 @Table( name = "Precincts")
 public class Precinct extends Region {
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private CongressionalDistrict conDistrict;
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private State state;
 	
 	public Precinct()

@@ -28,6 +28,12 @@ public class FakeData {
 	
 	private Map<String,State> fakeStates;
 	
+	public void  initialize() {
+		if (fakeStates == null) {
+			setFakeStates();
+		}
+	}
+	
 	private void setFakeStates()
 	{
 		fakeStates = new HashMap<>();
@@ -58,11 +64,10 @@ public class FakeData {
 	}
 	
 	public <T> T findByPublicId(String publicId, Class<T> type) {
+		initialize();
+		
 		if (type.equals(State.class))
 		{
-			if (fakeStates == null)
-				setFakeStates();
-			
 			return (T) fakeStates.get(publicId);
 		}
 		else
@@ -71,16 +76,14 @@ public class FakeData {
 	
 	public Iterable<State> findAll()
 	{
-		if (fakeStates == null)
-			setFakeStates();
+		initialize();
 		
 		return fakeStates.values();
 	}
 	
 	public Collection<NameOnly> findAllProjectedBy()
 	{
-		if (fakeStates == null)
-			setFakeStates();
+		initialize();
 		
 		List<NameOnly> result = new ArrayList<NameOnly>();
 		NameOnlyFake name;

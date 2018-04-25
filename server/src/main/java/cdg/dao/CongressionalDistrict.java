@@ -7,6 +7,7 @@ import cdg.dto.CongressionalDistrictDTO;
 import cdg.dto.DistrictDTO;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Table;
 import javax.persistence.OneToMany;
 import javax.persistence.ManyToOne;
@@ -17,7 +18,7 @@ import javax.persistence.MapKey;
 @Entity
 @Table (name = "Districts")
 public class CongressionalDistrict extends Region {
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY)
 	private State state;
 	@OneToMany(mappedBy="conDistrict", cascade= {CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval=true)
 	@MapKey(name = "id")

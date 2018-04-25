@@ -16,7 +16,7 @@ import javax.persistence.FetchType;
 import javax.persistence.Lob;
 import javax.persistence.Table;
 
-import org.hibernate.annotations.LazyGroup;
+//import org.hibernate.annotations.LazyGroup;
 
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
@@ -34,15 +34,15 @@ public class State extends Region {
 	private Map<Integer,Precinct> precincts;
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
-	@LazyGroup("stateGeo")
-	private byte[] stateMapGeoJSON;
+	//@LazyGroup("stateMap")
+	private byte[] stateMapGeoJson;
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
-	@LazyGroup("districtGeo")
+	//@LazyGroup("stateMap")
 	private byte[] conDistrictMapGeoJSON;
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
-	@LazyGroup("precinctGeo")
+	//@LazyGroup("stateMap")
 	private byte[] precinctMapGeoJSON;
 	
 	public State()
@@ -69,13 +69,13 @@ public class State extends Region {
 		this.precincts = precincts;
 	}
 	
-	public byte[] getStateMapGeoJSON()
+	public byte[] getStateMapGeoJson()
 	{
-		return stateMapGeoJSON;
+		return stateMapGeoJson;
 	}
 	
-	public void setStateMapGeoJSON(byte[] geoJSON) {
-		stateMapGeoJSON = geoJSON;
+	public void setStateMapGeoJson(byte[] geoJSON) {
+		stateMapGeoJson = geoJSON;
 	}
 	
 	public byte[] getConDistrictMapGeoJSON()
@@ -125,7 +125,7 @@ public class State extends Region {
 		switch (type)
 		{
 			case STATE:
-				geoJSON = getStateMapGeoJSON();
+				geoJSON = getStateMapGeoJson();
 				break;
 			case CONGRESSIONAL:
 				geoJSON = getConDistrictMapGeoJSON();
@@ -147,7 +147,7 @@ public class State extends Region {
 		switch (type)
 		{
 			case STATE:
-				setStateMapGeoJSON(geoJSON);
+				setStateMapGeoJson(geoJSON);
 				break;
 			case CONGRESSIONAL:
 				setConDistrictMapGeoJSON(geoJSON);
