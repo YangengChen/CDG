@@ -28,6 +28,7 @@ import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
 import cdg.properties.CdgConstants;
 import cdg.repository.FakeData;
+import cdg.repository.StateRepository;
 import cdg.services.MapService;
 
 @RestController
@@ -38,6 +39,8 @@ public class MapController {
 	FakeData stateRepo;
 	@Autowired
 	MapService mapService;
+	@Autowired
+	StateRepository stateRepoReal;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
@@ -88,7 +91,7 @@ public class MapController {
 	
 	@RequestMapping( value = CdgConstants.MAP_US_MAP_PATH, method=RequestMethod.GET)
 	public ResponseEntity<byte[]> getUnitedStatesMap() {
-		Iterable<State> states = stateRepo.findAll();
+		Iterable<State> states = stateRepoReal.findAll();
 		String usMap;
 		try {
 			usMap = mapService.generateUnitedStatesMap(Lists.newArrayList(states));
@@ -102,7 +105,7 @@ public class MapController {
 	
 	@RequestMapping( value = CdgConstants.MAP_ALL_STATES_PATH, method=RequestMethod.GET)
 	public List<NameOnly> getAllStates() {
-		Collection<NameOnly> stateNames = stateRepo.findAllProjectedBy();
+		Collection<NameOnly> stateNames = stateRepoReal.findAllProjectedBy();
 		
 		List<NameOnly> names = new ArrayList<NameOnly>();
 		names.addAll(stateNames);

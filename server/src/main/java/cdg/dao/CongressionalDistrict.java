@@ -32,7 +32,7 @@ public class CongressionalDistrict extends Region {
 		super();
 		borderPrecincts = new HashMap<>();
 	}
-	public CongressionalDistrict(String name, String geoJsonGeometry, ElectionResult presidentialVoteTotals, State state, double goodnessValue) {
+	public CongressionalDistrict(String name, byte[] geoJsonGeometry, ElectionResult presidentialVoteTotals, State state, double goodnessValue) {
 		super(name, geoJsonGeometry, presidentialVoteTotals);
 		this.state = state;
 		this.borderPrecincts = new HashMap<>();

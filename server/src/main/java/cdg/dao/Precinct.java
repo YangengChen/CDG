@@ -19,7 +19,7 @@ public class Precinct extends Region {
 	{
 		super();
 	}
-	public Precinct(String name, String geoJsonGeometry, ElectionResult presidentialVoteTotals, CongressionalDistrict conDistrict, State state) {
+	public Precinct(String name, byte[] geoJsonGeometry, ElectionResult presidentialVoteTotals, CongressionalDistrict conDistrict, State state) {
 		super(name, geoJsonGeometry, presidentialVoteTotals);
 		this.conDistrict = conDistrict;
 		this.state = state;

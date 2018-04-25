@@ -1,5 +1,6 @@
 package cdg.dao;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 import com.vividsolutions.jts.geom.Geometry;
@@ -20,6 +21,9 @@ import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
 import javax.persistence.Transient;
+
+import org.hibernate.annotations.LazyGroup;
+
 import javax.persistence.JoinColumn;
 
 
@@ -37,7 +41,8 @@ public class Region {
 	private String name;
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
-	private String geoJsonGeometry;
+	@LazyGroup("geo")
+	private byte[] geoJson;
 	@Transient
 	private Geometry geometry;
 	@Transient
@@ -52,10 +57,10 @@ public class Region {
 	
 	public Region() {}
 	
-	public Region(String name, String geoJsonGeometry, ElectionResult presidentialVoteTotals) {
+	public Region(String name, byte[] geoJson, ElectionResult presidentialVoteTotals) {
 		this();
 		this.name = name;
-		this.geoJsonGeometry = geoJsonGeometry;
+		this.geoJson = geoJson;
 		this.presidentialVoteTotals = presidentialVoteTotals;
 	}
 
@@ -75,14 +80,45 @@ public class Region {
 		this.name = name;
 	}
 
+	public byte[] getGeoJson() {
+		return geoJson;
+	}
+
+	public void setGeoJson(byte[] geoJsonGeometry) {
+		this.geoJson = geoJsonGeometry;
+	}
+	
 	public String getGeoJsonGeometry() {
-		return geoJsonGeometry;
+		byte[] currGeom = getGeoJson();
+		String jsonStr = convertGeoToString(currGeom);
+		return jsonStr;
 	}
 
 	public void setGeoJsonGeometry(String geoJsonGeometry) {
-		this.geoJsonGeometry = geoJsonGeometry;
+		if (geoJsonGeometry == null) {
+			setGeoJson(null);
+			return;
+		}
+		byte[] currGeom = convertStringToGeo(geoJsonGeometry);
+		setGeoJson(currGeom);
+	}
+	
+	public static String convertGeoToString(byte[] currGeom) {
+		if (currGeom == null) {
+			return null;
+		}
+		String geom = new String(currGeom, StandardCharsets.UTF_8);
+		return geom;
 	}
 
+	public static byte[] convertStringToGeo(String currGeom) {
+		if (currGeom == null) {
+			return null;
+		}
+		byte[] geom = currGeom.getBytes(StandardCharsets.UTF_8);
+		return geom;
+	}
+	
 	public Geometry getGeometry() {
 		return geometry;
 	}

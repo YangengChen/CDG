@@ -32,6 +32,7 @@ import cdg.dao.CongressionalDistrict;
 import cdg.dao.Precinct;
 import cdg.dao.Region;
 import cdg.dao.State;
+import cdg.domain.map.MapType;
 import cdg.properties.CdgConstants;
 import cdg.properties.CdgPropertiesManager;
 
@@ -123,7 +124,7 @@ public class ImportService {
 		state.setName(name);
 		state.setPublicID(publicID);
 		//fake
-		state.setPrecinctMapGeoJSON(geoJSON);
+		state.setMapGeoJSON(geoJSON, MapType.PRECINCT);
 		
 		//store to database and use returned state value
 		state = stateRepo.saveAndFlush(state);
@@ -273,9 +274,9 @@ public class ImportService {
 		//state.setPrecinctMapGeoJSON(precinctMap);
 		
 		String congressionalDistrictMap = mapService.generateCongressionalDistrictMap(state, true);
-		state.setConDistrictMapGeoJSON(congressionalDistrictMap);
+		state.setMapGeoJSON(congressionalDistrictMap, MapType.CONGRESSIONAL);
 		String stateMap = mapService.generateStateMap(state);
-		state.setStateMapGeoJSON(stateMap);
+		state.setMapGeoJSON(stateMap, MapType.STATE);
 	}
 	
 	private void setGeometries(State state) {
