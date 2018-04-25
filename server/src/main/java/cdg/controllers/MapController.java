@@ -37,11 +37,11 @@ import cdg.services.MapService;
 @CrossOrigin(origins = CdgConstants.CROSS_ORIGIN_LOCATION)
 public class MapController {
 	@Autowired
-	FakeData stateRepo;
+	FakeData importRepo;
 	@Autowired
 	MapService mapService;
 	@Autowired
-	StateRepository stateRepoReal;
+	StateRepository stateRepo;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
@@ -50,7 +50,7 @@ public class MapController {
 	
 	@RequestMapping( value = CdgConstants.MAP_STATIC_MAP_PATH, method=RequestMethod.GET)
 	public ResponseEntity<MapDTO> getStaticStateMap(@PathVariable(CdgConstants.MAP_STATEID_PATH_VARIABLE) String stateID, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) {
-		Optional<State> stateOpt = stateRepoReal.findByPublicID(stateID, State.class);
+		Optional<State> stateOpt = stateRepo.findByPublicID(stateID, State.class);
 		if (!stateOpt.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -65,7 +65,7 @@ public class MapController {
 	
 	@RequestMapping( value = CdgConstants.MAP_STATIC_MAP_FILE_PATH, method=RequestMethod.GET, produces = "application/json")
 	public ResponseEntity<byte[]> getStaticStateMapFile(@PathVariable(CdgConstants.MAP_STATEID_PATH_VARIABLE) String stateID, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) {
-		Optional<State> stateOpt = stateRepoReal.findByPublicID(stateID, State.class);
+		Optional<State> stateOpt = stateRepo.findByPublicID(stateID, State.class);
 		if (!stateOpt.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -83,7 +83,7 @@ public class MapController {
 	
 	@RequestMapping( value = CdgConstants.MAP_STATIC_MAP_DATA_PATH, method=RequestMethod.GET)
 	public ResponseEntity<MapDataDTO> getStaticStateData(@PathVariable(CdgConstants.MAP_STATEID_PATH_VARIABLE) String stateID, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) {
-		Optional<State> stateOpt = stateRepoReal.findByPublicID(stateID, State.class);
+		Optional<State> stateOpt = stateRepo.findByPublicID(stateID, State.class);
 		if (!stateOpt.isPresent()) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
@@ -98,7 +98,7 @@ public class MapController {
 	
 	@RequestMapping( value = CdgConstants.MAP_US_MAP_PATH, method=RequestMethod.GET)
 	public ResponseEntity<byte[]> getUnitedStatesMap() {
-		Iterable<State> states = stateRepoReal.findAll();
+		Iterable<State> states = stateRepo.findAll();
 		String usMap;
 		try {
 			usMap = mapService.generateUnitedStatesMap(Lists.newArrayList(states));
@@ -112,7 +112,7 @@ public class MapController {
 	
 	@RequestMapping( value = CdgConstants.MAP_ALL_STATES_PATH, method=RequestMethod.GET)
 	public List<NameOnly> getAllStates() {
-		Collection<NameOnly> stateNames = stateRepoReal.findAllProjectedBy();
+		Collection<NameOnly> stateNames = stateRepo.findAllProjectedBy();
 		
 		List<NameOnly> names = new ArrayList<NameOnly>();
 		names.addAll(stateNames);
@@ -122,6 +122,6 @@ public class MapController {
 
 	@RequestMapping( value = "/importall", method=RequestMethod.GET)
 	public void importAllData() {
-		stateRepo.initialize();
+		importRepo.initialize();
 	}
 }

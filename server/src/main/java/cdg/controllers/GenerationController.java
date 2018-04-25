@@ -2,6 +2,8 @@ package cdg.controllers;
 
 import static cdg.properties.CdgConstants.SESSION_USER;
 
+import java.util.Optional;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +27,7 @@ import cdg.domain.generation.MapGenerator;
 import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
 import cdg.properties.CdgConstants;
-import cdg.repository.FakeData;
+import cdg.repository.StateRepository;
 import cdg.responses.GenerationResponse;
 
 @RestController
@@ -33,7 +35,7 @@ import cdg.responses.GenerationResponse;
 @CrossOrigin(origins = CdgConstants.CROSS_ORIGIN_LOCATION)
 public class GenerationController {
 	@Autowired
-	private FakeData stateRepo;
+	private StateRepository stateRepo;
 
 	@RequestMapping( value = CdgConstants.GENERATION_START_PATH, method=RequestMethod.POST)
 	public ResponseEntity<GenerationStatus> startGeneration(@RequestBody GenerationConfiguration config, HttpSession session)
@@ -45,10 +47,11 @@ public class GenerationController {
 		if (user == null) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.UNAUTHORIZED);
 		}
-		State state = stateRepo.findByPublicId(config.getStateId(), State.class);
-		if (state == null) {
+		Optional<State> stateOpt = stateRepo.findByPublicID(config.getStateId(), State.class);
+		if (!stateOpt.isPresent()) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.NOT_FOUND);
 		}
+		State state = stateOpt.get();
 		
 		MapGenerator generator = user.getGenerator();
 		if (generator == null) {
