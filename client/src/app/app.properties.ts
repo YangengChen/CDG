@@ -15,10 +15,9 @@ export class AppProperties {
     }
     public load() {
         return new Promise((resolve, reject) => {
-            this.http.get("http://localhost:4200/assets/angular.properties.json")
+            this.http.get("./assets/angular.properties.json")
             .subscribe(props => {
                 this.properties = props.json();
-                console.log(this.properties);
                 resolve(true);
             });
 

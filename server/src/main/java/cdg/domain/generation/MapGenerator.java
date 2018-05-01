@@ -11,10 +11,7 @@ public class MapGenerator {
 	private ConstraintEvaluator constraintEvaluator;
 	private String stateId;
 	private GenerateMapAlgorithm currAlgorithmRun;
-	
-	//@Autowired
-	//private StateRepository stateRepo;
-	
+
 	public boolean startGeneration(State state) {
 		if (goodnessEvaluator == null || constraintEvaluator == null || state == null) {
 			throw new IllegalStateException();

@@ -10,6 +10,7 @@ import javax.persistence.Transient;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import cdg.domain.generation.MapGenerator;
+import cdg.dto.UserDTO;
 
 @Entity // This tells Hibernate to make a table out of this class
 public class User {
@@ -28,6 +29,18 @@ public class User {
 
     @Transient
     private MapGenerator generator;
+    
+    public User() {}
+    
+    public User(UserDTO user) {
+    		if (user == null) {
+    			throw new IllegalArgumentException();
+    		}
+    		firstName = user.getFirstName();
+    		lastName = user.getLastName();
+    		email = user.getEmail();
+    		password = user.getPassword();
+    }
     
 	public Long getId() {
 		return id;
@@ -84,5 +97,12 @@ public class User {
 	public void setGenerator(MapGenerator generator) {
 		this.generator = generator;
 	}
-
+	
+	public UserDTO getDTO() {
+		UserDTO user = new UserDTO();
+		user.setFirstName(firstName);
+		user.setLastName(lastName);
+		user.setEmail(email);
+		return user;
+	}
 }
