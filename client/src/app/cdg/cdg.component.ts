@@ -103,7 +103,7 @@ export class CdgComponent implements OnInit {
     console.log(this.selectedPrecinct.districtID);
   }
   changeState(event){
-    if(event.value.id == Constants.INIT_MAP_TYPE){
+    if(event.value.id == Constants.FULLMAP_ID){
       this.genConfig = null;
       this.getUnitedStates();
     }
@@ -116,8 +116,8 @@ export class CdgComponent implements OnInit {
     }
   }
   changeCompareState(event){
-    if(event.value.id == Constants.INIT_MAP_TYPE){
-      this.compareSelectedStateId = Constants.INIT_MAP_TYPE
+    if(event.value.id == Constants.FULLMAP_ID){
+      this.compareSelectedStateId = Constants.FULLMAP_ID
       this.getCompareUnitedStates();
     }
     else{
