@@ -167,12 +167,14 @@ public class GenerateMapAlgorithm {
 	
 	private boolean chooseNextCandidatePrecinct()
 	{
+		int precinctID = CONDISTRICTMAP.getNextCandidatePrecinct(STATE.getCurrDistrictID(), GOODNESSEVAL);
+		STATE.setCandidatePrecinctUID(precinctID);
 		return false;
 	}
 	
 	private void moveCandidatePrecinct()
 	{
-		
+		CONDISTRICTMAP.movePrecinct(STATE.getCurrDistrictID(), STATE.getCandidatePrecinctUID());
 	}
 	
 	private void unmoveCandidatePrecinct()
