@@ -194,7 +194,8 @@ public class CongressionalDistrictMap {
 	
 	public int getRandomDistrict() 
 	{
-		return -1;
+		//fake
+		return districts.keySet().iterator().next();
 	}
 	
 	public int getLowestGoodnessDistrict() 
@@ -214,7 +215,46 @@ public class CongressionalDistrictMap {
 	
 	public int movePrecinct(int districtIDFrom, int districtIDTo, int precinctID)
 	{
-		return -1;
+		CongressionalDistrict currDistrict = districts.get(districtIDFrom);
+		CongressionalDistrict neighborDistrict = (districtIDTo <= 0) ? null : districts.get(districtIDTo);
+		if (currDistrict == null || (neighborDistrict == null && districtIDTo > 0)) {
+			return -1;
+		}
+		Precinct currPrecinct;
+		try {
+			currPrecinct = currDistrict.removePrecinct(precinctID);
+			if (currPrecinct == null) {
+				return -1;
+			}
+		} catch (IllegalStateException ise) {
+			return -1;
+		}
+		if (neighborDistrict == null) {
+			/* Should return the same neighboring precinct/congressional district determined through the ConstraintsEvaluator if the 
+			 * precinct object has not changed since this was last called */
+			Precinct neighborPrecinct = currPrecinct.getFromNeighborConDistrict();
+			if (neighborPrecinct == null) {
+				return -1;
+			}
+			neighborDistrict = neighborPrecinct.getConDistrict();
+		}
+		if (!currPrecinct.hasNeighborDistrict(neighborDistrict)) {
+			return -1;
+		}
+		try {
+			currPrecinct = neighborDistrict.addPrecinct(currPrecinct);
+			if (currPrecinct == null) {
+				return -1;
+			}
+		} catch (IllegalStateException ise) {
+			return -1;
+		}
+
+		Integer neighborID = districts.inverse().get(neighborDistrict);
+		if (neighborID == null) {
+			return -1;
+		}
+		return neighborID;
 	}
 	
 	private void evaluateAllGoodness(GoodnessEvaluator goodnessEval)

@@ -46,7 +46,7 @@ public class GenerateMapAlgorithm {
 		MAX_GENERATION_ITERATIONS = 0;
 		DISTRICT_ITERATION_MAX_PERCENT = 0;
 		END_THRESHOLD_PERCENT = 0;
-		POLICY = null;
+		POLICY = NextDistrictPolicy.RANDOM;
 	}
 	
 	public boolean start()
@@ -159,7 +159,7 @@ public class GenerateMapAlgorithm {
 			default:
 				throw new IllegalStateException();
 		}
-		if (distID < 0) {
+		if (distID <= 0) {
 			throw new IllegalStateException();
 		}
 		STATE.setCurrDistrictID(distID);
@@ -167,12 +167,20 @@ public class GenerateMapAlgorithm {
 	
 	private boolean chooseNextCandidatePrecinct()
 	{
+		///fake
+		
 		return false;
 	}
 	
 	private void moveCandidatePrecinct()
 	{
-		
+		int distID = STATE.getCurrDistrictID();
+		int precinctID = STATE.getCandidatePrecinctUID();
+		int neighborID = CONDISTRICTMAP.movePrecinct(distID, -1, precinctID);
+		if (neighborID <= 0) {
+			throw new IllegalStateException();
+		}
+		STATE.setCurrNeighborID(neighborID);
 	}
 	
 	private void unmoveCandidatePrecinct()

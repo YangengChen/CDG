@@ -41,6 +41,65 @@ public class Precinct extends Region {
 	public void setState(State state) {
 		this.state = state;
 	}
+	
+	/*
+	 * Return first neighborboring precinct found
+	 */
+	public Precinct getFromNeighborConDistrict() {
+		if (this.getNeighborRegions() == null) {
+			return null;
+		}
+		CongressionalDistrict currDistrict = this.getConDistrict();
+		if (currDistrict == null) {
+			throw new IllegalStateException();
+		}
+		
+		int currID = currDistrict.getId();
+		Precinct neighborPrec;
+		CongressionalDistrict neighborDistrict;
+		for (Region neighbor : this.getNeighborRegions().values()) {
+			neighborPrec = (Precinct) neighbor;
+			neighborDistrict = neighborPrec.getConDistrict();
+			if (neighborDistrict == null) {
+				throw new IllegalStateException();
+			}
+			if (neighborDistrict.getId() != currID) {
+				return neighborPrec;
+			}
+		}
+		return null;
+	}
+	
+	public boolean hasNeighborDistrict(CongressionalDistrict district) {
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
+		CongressionalDistrict currDistrict = this.getConDistrict();
+		if (currDistrict == null) {
+			throw new IllegalStateException();
+		}
+		if (currDistrict.getId() == district.getId()) {
+			return false;
+		}
+		if (this.getNeighborRegions() == null) {
+			return false;
+		}
+		
+		int distID = district.getId();
+		Precinct neighborPrec;
+		CongressionalDistrict neighborDistrict;
+		for (Region neighbor : this.getNeighborRegions().values()) {
+			neighborPrec = (Precinct) neighbor;
+			neighborDistrict = neighborPrec.getConDistrict();
+			if (neighborDistrict == null) {
+				throw new IllegalStateException();
+			}
+			if (neighborDistrict.getId() == distID) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public DistrictDTO getDataDTO() {
