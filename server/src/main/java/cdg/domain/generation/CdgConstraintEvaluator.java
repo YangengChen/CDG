@@ -55,6 +55,7 @@ public class CdgConstraintEvaluator extends ConstraintEvaluator {
 	}
 
 	public boolean meetsConstraints(Precinct district) {
-		return false;
+		//fake
+		return true;
 	}
 }

@@ -97,6 +97,14 @@ public class GenerateMapAlgorithm {
 		}
 	}
 	
+	public State getGeneratedState() {
+		if (isComplete()) {
+			State genState = CONDISTRICTMAP.getGeneratedState();
+			return genState;
+		}
+		return null;
+	}
+	
 	public boolean getGenerationResult()
 	{
 		if (generation == null) {
@@ -116,17 +124,21 @@ public class GenerateMapAlgorithm {
 	private boolean generate()
 	{
 		STATE.startTime();
-		try {
+		/*try {
 			Thread.sleep(10000);
 		} catch (InterruptedException e) {
-		}
-		
-		double startStateGoodness = CONDISTRICTMAP.getTotalGoodness();
-		STATE.setStartTotalGoodness(startStateGoodness);
-		while (continueWithGeneration()) {
-			STATE.incrementGenIteration();
-			chooseNextStartingDistrict();
-			operateOnDistrict();
+		}*/
+		try {
+			double startStateGoodness = CONDISTRICTMAP.getTotalGoodness();
+			STATE.setStartTotalGoodness(startStateGoodness);
+			while (continueWithGeneration()) {
+				STATE.incrementGenIteration();
+				chooseNextStartingDistrict();
+				operateOnDistrict();
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return false;
 		}
 		
 		STATE.stopTime();
@@ -145,6 +157,9 @@ public class GenerateMapAlgorithm {
 			if (precinctChosen) {
 				moveCandidatePrecinct();
 				validatePrecinctMove();
+			}
+			else {
+				break;
 			}
 		}
 		while (continueWithDistrict());
@@ -201,16 +216,22 @@ public class GenerateMapAlgorithm {
 	
 	private boolean isValidMove(double currOldGoodness, double currNewGoodness, double neighborOldGoodness, double neighborNewGoodness)
 	{
+		//fake
 		return false;
 	}
 	
 	private boolean continueWithDistrict()
 	{
-		return false;
+		//fake
+		return true;
 	}
 	
 	private boolean continueWithGeneration()
 	{
-		return false;
+		//fake
+		if (STATE.getCurrGenIteration() > 2) {
+			return false;
+		}
+		return true;
 	}
 }

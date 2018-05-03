@@ -101,8 +101,8 @@ public class CongressionalDistrict extends Region {
 	 * @return added precinct
 	 */
 	public Precinct addPrecinct(Precinct precinct) {
-		if (precincts == null) {
-			return null;
+		if (getPrecincts() == null || borderPrecincts == null) {
+			throw new IllegalStateException();
 		}
 		Precinct currPrecinct = precincts.get(precinct.getId());
 		if (currPrecinct != null) {
@@ -222,8 +222,8 @@ public class CongressionalDistrict extends Region {
 	 * @return removed precinct corresponding to precinctID
 	 */
 	public Precinct removePrecinct(int precinctID) {
-		if (precincts == null) {
-			return null;
+		if (getPrecincts() == null || borderPrecincts == null) {
+			throw new IllegalStateException();
 		}
 		Precinct currPrecinct = precincts.get(precinctID);
 		if (currPrecinct == null) {

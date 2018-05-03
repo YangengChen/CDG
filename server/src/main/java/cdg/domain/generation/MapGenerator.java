@@ -77,6 +77,17 @@ public class MapGenerator {
 		return response;
 	}
 	
+	public State getGeneratedState() {
+		if (currAlgorithmRun == null) {
+			return null;
+		}
+		if (!getStatus().equals(GenerationStatus.COMPLETE)) {
+			return null;
+		}
+		State genState = currAlgorithmRun.getGeneratedState();
+		return genState;
+	}
+	
 	
 	public void setState(String stateId) {
 		this.stateId = stateId;

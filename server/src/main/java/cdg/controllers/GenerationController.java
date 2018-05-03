@@ -24,11 +24,13 @@ import cdg.domain.generation.GenerationConfiguration;
 import cdg.domain.generation.GenerationStatus;
 import cdg.domain.generation.GoodnessEvaluator;
 import cdg.domain.generation.MapGenerator;
+import cdg.domain.map.MapType;
 import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
 import cdg.properties.CdgConstants;
 import cdg.repository.StateRepository;
 import cdg.responses.GenerationResponse;
+import cdg.services.MapService;
 
 @RestController
 @RequestMapping(CdgConstants.GENERATION_CONTROLLER_PATH_PREFIX)
@@ -36,6 +38,8 @@ import cdg.responses.GenerationResponse;
 public class GenerationController {
 	@Autowired
 	private StateRepository stateRepo;
+	@Autowired
+	private MapService mapService;
 
 	@RequestMapping( value = CdgConstants.GENERATION_START_PATH, method=RequestMethod.POST)
 	public ResponseEntity<GenerationStatus> startGeneration(@RequestBody GenerationConfiguration config, HttpSession session)
@@ -112,8 +116,30 @@ public class GenerationController {
 	}
 	
 	@RequestMapping( value = CdgConstants.GENERATION_MAP_PATH, method=RequestMethod.GET)
-	public MapDTO getGeneratedMap() {
-		return null;
+	public ResponseEntity<byte[]> getGeneratedMap(HttpSession session) {
+		User user = (User) session.getAttribute(SESSION_USER);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		MapGenerator generator = user.getGenerator();
+		if (generator == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if (!generator.getStatus().equals(GenerationStatus.COMPLETE)) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+		State generatedState = generator.getGeneratedState();
+		String generatedConDistMap = null;
+		try {
+			generatedConDistMap = mapService.generateCongressionalDistrictMap(generatedState, true);
+		} catch (Exception e) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		generatedState.setMapGeoJSON(generatedConDistMap, MapType.CONGRESSIONAL);
+		byte[] mapFile = generatedState.getMapFile(MapType.CONGRESSIONAL);
+
+		return new ResponseEntity<byte[]>(mapFile, HttpStatus.OK);
 	}
 	
 	@RequestMapping( value = CdgConstants.GENERATION_SAVE_MAP_PATH, method=RequestMethod.POST)

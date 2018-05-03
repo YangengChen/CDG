@@ -173,6 +173,7 @@ public class CongressionalDistrictMap {
 			throw new IllegalStateException();
 		}
 		
+		borderPrecinctQueues = new HashMap<Integer,LinkedList<Integer>>();
 		randGenerator = new Random(0);
 	}
 	
@@ -212,6 +213,7 @@ public class CongressionalDistrictMap {
 				break;
 			}	
 		}
+		System.err.println(conDistrict.getName());
 		return districtID;
 	}
 	
@@ -266,8 +268,8 @@ public class CongressionalDistrictMap {
 	
 	public int movePrecinct(int districtIDFrom, int districtIDTo, int precinctID) {
 		CongressionalDistrict currDistrict = districts.get(districtIDFrom);
-		CongressionalDistrict neighborDistrict = (districtIDTo <= 0) ? null : districts.get(districtIDTo);
-		if (currDistrict == null || (neighborDistrict == null && districtIDTo > 0)) {
+		CongressionalDistrict neighborDistrict = (districtIDTo < 0) ? null : districts.get(districtIDTo);
+		if (currDistrict == null || (neighborDistrict == null && districtIDTo >= 0)) {
 			return -1;
 		}
 		Precinct currPrecinct;
@@ -312,6 +314,10 @@ public class CongressionalDistrictMap {
 		for (int key : districtsKeySet) {
 			evaluateGoodness(key, goodnessEval);
 		}
+	}
+	
+	public State getGeneratedState() {
+		return state;
 	}
 	
 	private void updateGoodnesssQueue(CongressionalDistrict district) {
