@@ -13,6 +13,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.TopologyException;
 
@@ -55,6 +57,14 @@ public class CongressionalDistrict extends Region {
 	public Map<Integer, Precinct> getPrecincts() {
 		return precincts;
 	}
+	
+	public Precinct getPrecinct(int precinctID) {
+		if (getPrecincts() == null) {
+			return null;
+		}
+		Precinct p = precincts.get(precinctID);
+		return p;
+	}
 
 	public void setPrecincts(Map<Integer, Precinct> precincts) {
 		this.precincts = precincts;
@@ -62,6 +72,14 @@ public class CongressionalDistrict extends Region {
 
 	public Map<Integer, Precinct> getBorderPrecincts() {
 		return borderPrecincts;
+	}
+	
+	public int[] getBorderPrecinctKeys() {
+		if (getBorderPrecincts() == null) {
+			return null;
+		}
+		int[] keys = ArrayUtils.toPrimitive(borderPrecincts.keySet().toArray(new Integer[0]));
+		return keys;
 	}
 
 	public void setBorderPrecincts(Map<Integer, Precinct> borderPrecincts) {
