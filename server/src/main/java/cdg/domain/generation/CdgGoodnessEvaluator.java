@@ -16,7 +16,7 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 			throw new IllegalArgumentException();
 		}
 		GoodnessEvaluator evaluator = new CdgGoodnessEvaluator(maxGoodness);
-		if ((configuration.getCompactnessWeight() + configuration.getCompactnessWeight() +
+		if ((configuration.getCompactnessWeight() + configuration.getContiguityWeight() +
 				configuration.getPartisanFairWeight() + configuration.getRacialFairWeight()) != 1) {
 			throw new IllegalArgumentException();
 		}
