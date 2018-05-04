@@ -7,19 +7,19 @@ export class GenerationService{
     constructor(private http: HttpClient){
     }
     startGeneration(config:GenerationConfiguration){
-        return this.http.post(Constants.START_URL, JSON.stringify(config),{headers:{'Content-Type': 'application/json'}});
+        return this.http.post(Constants.START_URL, JSON.stringify(config),{headers:{'Content-Type': 'application/json'},  withCredentials:true});
     }
     stopGeneration(){
-        this.http.post(Constants.STOP_URL, {});
+        this.http.post(Constants.STOP_URL, {}, {withCredentials:true});
     }
     pauseGeneration(){
-        this.http.post(Constants.PAUSE_URL, {});
+        this.http.post(Constants.PAUSE_URL, {}, {withCredentials:true});
     }
     playGeneration(){
-        this.http.post(Constants.PLAY_URL, {});
+        this.http.post(Constants.PLAY_URL, {}, {withCredentials:true});
     }
     checkStatus(){
-        return this.http.get(Constants.STATUS_URL);
+        return this.http.get(Constants.STATUS_URL, {withCredentials:true});
     }
 }
 export class GenerationConfiguration {
@@ -32,13 +32,13 @@ export class GenerationConfiguration {
     racialFairWeight: Number;
     partisanFairWeight:Number;
     constructor(){
-        this.compactnessWeight = 50;
-        this.contiguityWeight = 50;
-        this.equalPopWeight = 50;
-        this.racialFairWeight = 50;
-        this.partisanFairWeight = 50;
-        this.permConDist;
-        this.permPrecinct;
+        this.compactnessWeight = .5;
+        this.contiguityWeight = .5;
+        this.equalPopWeight = .5;
+        this.racialFairWeight = .5;
+        this.partisanFairWeight = .5;
+        this.permConDist = [];
+        this.permPrecinct = [];
     }
     setState(state:string){
         this.stateId = state;

@@ -10,12 +10,15 @@
         </div>
       </nb-layout-header>
       <nb-sidebar id="sidebar">
+        <nb-flip-card [flipped]="algoRunning">
+        <nb-card-front>
         <nb-card>
-          <nb-tabset class="full-width">
+          <nb-card-body>
+         <nb-tabset class="full-width">
           <nb-tab tabTitle="Generate">
             <div id="generate-tool-container">
               Compare Toggle:
-              <mat-slide-toggle (change)="compareToggle($event)"></mat-slide-toggle>
+              <mat-slide-toggle *ngIf="!algoRunning" (change)="compareToggle($event)"></mat-slide-toggle>
               <div *ngIf="compare" id="pick-state-button">
                 Compare Map:
                 <cdg-dropdown [values]="stateList" (change)="changeCompareState($event)" name="States"></cdg-dropdown>
@@ -26,7 +29,7 @@
                 <cdg-dropdown [values]="stateList" (change)="changeState($event)" name="States"></cdg-dropdown>
               </div>
               <br>
-              <div id="slider-container">
+              <div *ngIf="!algoRunning" id="slider-container">
                 <cdg-slider  [disabled]="!genConfig || compare" (change)="updateCompactness($event)" name="{{compactnessSliderLabel}}" [slider]="!genConfig ? 50 : genConfig.getCompactnessWeight()"
 
                 ></cdg-slider>
@@ -37,12 +40,6 @@
               </div>
               <div id="generate-button">
                 <cdg-button [disabled]="!genConfig || compare || algoRunning" (click)="startGeneration()" name="{{generateDistrictsButtonLabel}}"></cdg-button>
-              </div>
-              <div class="map-button">
-                <cdg-button [disabled]="!algoRunning || !algoPaused" [img]="pauseImage"></cdg-button>
-              </div>
-              <div class="map-button">
-                <cdg-button [disabled]="!algoRunning" [img]="stopImage"></cdg-button>
               </div>
             </div>
           </nb-tab>
@@ -69,8 +66,28 @@
             </div>
             </div>
           </nb-tab>
-          </nb-tabset>
+          </nb-tabset> 
+        </nb-card-body>
         </nb-card>
+        </nb-card-front>
+          <nb-card-back>
+            <nb-card><nb-card-body>
+              <nb-tabset class="full-width">   
+                <nb-tab tabTitle="Generation">
+                <div class="map-button">
+                  <cdg-button [disabled]="!algoRunning || !algoPaused" [img]="pauseImage"></cdg-button>
+                </div>
+                <div class="map-button">
+                  <cdg-button [disabled]="!algoRunning" (click)="stopGenerationClicked()" [img]="stopImage"></cdg-button>
+                </div>
+                
+                </nb-tab>
+                <nb-tab tabTitle="Info">
+                </nb-tab>
+              </nb-tabset>
+              </nb-card-body></nb-card>
+          </nb-card-back>
+          </nb-flip-card>
       </nb-sidebar>
 
       <nb-layout-column>

@@ -24,6 +24,7 @@ import { saveAs }                   from 'file-saver/FileSaver';
   styleUrls: ['./cdg.component.scss']
 })
 export class CdgComponent implements OnInit {
+  flipped=false;
   mapObject: Object;
   compareMapObject:Object;
   compareSelectedStateId: string;
@@ -109,7 +110,7 @@ export class CdgComponent implements OnInit {
     }
     else{
       this.genConfig = new GenerationConfiguration()
-      this.genConfig.setState(event.label);
+      this.genConfig.setState(event.value.id);
       this.selectedStateName = event.label;
       this.selectedStateId = event.value.id;
       this.getState();
@@ -172,6 +173,7 @@ export class CdgComponent implements OnInit {
     else{
       //TODO: ADD POPUP WARNING: NO STATE CHOSEN
     }
+    this.algoRunning = true;
   }
   beginGenerationStatusCheck(){
     Observable.interval(5).subscribe( x => {
@@ -221,6 +223,7 @@ export class CdgComponent implements OnInit {
   }
   stopGenerationClicked(){
     this.genService.stopGeneration();
+    this.algoRunning = false;
   }
   playGenerationClicked(){
     this.genService.playGeneration();
@@ -254,6 +257,9 @@ export class CdgComponent implements OnInit {
     this.generateTabLabel = properties.generateTabLabel;
     this.informationTabLabel = properties.informationTabLabel;
     this.fileTabLabel = properties.fileTabLabel;
+  }
+  toggleFlip(){
+    this.flipped = !this.flipped;
   }
 
 }

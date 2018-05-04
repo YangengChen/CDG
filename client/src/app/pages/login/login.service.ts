@@ -8,13 +8,13 @@ export class LoginService {
   constructor(private http: HttpClient) {}
 
   login(user){
-    return this.http.post(endpoints.LOGIN_ENDPOINT,user,{withCredentials: true})
+    return this.http.post(endpoints.LOGIN_ENDPOINT,JSON.stringify(user), {headers:{'Content-Type': 'application/json'}, withCredentials:true})
   }
   register(user){
-    return this.http.post(endpoints.REGISTER_ENDPOINT,user,{withCredentials: true});
+    return this.http.post(endpoints.REGISTER_ENDPOINT,JSON.stringify(user), {headers:{'Content-Type': 'application/json'}, withCredentials:true});
   }
   logout(){
     console.log("logout")
-    return this.http.post(endpoints.LOGOUT_ENDPOINT, null,{withCredentials: true});
+    return this.http.post(endpoints.LOGOUT_ENDPOINT, null, {withCredentials:true});
   }
 }

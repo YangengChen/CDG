@@ -58,11 +58,13 @@ import {
   MatTooltipModule,
 } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
-import 'hammerjs'
+import 'hammerjs';
+//import { CdgStepComponent } from './cdg-step/cdg-step.component'
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
+    HomeComponent
+  //  CdgStepComponent,
   ],
   imports: [
     HttpModule,
