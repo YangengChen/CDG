@@ -38,7 +38,7 @@ public class CongressionalDistrictMap {
 		this.state = state;
 		validateEvaluators(goodnessEval, constraintEval);
 		Map<Integer, CongressionalDistrict> allDistricts = state.getConDistricts();
-		if (allDistricts == null) {
+		if (allDistricts == null || allDistricts.size() == 0) {
 			throw new IllegalStateException();
 		}
 		MAXID = generateCustomMap(allDistricts.values());
@@ -182,19 +182,54 @@ public class CongressionalDistrictMap {
 	}
 
 	public double evaluateGoodness(int districtID, GoodnessEvaluator evaluator) {
-		return -1;
+		CongressionalDistrict district = districts.get(districtID);
+		if (district == null || evaluator == null) {
+			throw new IllegalArgumentException();
+		}
+		double goodness = updateGoodness(district, evaluator);
+		updateGoodnessQueue(district);
+		return goodness;
+	}
+	
+	private double updateGoodness(CongressionalDistrict district, GoodnessEvaluator evaluator) {
+		double goodness = evaluator.calculateGoodness(district);
+		district.setGoodnessValue(goodness);
+		return goodness;
+	}
+	
+	private void evaluateAllGoodness(GoodnessEvaluator goodnessEval) {
+		Set<CongressionalDistrict> districtsSet = districts.values();
+		for (CongressionalDistrict district : districtsSet) {
+			updateGoodness(district, goodnessEval);
+		}
+	}
+	
+	private void updateGoodnessQueue(CongressionalDistrict district) {
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
+		if (!lowestGoodnessDistrict.remove(district)) {
+			throw new IllegalStateException();
+		}
+		lowestGoodnessDistrict.add(district);
 	}
 	
 	public double getGoodness(int districtID) {
 		CongressionalDistrict district = districts.get(districtID);
 		if (district == null) {
-			return -1;
+			throw new IllegalArgumentException();
 		}
 		return district.getGoodnessValue();
 	}
 	
 	public double getTotalGoodness() {
-		return -1;
+		double totalGoodness = 0;
+		Set<Integer> districtsKeySet = districts.keySet();
+		for (int key : districtsKeySet) {
+			totalGoodness += getGoodness(key);
+		}
+		double normalizedGoodness = totalGoodness / districts.size();
+		return normalizedGoodness;
 	}
 	
 	public int getRandomDistrict() {
@@ -270,7 +305,7 @@ public class CongressionalDistrictMap {
 		CongressionalDistrict currDistrict = districts.get(districtIDFrom);
 		CongressionalDistrict neighborDistrict = (districtIDTo < 0) ? null : districts.get(districtIDTo);
 		if (currDistrict == null || (neighborDistrict == null && districtIDTo >= 0)) {
-			return -1;
+			throw new IllegalArgumentException();
 		}
 		Precinct currPrecinct;
 		try {
@@ -309,19 +344,8 @@ public class CongressionalDistrictMap {
 		return neighborID;
 	}
 	
-	private void evaluateAllGoodness(GoodnessEvaluator goodnessEval) {
-		Set<Integer> districtsKeySet = districts.keySet();
-		for (int key : districtsKeySet) {
-			evaluateGoodness(key, goodnessEval);
-		}
-	}
-	
 	public State getGeneratedState() {
 		return state;
-	}
-	
-	private void updateGoodnesssQueue(CongressionalDistrict district) {
-
 	}
 
 	public int getDistrictID(CongressionalDistrict district) {

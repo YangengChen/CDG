@@ -25,8 +25,7 @@ public class GenerateMapAlgorithm {
 	private ExecutorService executor;
 	private final UUID generationID;
 	
-	public GenerateMapAlgorithm(State state, GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval)
-	{
+	public GenerateMapAlgorithm(State state, GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval) {
 		if (goodnessEval == null || constraintEval == null || state == null) {
 			throw new IllegalArgumentException();
 		}
@@ -49,8 +48,7 @@ public class GenerateMapAlgorithm {
 		POLICY = NextDistrictPolicy.RANDOM;
 	}
 	
-	public boolean start()
-	{
+	public boolean start() {
 		if (executor != null) {
 			return false;
 		}
@@ -65,23 +63,20 @@ public class GenerateMapAlgorithm {
 		return uid;
 	}
 	
-	public void stop()
-	{
+	public void stop() {
 		if (generation != null) {
 			generation.cancel(true);
 		}
 	}
 	
-	public boolean isComplete()
-	{
+	public boolean isComplete() {
 		if (generation == null) {
 			return false;
 		}
 		return generation.isDone();
 	}
 	
-	public boolean isCancelled()
-	{
+	public boolean isCancelled() {
 		if (generation == null) {
 			return false;
 		}
@@ -105,8 +100,7 @@ public class GenerateMapAlgorithm {
 		return null;
 	}
 	
-	public boolean getGenerationResult()
-	{
+	public boolean getGenerationResult() {
 		if (generation == null) {
 			return false;
 		}
@@ -121,13 +115,9 @@ public class GenerateMapAlgorithm {
 		}
 	}
 	
-	private boolean generate()
-	{
+	private boolean generate() {
 		STATE.startTime();
-		/*try {
-			Thread.sleep(10000);
-		} catch (InterruptedException e) {
-		}*/
+
 		try {
 			double startStateGoodness = CONDISTRICTMAP.getTotalGoodness();
 			STATE.setStartTotalGoodness(startStateGoodness);
@@ -136,6 +126,8 @@ public class GenerateMapAlgorithm {
 				chooseNextStartingDistrict();
 				operateOnDistrict();
 			}
+			double endStateGoodness = CONDISTRICTMAP.getTotalGoodness();
+			STATE.setLastTotalGoodness(endStateGoodness);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -183,8 +175,7 @@ public class GenerateMapAlgorithm {
 		STATE.setCurrDistrictID(distID);
 	}
 	
-	private boolean chooseNextCandidatePrecinct()
-	{
+	private boolean chooseNextCandidatePrecinct() {
 		int precinctID = CONDISTRICTMAP.getNextCandidatePrecinct(STATE.getCurrDistrictID(), CONSTRAINTEVAL);
 		if (precinctID >= 0) {
 			STATE.setCandidatePrecinctUID(precinctID);
@@ -193,8 +184,7 @@ public class GenerateMapAlgorithm {
 		return false;
 	}
 	
-	private void moveCandidatePrecinct()
-	{
+	private void moveCandidatePrecinct() {
 		int distID = STATE.getCurrDistrictID();
 		int precinctID = STATE.getCandidatePrecinctUID();
 		int neighborID = CONDISTRICTMAP.movePrecinct(distID, -1, precinctID);
@@ -204,20 +194,37 @@ public class GenerateMapAlgorithm {
 		STATE.setCurrNeighborID(neighborID);
 	}
 	
-	private void unmoveCandidatePrecinct()
-	{
-		
+	private void unmoveCandidatePrecinct() {
+		int distID = STATE.getCurrDistrictID();
+		int neighborID = STATE.getCurrNeighborID();
+		int precinctID = STATE.getCandidatePrecinctUID();
+		if (CONDISTRICTMAP.movePrecinct(neighborID, distID, precinctID) != distID) {
+			throw new IllegalStateException();
+		}
 	}
 	
-	private void validatePrecinctMove() 
-	{
+	private void validatePrecinctMove() {
+		int currDistID = STATE.getCurrDistrictID();
+		double currOldGoodness = CONDISTRICTMAP.getGoodness(currDistID);
+		int neighborDistID = STATE.getCurrNeighborID();
+		double neighborOldGoodness = CONDISTRICTMAP.getGoodness(neighborDistID);
 		
+		double currNewGoodness = CONDISTRICTMAP.evaluateGoodness(currDistID, GOODNESSEVAL);
+		double neighborNewGoodness = CONDISTRICTMAP.evaluateGoodness(neighborDistID, GOODNESSEVAL);
+		
+		boolean validMove = isValidMove(currOldGoodness,currNewGoodness, neighborOldGoodness, neighborNewGoodness);
+		if (!validMove) {
+			unmoveCandidatePrecinct();
+			CONDISTRICTMAP.evaluateGoodness(currDistID, GOODNESSEVAL);
+			CONDISTRICTMAP.evaluateGoodness(neighborDistID, GOODNESSEVAL);
+		}
 	}
 	
 	private boolean isValidMove(double currOldGoodness, double currNewGoodness, double neighborOldGoodness, double neighborNewGoodness)
 	{
-		//fake
-		return false;
+		boolean valid = ((currNewGoodness - currOldGoodness)/currOldGoodness > THRESHOLD_PERCENT &&  
+				(neighborNewGoodness - neighborOldGoodness)/neighborOldGoodness > THRESHOLD_PERCENT);
+		return valid;
 	}
 	
 	private boolean continueWithDistrict()
@@ -229,7 +236,7 @@ public class GenerateMapAlgorithm {
 	private boolean continueWithGeneration()
 	{
 		//fake
-		if (STATE.getCurrGenIteration() > 2) {
+		if (STATE.getCurrGenIteration() > 20) {
 			return false;
 		}
 		return true;

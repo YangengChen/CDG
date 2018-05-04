@@ -244,6 +244,9 @@ public class CongressionalDistrict extends Region {
 	}
 	
 	public boolean isBorderPrecinct(int precinctID) {
+		if (borderPrecincts == null) {
+			return false;
+		}
 		boolean isBorder = borderPrecincts.get(precinctID) == null ? false : true;
 		return isBorder;
 	}
@@ -292,6 +295,13 @@ public class CongressionalDistrict extends Region {
 			}
 		}
 	}
+	
+	public int numPrecincts() {
+		if (getPrecincts() == null) {
+			return 0;
+		}
+		return precincts.size();
+	}
 
 	@Override
 	public DistrictDTO getDataDTO() {
@@ -304,5 +314,14 @@ public class CongressionalDistrict extends Region {
 		data.setGoodness(this.goodnessValue);
 		return data;
 	}
+	
+	/*@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof CongressionalDistrict)) {
+			return false;
+		}
+		CongressionalDistrict district = (CongressionalDistrict)obj;
+		return (district.getId() == this.getId());
+	}*/
 
 }
