@@ -209,9 +209,8 @@ public class GenerateMapAlgorithm {
 		
 	}
 	
-	private void validatePrecinctMove() 
-	{
-		
+	private void validatePrecinctMove() {
+
 	}
 	
 	private boolean isValidMove(double currOldGoodness, double currNewGoodness, double neighborOldGoodness, double neighborNewGoodness)

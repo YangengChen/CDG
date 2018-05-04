@@ -244,6 +244,9 @@ public class CongressionalDistrict extends Region {
 	}
 	
 	public boolean isBorderPrecinct(int precinctID) {
+		if (borderPrecincts == null) {
+			return false;
+		}
 		boolean isBorder = borderPrecincts.get(precinctID) == null ? false : true;
 		return isBorder;
 	}
@@ -291,6 +294,13 @@ public class CongressionalDistrict extends Region {
 				borderPrecincts.put(neighborPrec.getId(), neighborPrec);
 			}
 		}
+	}
+	
+	public int numPrecincts() {
+		if (getPrecincts() == null) {
+			return 0;
+		}
+		return precincts.size();
 	}
 
 	@Override
