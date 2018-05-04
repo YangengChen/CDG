@@ -136,6 +136,8 @@ public class GenerateMapAlgorithm {
 				chooseNextStartingDistrict();
 				operateOnDistrict();
 			}
+			double endStateGoodness = CONDISTRICTMAP.getTotalGoodness();
+			STATE.setLastTotalGoodness(endStateGoodness);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
@@ -206,17 +208,30 @@ public class GenerateMapAlgorithm {
 	
 	private void unmoveCandidatePrecinct()
 	{
-		
+
 	}
 	
 	private void validatePrecinctMove() {
-
+		int currDistID = STATE.getCurrDistrictID();
+		double currOldGoodness = CONDISTRICTMAP.getGoodness(currDistID);
+		int neighborDistID = STATE.getCurrNeighborID();
+		double neighborOldGoodness = CONDISTRICTMAP.getGoodness(neighborDistID);
+		
+		double currNewGoodness = CONDISTRICTMAP.evaluateGoodness(currDistID, GOODNESSEVAL);
+		double neighborNewGoodness = CONDISTRICTMAP.evaluateGoodness(neighborDistID, GOODNESSEVAL);
+		
+		boolean validMove = isValidMove(currOldGoodness,currNewGoodness, neighborOldGoodness, neighborNewGoodness);
+		if (!validMove) {
+			unmoveCandidatePrecinct();
+			CONDISTRICTMAP.evaluateGoodness(currDistID, GOODNESSEVAL);
+			CONDISTRICTMAP.evaluateGoodness(neighborDistID, GOODNESSEVAL);
+		}
 	}
 	
 	private boolean isValidMove(double currOldGoodness, double currNewGoodness, double neighborOldGoodness, double neighborNewGoodness)
 	{
 		//fake
-		return false;
+		return true;
 	}
 	
 	private boolean continueWithDistrict()

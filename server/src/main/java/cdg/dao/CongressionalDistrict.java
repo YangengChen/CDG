@@ -314,5 +314,14 @@ public class CongressionalDistrict extends Region {
 		data.setGoodness(this.goodnessValue);
 		return data;
 	}
+	
+	/*@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof CongressionalDistrict)) {
+			return false;
+		}
+		CongressionalDistrict district = (CongressionalDistrict)obj;
+		return (district.getId() == this.getId());
+	}*/
 
 }

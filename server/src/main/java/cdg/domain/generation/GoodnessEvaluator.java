@@ -16,11 +16,15 @@ public abstract class GoodnessEvaluator {
 		goodnessMeasures = new EnumMap<GoodnessMeasure,Double>(GoodnessMeasure.class);
 	}
 	
-	public double getGoodenssMeasure(GoodnessMeasure measure) {
+	public double getGoodnessMeasure(GoodnessMeasure measure) {
 		if (measure == null) {
 			throw new IllegalArgumentException();
 		}
-		return goodnessMeasures.get(measure);
+		Double weight = goodnessMeasures.get(measure);
+		if (weight == null) {
+			return 0;
+		}
+ 		return weight;
 	}
 	
 	public void setGoodnessMeasure(GoodnessMeasure measure, double weight)
