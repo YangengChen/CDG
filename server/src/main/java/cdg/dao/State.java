@@ -61,12 +61,26 @@ public class State extends Region {
 		this.conDistricts = conDistricts;
 	}
 	
+	public int numConDistricts() {
+		if (getConDistricts() == null) {
+			return 0;
+		}
+		return conDistricts.size();
+	}
+	
 	public Map<Integer,Precinct> getPrecincts() {
 		return precincts;
 	}
 
 	public void setPrecincts(Map<Integer,Precinct> precincts) {
 		this.precincts = precincts;
+	}
+	
+	public int numPrecincts() {
+		if (getPrecincts() == null) {
+			return 0;
+		}
+		return precincts.size();
 	}
 	
 	public byte[] getStateMapGeoJson()

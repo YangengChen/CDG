@@ -49,4 +49,5 @@ public class CdgConstants {
 	public static final String PRECINCT_NAME_FIELD = "geojson_precinctName";
 	public static final String PRECINCT_IDENTIFIER_FIELD = "geojson_precinctIdentifier";
 	public static final String PRECINCT_NEIGHBORS_FIELD = "geojson_precinctNeighbors";
+	public static final String PRECINCT_POPULATION_FIELD = "geojson_precinctPopulation";
 }

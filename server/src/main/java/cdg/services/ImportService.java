@@ -73,6 +73,7 @@ public class ImportService {
 			
 			setGeometries(state);
 			setMaps(state);
+			setPopulation(state);
 			
 			//store to database and use returned state value - will generate all mappings
 			state = stateRepo.saveAndFlush(state);
@@ -139,18 +140,20 @@ public class ImportService {
 		Precinct currPrecinct;
 		String currPrecinctName;
 		String currPrecinctPubID;
+		long currPrecinctPopulation;
 		CongressionalDistrict currDistrict;
 		String currDistPubID;
 		for (int i = 0; i < features.length; i++) {
 			currProp = features[i].getProperties();
 			currGeom = features[i].getGeometry();
 			currPrecinctName = (String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_NAME_FIELD));
-			currPrecinctPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD));	
+			currPrecinctPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD));
+			currPrecinctPopulation = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_POPULATION_FIELD))).longValue();	
 			if (precinctsPubID.containsKey(currPrecinctPubID)) {
 				throw new IllegalStateException();
 			}
 			precinctsPubID.put(currPrecinctPubID, currPrecinctPubID);
-			currPrecinct = generatePrecinct(currPrecinctPubID, currPrecinctName, currGeom.toString());
+			currPrecinct = generatePrecinct(currPrecinctPubID, currPrecinctName, currPrecinctPopulation, currGeom.toString());
 			precincts.put(currPrecinct.getId(), currPrecinct);
 			
 			currDistPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.DISTRICT_IDENTIFIER_FIELD));
@@ -171,10 +174,11 @@ public class ImportService {
 		}
 	}
 	
-	private Precinct generatePrecinct(String publicID, String name, String geoJSON) {
+	private Precinct generatePrecinct(String publicID, String name, long population, String geoJSON) {
 		Precinct precinct = new Precinct();
 		precinct.setName(name);
 		precinct.setPublicID(publicID);
+		precinct.setPopulation(population);
 		precinct.setGeoJsonGeometry(geoJSON);
 		//store to database and use returned precinct value
 		precinct = precinctRepo.saveAndFlush(precinct);
@@ -307,5 +311,25 @@ public class ImportService {
 		com.vividsolutions.jts.geom.Geometry stateGeom = mapService.createStateGeometry(state);
 		String stateGeoJson = mapService.convertToGeoJSONGeometry(stateGeom);
 		state.setGeoJsonGeometry(stateGeoJson);
+	}
+	
+	private void setPopulation(State state) {
+		if (state == null || state.getConDistricts() == null) {
+			throw new IllegalArgumentException();
+		}
+		long totalStatePopulation = 0;
+		long totalDistrictPopulation;
+		for (CongressionalDistrict district : state.getConDistricts().values()) {
+			totalDistrictPopulation = 0;
+			if (district.getPrecincts() == null) {
+				throw new IllegalArgumentException();
+			}
+			for (Precinct precinct : district.getPrecincts().values()) {
+				totalDistrictPopulation +=  precinct.getPopulation();
+			}
+			district.setPopulation(totalDistrictPopulation);
+			totalStatePopulation += totalDistrictPopulation;
+		}
+		state.setPopulation(totalStatePopulation);
 	}
 }

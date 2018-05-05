@@ -308,38 +308,30 @@ public class CongressionalDistrictMap {
 			throw new IllegalArgumentException();
 		}
 		Precinct currPrecinct;
-		try {
-			currPrecinct = currDistrict.removePrecinct(precinctID);
-			if (currPrecinct == null) {
-				return -1;
-			}
-		} catch (IllegalStateException ise) {
-			return -1;
+		currPrecinct = currDistrict.removePrecinct(precinctID);
+		if (currPrecinct == null) {
+			throw new IllegalStateException();
 		}
 		if (neighborDistrict == null) {
 			/* Should return the same neighboring precinct/congressional district determined through the ConstraintsEvaluator if the 
 			 * precinct object has not changed since this was last called */
 			Precinct neighborPrecinct = currPrecinct.getFromNeighborConDistrict();
 			if (neighborPrecinct == null) {
-				return -1;
+				throw new IllegalStateException();
 			}
 			neighborDistrict = neighborPrecinct.getConDistrict();
 		}
 		if (!currPrecinct.hasNeighborDistrict(neighborDistrict)) {
-			return -1;
+			throw new IllegalStateException();
 		}
-		try {
-			currPrecinct = neighborDistrict.addPrecinct(currPrecinct);
-			if (currPrecinct == null) {
-				return -1;
-			}
-		} catch (IllegalStateException ise) {
-			return -1;
+		currPrecinct = neighborDistrict.addPrecinct(currPrecinct);
+		if (currPrecinct == null) {
+			throw new IllegalStateException();
 		}
 
 		Integer neighborID = districts.inverse().get(neighborDistrict);
 		if (neighborID == null) {
-			return -1;
+			throw new IllegalStateException();
 		}
 		return neighborID;
 	}

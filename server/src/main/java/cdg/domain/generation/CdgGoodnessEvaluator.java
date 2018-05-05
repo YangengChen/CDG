@@ -4,6 +4,7 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygonal;
 
 import cdg.dao.CongressionalDistrict;
+import cdg.dao.State;
 
 public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 
@@ -22,7 +23,7 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		}
 		evaluator.setGoodnessMeasure(GoodnessMeasure.COMPACTNESS, configuration.getCompactnessWeight());
 		evaluator.setGoodnessMeasure(GoodnessMeasure.CONTIGUITY, configuration.getContiguityWeight());
-		//evaluator.setGoodnessMeasure(GoodnessMeasure.EQUALPOPULATION, configuration.getEqualPopWeight());
+		evaluator.setGoodnessMeasure(GoodnessMeasure.EQUALPOPULATION, configuration.getEqualPopWeight());
 		evaluator.setGoodnessMeasure(GoodnessMeasure.PARTISANFAIRNESS, configuration.getPartisanFairWeight());
 		evaluator.setGoodnessMeasure(GoodnessMeasure.RACIALFAIRNESS, configuration.getRacialFairWeight());
 		return evaluator;
@@ -34,7 +35,8 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		}
 		double compactnessValue = evaluateCompactness(district);
 		double contiguityValue = evaluateContiguity(district);
-		double goodness = runObjectiveFunction(compactnessValue, contiguityValue, 0, 0);
+		double populationEqualityValue = evaluatePopulationEquality(district);
+		double goodness = runObjectiveFunction(compactnessValue, contiguityValue, populationEqualityValue, 0, 0);
 		return goodness;
 	}
 	
@@ -83,6 +85,27 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
  		return contiguityValue;
 	}
 	
+	public double evaluatePopulationEquality(CongressionalDistrict district) {
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
+		double populationEqualityValue;
+		State state = district.getState();
+		if (state == null || state.numConDistricts() == 0) {
+			throw new IllegalArgumentException();
+		}
+		long popAvg = state.getPopulation() / state.numConDistricts();
+		long population = district.getPopulation();
+		double percentage = district.getPopulation() / popAvg;
+		if (Math.abs(1 - percentage) > 1) {
+			populationEqualityValue = 0;
+		} else {
+			populationEqualityValue = MAXGOODNESS - MAXGOODNESS * Math.abs(1 - percentage);
+		}
+		System.err.println("Pop avg: " + popAvg + " district Pop: " + population + "goodness: " + populationEqualityValue);
+		return populationEqualityValue;
+	}
+	
 	public double evaluatePartisanFairness(CongressionalDistrict district)
 	{
 		return 0;
@@ -93,24 +116,43 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		return 0;
 	}
 	
-	private double runObjectiveFunction(double compactness, double contiguity, double partisanFair, double racialFair) 
+	private double runObjectiveFunction(double compactness, double contiguity, double populationEqual, double partisanFair, double racialFair) 
 	{
 		double totalGoodness = 0;
 		double weight = 0;
+		int totalMeasures = 0;
 		
 		weight = this.getGoodnessMeasure(GoodnessMeasure.COMPACTNESS);
-		totalGoodness += (weight * compactness);
+		if (weight > 0) {
+			totalGoodness += (weight * compactness);
+			totalMeasures++;
+		}
 		
 		weight = this.getGoodnessMeasure(GoodnessMeasure.CONTIGUITY);
-		totalGoodness += (weight * contiguity);
+		if (weight > 0) {
+			totalGoodness += (weight * contiguity);
+			totalMeasures++;
+		}
+		
+		weight = this.getGoodnessMeasure(GoodnessMeasure.EQUALPOPULATION);
+		if (weight > 0) {
+			totalGoodness += (weight * populationEqual);
+			totalMeasures++;
+		}
 		
 		weight = this.getGoodnessMeasure(GoodnessMeasure.PARTISANFAIRNESS);
-		totalGoodness += (weight * partisanFair);
+		if (weight > 0) {
+			totalGoodness += (weight * partisanFair);
+			totalMeasures++;
+		}
 		
 		weight = this.getGoodnessMeasure(GoodnessMeasure.RACIALFAIRNESS);
-		totalGoodness += (weight * racialFair);
+		if (weight > 0) {
+			totalGoodness += (weight * racialFair);
+			totalMeasures++;
+		}
 
-		double goodness = totalGoodness * 0.25;
+		double goodness = totalGoodness * (1/totalMeasures);
 		
 		return goodness;
 	}

@@ -39,6 +39,7 @@ public class Region {
 	@Column(updatable = false, nullable = false)
 	private String publicID;
 	private String name;
+	private long population;
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
 	//@LazyGroup("geo")
@@ -78,6 +79,14 @@ public class Region {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public long getPopulation() {
+		return population;
+	}
+
+	public void setPopulation(long population) {
+		this.population = population;
 	}
 
 	public byte[] getGeoJson() {
