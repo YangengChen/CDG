@@ -3,6 +3,7 @@ package cdg.dto;
 public class DistrictDTO {
 	private String ID;
 	private String name;
+	private long population;
 	
 	public String getID() {
 		return ID;
@@ -18,5 +19,13 @@ public class DistrictDTO {
 
 	public void setName(String name) {
 		this.name = name;
+	}
+	
+	public long getPopulation() {
+		return population;
+	}
+
+	public void setPopulation(long population) {
+		this.population = population;
 	}
 }

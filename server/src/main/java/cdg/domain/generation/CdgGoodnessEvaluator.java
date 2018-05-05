@@ -17,7 +17,7 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 			throw new IllegalArgumentException();
 		}
 		GoodnessEvaluator evaluator = new CdgGoodnessEvaluator(maxGoodness);
-		if ((configuration.getCompactnessWeight() + configuration.getContiguityWeight() +
+		if ((configuration.getCompactnessWeight() + configuration.getContiguityWeight() + configuration.getEqualPopWeight() +
 				configuration.getPartisanFairWeight() + configuration.getRacialFairWeight()) != 1) {
 			throw new IllegalArgumentException();
 		}
@@ -96,13 +96,12 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		}
 		long popAvg = state.getPopulation() / state.numConDistricts();
 		long population = district.getPopulation();
-		double percentage = district.getPopulation() / popAvg;
+		double percentage = (double)population / (double)popAvg;
 		if (Math.abs(1 - percentage) > 1) {
 			populationEqualityValue = 0;
 		} else {
 			populationEqualityValue = MAXGOODNESS - MAXGOODNESS * Math.abs(1 - percentage);
 		}
-		System.err.println("Pop avg: " + popAvg + " district Pop: " + population + "goodness: " + populationEqualityValue);
 		return populationEqualityValue;
 	}
 	
@@ -152,7 +151,7 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 			totalMeasures++;
 		}
 
-		double goodness = totalGoodness * (1/totalMeasures);
+		double goodness = totalGoodness * (1/(double)totalMeasures);
 		
 		return goodness;
 	}

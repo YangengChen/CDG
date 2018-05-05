@@ -155,6 +155,7 @@ public class GenerateMapAlgorithm {
 			}
 		}
 		while (continueWithDistrict());
+		System.err.println("Goodness: " + CONDISTRICTMAP.getGoodness(STATE.getCurrDistrictID()));
 	}
 	
 	private void chooseNextStartingDistrict() {
@@ -236,7 +237,7 @@ public class GenerateMapAlgorithm {
 	private boolean continueWithGeneration()
 	{
 		//fake
-		if (STATE.getCurrGenIteration() > 20) {
+		if (STATE.getCurrGenIteration() > 100) {
 			return false;
 		}
 		return true;

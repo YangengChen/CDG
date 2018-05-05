@@ -121,6 +121,7 @@ public class CongressionalDistrict extends Region {
 		}
 		precinct.setConDistrict(this);
 		precincts.put(precinct.getId(), precinct);
+		this.setPopulation(this.getPopulation() + precinct.getPopulation());
 		return precinct;
 	}
 	
@@ -240,6 +241,7 @@ public class CongressionalDistrict extends Region {
 			return null;
 		}
 		currPrecinct = precincts.remove(precinctID);
+		this.setPopulation(this.getPopulation() - currPrecinct.getPopulation());
 		return currPrecinct;
 	}
 	
@@ -308,6 +310,7 @@ public class CongressionalDistrict extends Region {
 		CongressionalDistrictDTO data = new CongressionalDistrictDTO();
 		data.setID(this.getPublicID());
 		data.setName(this.getName());
+		data.setPopulation(this.getPopulation());
 		if (precincts != null) {
 			data.setNumPrecincts(precincts.size());
 		}

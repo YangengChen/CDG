@@ -165,6 +165,7 @@ public class Region {
 		DistrictDTO data = new DistrictDTO();
 		data.setID(this.getPublicID());
 		data.setName(this.getName());
+		data.setPopulation(this.getPopulation());
 		return data;
 	}
 }
