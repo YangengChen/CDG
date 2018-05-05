@@ -24,6 +24,7 @@ import { saveAs }                   from 'file-saver/FileSaver';
   styleUrls: ['./cdg.component.scss']
 })
 export class CdgComponent implements OnInit {
+  statusCode: number;
   flipped=false;
   mapObject: Object;
   compareMapObject:Object;
@@ -63,6 +64,10 @@ export class CdgComponent implements OnInit {
     private genService: GenerationService,
     private mapService :MapService,
     private appProperties :AppProperties) { 
+      this.loginService.isUserLoggedIn().subscribe(
+        data => data ? null : this.router.navigate(["/"]),
+        errorCode =>  this.statusCode = errorCode
+      );
   }
   logout(){
     this.loginService.logout().subscribe(

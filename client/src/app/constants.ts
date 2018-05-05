@@ -25,5 +25,7 @@ export class Constants{
     public static get SUCCESS_REGISTER(): string{ return""}
     public static GET_MAP_DATA_URL(state:string): string {return "http://localhost:8080/api/map/data/".concat(state).concat("/state")}
     public static GET_STATE_URL(state:string, type:string): string {return "http://localhost:8080/api/map/file/".concat(state).concat("/".concat(type))}
-
+    public static get CONFIRM_EDIT_USER(): string {return 'Are you sure you want to edit this user?'; }
+    public static get CONFIRM_DELETE_USER(): string {return 'Are you sure you want to delete this user?'; }
+    public static get CONFIRM_ADD_USER(): string {return 'Are you sure you want to add this user?'; }
 }

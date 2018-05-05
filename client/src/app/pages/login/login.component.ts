@@ -13,9 +13,14 @@ import { environment } from '../../../environments/environment';
 })
 export class LoginComponent implements OnInit {
   newUser : User;
-
+  statusCode: number;
+  
   constructor(private router: Router, private loginService: LoginService, private flashMessagesService: FlashMessagesService) {
-    this.newUser = new User()
+    this.loginService.isUserLoggedIn().subscribe(
+      data => data ? this.router.navigate(["/"]) : null,
+      errorCode =>  this.statusCode = errorCode
+    );
+    this.newUser = new User();
   }
 
   clickLogin(form){

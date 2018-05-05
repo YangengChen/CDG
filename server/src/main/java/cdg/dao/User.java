@@ -82,8 +82,9 @@ public class User {
 		this.password = password;
 	}
 	
-	public void encryptPassword() {
+	public String encryptPassword() {
 		this.password = BCrypt.hashpw(this.password, BCrypt.gensalt());
+		return password;
 	}
 	
 	public boolean validatePassword(String plainText) {

@@ -36,5 +36,21 @@ public class UserService {
 			return null;
 		}
 	}
+
+	public User deleteUser(User user) {
+		User deleteUser = userRepository.findOneByEmail(user.getEmail());
+		userRepository.delete(deleteUser);
+		return deleteUser;
+	}
+	
+	public User editUser(User user) {
+		User oldUser = userRepository.findOneByEmail(user.getEmail());
+		user.setId(oldUser.getId());
+		String password = (user.getPassword().isEmpty()) ? oldUser.getPassword() : user.encryptPassword();
+		user.setPassword(password);
+		userRepository.save(user);
+		return user;
+	}
+	
 	
 }
