@@ -3,11 +3,13 @@ import {  Component,
           Input, 
           Output, 
           EventEmitter }  from '@angular/core';
-import { MapService }     from './map.service';
+import { CdgMapService }     from './map.service';
+import { CdgModule }      from '../cdg.module';
 import { DropdownValue }  from "../../cdg-objects/dropdownvalue";
 import { AppProperties }  from "../../app.properties";
 import * as mapboxgl      from 'mapbox-gl';
 import { Constants }      from "../../constants";
+import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
 
 @Component({
   selector: 'map',
@@ -39,7 +41,7 @@ export class MapComponent implements OnInit{
   @Output() savedMapChanged: EventEmitter<any>;
   @Output() mapReset: EventEmitter<any>;
   constructor(
-      private mapService: MapService,
+      private mapService: CdgMapService,
       private appProperties:AppProperties
       ) {
     this.clicked = new EventEmitter<any>();

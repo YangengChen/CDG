@@ -1,8 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Constants } from "../../constants";
+
 @Injectable()
-export class MapService {
+export class CdgMapService {
   constructor(private http: HttpClient) {}
   getMap(state:string, type:string){
     return this.http.get(Constants.GET_STATE_URL(state, type), {withCredentials:true});

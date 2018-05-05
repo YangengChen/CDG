@@ -32,10 +32,10 @@ export class GenerationConfiguration {
     racialFairWeight: Number;
     partisanFairWeight:Number;
     constructor(){
-        this.compactnessWeight = .5;
-        this.contiguityWeight = .5;
-        this.equalPopWeight = .5;
-        this.racialFairWeight = .5;
+        this.compactnessWeight = .1;
+        this.contiguityWeight = .1;
+        this.equalPopWeight = .1;
+        this.racialFairWeight = .3;
         this.partisanFairWeight = .5;
         this.permConDist = [];
         this.permPrecinct = [];

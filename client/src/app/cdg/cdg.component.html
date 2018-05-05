@@ -10,19 +10,17 @@
         </div>
       </nb-layout-header>
       <nb-sidebar id="sidebar">
-        <nb-flip-card [flipped]="algoRunning">
-        <nb-card-front>
-        <nb-card>
-          <nb-card-body>
-         <nb-tabset class="full-width">
+        <nb-flip-card [flipped]="algoRunning" style="height:100%;">
+        <nb-card-front style="height:100%">
+        <nb-card style="height:83vh">
+          <nb-card-body style="height:100%">
+          <div *ngIf="startingGeneration" id="spinner-container">
+            <h1> Starting Generation ... </h1>
+            <mat-spinner mode="spinnerMode"></mat-spinner>
+          </div>
+         <nb-tabset *ngIf="!startingGeneration"  class="full-width">
           <nb-tab tabTitle="Generate">
             <div id="generate-tool-container">
-              Compare Toggle:
-              <mat-slide-toggle *ngIf="!algoRunning" (change)="compareToggle($event)"></mat-slide-toggle>
-              <div *ngIf="compare" id="pick-state-button">
-                Compare Map:
-                <cdg-dropdown [values]="stateList" (change)="changeCompareState($event)" name="States"></cdg-dropdown>
-              </div>
               <br>
               <div id="pick-state-button">
                 {{stateListLabel}}:
@@ -44,9 +42,15 @@
             </div>
           </nb-tab>
           <nb-tab tabTitle="{{informationTabLabel}}">
-            <div id="information-container" class="container">
-              <div id="tab-data-block">
+            <div style="height:100%" id="information-container" class="container">
+              Compare Toggle:
+              <mat-slide-toggle *ngIf="!algoRunning" (change)="compareToggle($event)"></mat-slide-toggle>
               <br>
+              <div *ngIf="compare" id="pick-state-button">
+                Compare Map:
+                <cdg-dropdown [values]="stateList" (change)="changeCompareState($event)" name="States"></cdg-dropdown>
+              </div>
+              <div id="tab-data-block">
               <br><br>
               <br><p>Name: Wisconson</p>
               <br><p>Socioeconomic Status: </p>
@@ -57,7 +61,7 @@
               </div>
             </div>
            </nb-tab>
-          <nb-tab tabTitle="{{fileTabLabel}}">
+          <nb-tab style="height:100%" tabTitle="{{fileTabLabel}}">
             <div id="information-container" class="container">
             <div id="file-buttons">
               <cdg-button name="Load File" class="file-button"></cdg-button>
@@ -70,17 +74,18 @@
         </nb-card-body>
         </nb-card>
         </nb-card-front>
-          <nb-card-back>
-            <nb-card><nb-card-body>
+          <nb-card-back class="inner-card">
+            <nb-card class="inner-card"><nb-card-body class="inner-card">
               <nb-tabset class="full-width">   
                 <nb-tab tabTitle="Generation">
-                <div class="map-button">
-                  <cdg-button [disabled]="!algoRunning || !algoPaused" [img]="pauseImage"></cdg-button>
-                </div>
-                <div class="map-button">
-                  <cdg-button [disabled]="!algoRunning" (click)="stopGenerationClicked()" [img]="stopImage"></cdg-button>
-                </div>
-                
+                  <div class="container" id="generation-started-controls"> 
+                    <div class="map-button">
+                      <cdg-button [disabled]="!algoRunning || !algoPaused" [img]="pauseImage"></cdg-button>
+                    </div>
+                    <div class="map-button">
+                      <cdg-button [disabled]="!algoRunning" (click)="stopGenerationClicked()" [img]="stopImage"></cdg-button>
+                    </div>
+                  </div>
                 </nb-tab>
                 <nb-tab tabTitle="Info">
                 </nb-tab>
@@ -88,7 +93,7 @@
               </nb-card-body></nb-card>
           </nb-card-back>
           </nb-flip-card>
-      </nb-sidebar>
+        </nb-sidebar>
 
       <nb-layout-column>
         <map 
@@ -103,7 +108,10 @@
           [mapTypeListLabel]="mapTypeListLabel"
           [disableMapTypeList]="!genConfig"
           [disableResetButton]="!genConfig"
-          >
+          > 
+            <mgl-control
+              mglGeocoder
+            ></mgl-control>
           </map>
       </nb-layout-column>
           <nb-layout-column *ngIf="compare">
@@ -118,7 +126,11 @@
           [disableResetButton]="true" 
           [disableMapTypeList]="compareSelectedStateId == 0"
    
-          >
+          >         
+            <mgl-control
+              mglGeocoder
+            ></mgl-control>
           </map>
+
       </nb-layout-column>
     </nb-layout>

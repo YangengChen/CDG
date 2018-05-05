@@ -4,7 +4,7 @@ import { State } from "./cdg-objects/state";
 export class Constants{
     public static get PAUSE_URL(): string {return "http://localhost:8080/api/generation/pause"}
     public static get STOP_URL(): string {return "http://localhost:8080/api/generation/cancel"}
-    public static get STATUS_URL(): string {return "localhost:8080/api/generation/status"}
+    public static get STATUS_URL(): string {return "http://localhost:8080/api/generation/status"}
     public static get PLAY_URL(): string {return "http://localhost:8080/api/generation/play"}
     public static get START_URL(): string { return "http://localhost:8080/api/generation/start"}
     public static get UNITED_STATES_URL(): string {return " http://localhost:8080/api/map/file/unitedstates"}
@@ -17,7 +17,7 @@ export class Constants{
     public static get STATELIST_URL():string {return "http://localhost:8080/api/map/states"}
     public static get INIT_MAP_TYPE(): string {return "state"};
     public static get STATELIST_KEY(): string {return "states"};
-    public static get FINISHED_URL(): string {return ""};
+    public static get FINISHED_URL(): string {return "http://localhost:8080/api/generation/map"};
     public static get COLOR_PROPERTY(): string {return "districtID"}
     public static get EXPORT_HEADERS(): string {return "application/json"}
     public static get EXPORT_FILE_NAME(): string {return "CDG_Map.json"}
