@@ -10,7 +10,8 @@ export class GenerationService{
         return this.http.post(Constants.START_URL, JSON.stringify(config),{headers:{'Content-Type': 'application/json'},  withCredentials:true});
     }
     stopGeneration(){
-        this.http.post(Constants.STOP_URL, {}, {withCredentials:true});
+        console.log("STOPPING")
+        return this.http.post(Constants.STOP_URL, {}, {withCredentials:true});
     }
     pauseGeneration(){
         this.http.post(Constants.PAUSE_URL, {}, {withCredentials:true});
@@ -24,8 +25,8 @@ export class GenerationService{
 }
 export class GenerationConfiguration {
     private stateId: string;
-    private permConDist: Array<number>;
-    private permPrecinct: Array<number>;
+    private permConDist: Array<string>;
+    private permPrecinct: Array<string>;
     compactnessWeight:Number;
     contiguityWeight:Number;
     equalPopWeight: Number;
@@ -37,23 +38,32 @@ export class GenerationConfiguration {
         this.equalPopWeight = .1;
         this.racialFairWeight = .3;
         this.partisanFairWeight = .5;
-        this.permConDist = [];
-        this.permPrecinct = [];
+        this.permConDist = new Array<string>();
+        this.permConDist.push();
+        this.permPrecinct = new Array<string>();
     }
     setState(state:string){
         this.stateId = state;
     }
-    setPermConDist(id:number){
-        this.permConDist.push(id);
+    setPermConDist(id:string){
+        if(!this.permConDist.includes(id))
+            this.permConDist.push(id);
     }
-    removePermConDist(id:number){
+    getPermConDist(){
+        return this.permConDist;
+    }
+    getPermPreceint(){
+        return this.permPrecinct;
+    }
+    removePermConDist(id:string){
         if(this.permConDist.includes(id))
             this.permConDist.splice(this.permConDist.indexOf(id), 1);
     }
-    setPermPrecinct(id:number){
-        this.permPrecinct.push(id);
+    setPermPrecinct(id:string){
+        if(!this.permPrecinct.includes(id))
+            this.permPrecinct.push(id);
     }
-    removePermPrecinct(id:number){
+    removePermPrecinct(id:string){
         if(this.permPrecinct.includes(id))
             this.permPrecinct.splice(this.permPrecinct.indexOf(id), 1);
     }
@@ -94,7 +104,7 @@ export class GenerationConfiguration {
         this.equalPopWeight = 50;
         this.racialFairWeight = 50;
         this.partisanFairWeight = 50;
-        this.permConDist = Array<number>();
-        this.permPrecinct = Array<number>();
+        this.permConDist = new Array<string>();
+        this.permPrecinct = new Array<string>();
     }
 }

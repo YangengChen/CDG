@@ -184,6 +184,7 @@ export class CdgComponent implements OnInit {
           this.beginGenerationStatusCheck();
           this.snackBar.generateSnackbar(SnackbarEnum.START_GENERATION_SUCCESS)
           this.algoRunning = true;
+          this.startingGeneration = false;
         }
       });
     }
@@ -250,8 +251,11 @@ export class CdgComponent implements OnInit {
     this.genService.pauseGeneration();
   }
   stopGenerationClicked(){
-    this.genService.stopGeneration();
-    this.algoRunning = false;
+    this.genService.stopGeneration()
+    .subscribe(data =>{
+      this.algoRunning = false;
+      clearInterval(this.interval);
+    });
   }
   playGenerationClicked(){
     this.genService.playGeneration();
@@ -288,6 +292,25 @@ export class CdgComponent implements OnInit {
   }
   toggleFlip(){
     this.flipped = !this.flipped;
+  }
+  updateGenConfig(updates){
+      if(updates.precinct === "true"){
+        this.genConfig.setPermPrecinct(updates.precinctID)
+      }
+      else{
+        this.genConfig.removePermPrecinct(updates.precinctID)
+      }
+
+      if (updates.district == "true"){
+        this.genConfig.setPermConDist(updates.districtID);
+      }
+      else {
+        this.genConfig.removePermConDist(updates.districtID);
+      }
+      console.log("PRECINCT LOCK: " + updates.precinctID)
+      console.log("DISTRICT LOCK: " + updates.districtID)
+      console.log("NEW DISTRICT LOCKED: " + this.genConfig.getPermConDist())
+      console.log("NEW PRECINCT LOCKED: " + this.genConfig.getPermPreceint())
   }
 
 }

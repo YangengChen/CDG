@@ -8,7 +8,6 @@ import {  MatSliderModule, MatSlideToggleModule} from "@angular/material";
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { GenerationService } from "./generation.service";
 import { NgxMapboxGLModule, MapService } from 'ngx-mapbox-gl';
-
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { BrowserModule } from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -49,7 +48,7 @@ import {AgmCoreModule} from '@agm/core';
   ],
   declarations: [
     CdgComponent,
-    MapComponent
+    MapComponent,
   ],
   providers:[NbSidebarService,CdgMapService,GenerationService, MapService]
 })

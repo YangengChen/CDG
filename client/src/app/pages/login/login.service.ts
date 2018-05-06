@@ -23,16 +23,15 @@ export class LoginService {
   editUser(user){
     return this.http.post(endpoints.EDIT_USER_ENDPOINT, user, {withCredentials: true});
   }
-  getAllUsers(): Observable<User[]> {    
-    return this.http.get(endpoints.GET_ALL_USERS_ENDPOINT,{withCredentials: true})
-      .catch(this.handleError);
+  getAllUsers(): any {    
+    return this.http.get(endpoints.GET_ALL_USERS_ENDPOINT,{withCredentials: true});
   }
-  isUserLoggedIn(): Observable<boolean>{    
-    return this.http.get(endpoints.GET_LOGGED_IN_USER, {withCredentials: true})
-    .catch(this.handleError);
+  isUserLoggedIn(): any{    
+    return this.http.get(endpoints.GET_LOGGED_IN_USER, {withCredentials: true});
+
   }
-  private handleError (error: Response | any) {
-    console.error(error.message || error);
-    return Observable.throw(error.status);
-  }
+  // private handleError (error: Response | any) {
+  //   console.error(error.message || error);
+  //   return Observable.throw(error.status);
+  // }
 }

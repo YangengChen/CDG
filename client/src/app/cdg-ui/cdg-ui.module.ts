@@ -13,7 +13,9 @@ import { StartGenerationSuccessComponent } from './cdg-snackbar/start-generation
 import { StartGenerationFailedComponent } from './cdg-snackbar/start-generation-failed/start-generation-failed.component';
 import { WeightFailureComponent } from "./cdg-snackbar/weight-failure/weight-failure.component";
 import { GenerationFinishedComponent } from './cdg-snackbar/generation-finished/generation-finished.component';
-
+import { CdgPermPickerComponent } from './cdg-perm-picker/cdg-perm-picker.component';
+import { PermPickerDialogComponent } from './cdg-perm-picker/perm-picker-dialog/perm-picker-dialog.component';
+import {MatRadioModule} from '@angular/material/radio';
 @NgModule({
   imports: [
     FormsModule,
@@ -21,6 +23,7 @@ import { GenerationFinishedComponent } from './cdg-snackbar/generation-finished/
     NgbModule,
     MatSliderModule,
     BrowserAnimationsModule,
+    MatRadioModule,
   ],
   declarations: [
     CdgDropdownComponent,
@@ -30,20 +33,24 @@ import { GenerationFinishedComponent } from './cdg-snackbar/generation-finished/
     StartGenerationSuccessComponent,
     StartGenerationFailedComponent,
     WeightFailureComponent,
-    GenerationFinishedComponent
+    GenerationFinishedComponent,
+    CdgPermPickerComponent,
+    PermPickerDialogComponent
   ],
   exports: [
     CdgDropdownComponent,
     CdgButtonComponent,
     CdgSliderComponent,
-    CdgSnackbarComponent
+    CdgSnackbarComponent,
+    CdgPermPickerComponent
   ],
   entryComponents:[
     StartGenerationFailedComponent,
     StartGenerationSuccessComponent,
     WeightFailureComponent,
-    GenerationFinishedComponent
+    GenerationFinishedComponent,
+    PermPickerDialogComponent
   ],
-  providers : [CdgSnackbarComponent]
+  providers : [CdgSnackbarComponent, CdgPermPickerComponent]
 })
 export class CdgUiModule { }

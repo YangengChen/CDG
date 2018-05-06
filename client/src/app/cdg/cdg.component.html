@@ -100,7 +100,9 @@
           (clicked)="precinctSelected($event)" 
           (mapTypeChanged)="mapTypeChanged($event)"
           (savedMapChanged)="savedMapChanged"
+          (updateGenConfig)="updateGenConfig($event)"
           (mapReset)="mapReset()"
+          [genConfig]="genConfig"
           [mapObject]="mapObject"
           [mapTypeList]="mapTypeList" 
           [savedMapList]="savedMapList"
@@ -109,9 +111,6 @@
           [disableMapTypeList]="!genConfig"
           [disableResetButton]="!genConfig"
           > 
-            <mgl-control
-              mglGeocoder
-            ></mgl-control>
           </map>
       </nb-layout-column>
           <nb-layout-column *ngIf="compare">
@@ -119,17 +118,14 @@
           (mapTypeChanged)="compareMapTypeChanged($event)"
           (savedMapChanged)="compareSavedMapChanged"
           [mapObject]="compareMapObject"
+          [genConfig]="genConfig"
           [mapTypeList]="mapTypeList" 
           [savedMapList]="savedMapList"
           [savedMapListLabel]="savedMapListLabel"
           [mapTypeListLabel]="mapTypeListLabel"
           [disableResetButton]="true" 
           [disableMapTypeList]="compareSelectedStateId == 0"
-   
           >         
-            <mgl-control
-              mglGeocoder
-            ></mgl-control>
           </map>
 
       </nb-layout-column>
