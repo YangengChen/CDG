@@ -26,7 +26,7 @@ export class CdgMapService {
     console.log("STATELIST: " + Constants.STATELIST_URL);
     return this.http.get(Constants.STATELIST_URL, {withCredentials:true});
   }
-  getFinishedMap(){
-    return this.http.get(Constants.FINISHED_URL, {withCredentials:true});
+  getFinishedMap(type:string){
+    return this.http.get(Constants.GET_FINISHED_URL(type), {withCredentials:true});
   }
 }

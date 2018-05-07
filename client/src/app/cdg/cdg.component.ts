@@ -216,7 +216,7 @@ export class CdgComponent implements OnInit {
 
   }
   getFinishedMap(){
-    this.mapService.getFinishedMap()
+    this.mapService.getFinishedMap("congressional")
     .subscribe( finishedMap => {
       this.mapObject = finishedMap;
     })
