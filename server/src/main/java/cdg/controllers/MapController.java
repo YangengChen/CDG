@@ -39,8 +39,6 @@ public class MapController {
 	@Autowired
 	FakeData importRepo;
 	@Autowired
-	MapService mapService;
-	@Autowired
 	StateRepository stateRepo;
 	
 	@InitBinder
@@ -101,7 +99,7 @@ public class MapController {
 		Iterable<State> states = stateRepo.findAll();
 		String usMap;
 		try {
-			usMap = mapService.generateUnitedStatesMap(Lists.newArrayList(states));
+			usMap = MapService.generateUnitedStatesMap(Lists.newArrayList(states));
 		} catch (IllegalStateException ise) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}

@@ -45,15 +45,12 @@ public class ImportService {
 	DistrictRepository districtRepo;
 	@Autowired
 	PrecinctRepository precinctRepo;
-	@Autowired
-	CdgPropertiesManager propertiesManager;
-	@Autowired
-	MapService mapService;
 	
 	public State createState(String geoJSON) {
 		if (geoJSON == null) {
 			return null;
 		}
+		CdgPropertiesManager propertiesManager = CdgPropertiesManager.getInstance();
  		State state;
 		try {
 			String annotatedGeoJSON = annotateGeoJSONNeighbors(geoJSON);
@@ -95,6 +92,7 @@ public class ImportService {
 		if (geoJSON == null) {
 			throw new IllegalArgumentException();
 		}
+		CdgPropertiesManager propertiesManager = CdgPropertiesManager.getInstance();
 		ScriptEngine engine = new ScriptEngineManager().getEngineByName(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_ENGINE);
 		Bindings bindings = engine.createBindings();
 		bindings.put(CdgConstants.NEIGHBOR_ANNOTATION_SCRIPT_JSON_BINDING, geoJSON);
@@ -133,6 +131,7 @@ public class ImportService {
 	}
 	
 	private void generatePrecinctsAndDistricts(Feature[] features, State state, Map<Integer,CongressionalDistrict> districts, Map<Integer,Precinct> precincts) {
+		CdgPropertiesManager propertiesManager = CdgPropertiesManager.getInstance();
 		Map<String,String> precinctsPubID = new HashMap<String,String>();
 		Map<String,CongressionalDistrict> districtsPubID = new HashMap<String,CongressionalDistrict>();
 		Map<String,Object> currProp;
@@ -202,6 +201,7 @@ public class ImportService {
 		for (Precinct precinct : precincts.values()) {
 			precinctsPubID.put(precinct.getPublicID(), precinct);
 		}
+		CdgPropertiesManager propertiesManager = CdgPropertiesManager.getInstance();
 		Map<String,Object> currProp;
 		String currPrecinctPubID;
 		List<String> currNeighbors;
@@ -277,9 +277,9 @@ public class ImportService {
 		//String precinctMap = mapService.generatePrecinctMap(state);
 		//state.setPrecinctMapGeoJSON(precinctMap);
 		
-		String congressionalDistrictMap = mapService.generateCongressionalDistrictMap(state, true);
+		String congressionalDistrictMap = MapService.generateCongressionalDistrictMap(state, true);
 		state.setMapGeoJSON(congressionalDistrictMap, MapType.CONGRESSIONAL);
-		String stateMap = mapService.generateStateMap(state);
+		String stateMap = MapService.generateStateMap(state);
 		state.setMapGeoJSON(stateMap, MapType.STATE);
 	}
 	
@@ -298,8 +298,8 @@ public class ImportService {
 		com.vividsolutions.jts.geom.Geometry districtGeom;
 		String districtGeoJson;
 		for (CongressionalDistrict district : districts) {
-			districtGeom = mapService.createDistrictGeometry(district);
-			districtGeoJson = mapService.convertToGeoJSONGeometry(districtGeom);
+			districtGeom = MapService.createDistrictGeometry(district);
+			districtGeoJson = MapService.convertToGeoJSONGeometry(districtGeom);
 			district.setGeoJsonGeometry(districtGeoJson);
 		}
 	}
@@ -308,8 +308,8 @@ public class ImportService {
 		if (state == null) {
 			throw new IllegalArgumentException();
 		}
-		com.vividsolutions.jts.geom.Geometry stateGeom = mapService.createStateGeometry(state);
-		String stateGeoJson = mapService.convertToGeoJSONGeometry(stateGeom);
+		com.vividsolutions.jts.geom.Geometry stateGeom = MapService.createStateGeometry(state);
+		String stateGeoJson = MapService.convertToGeoJSONGeometry(stateGeom);
 		state.setGeoJsonGeometry(stateGeoJson);
 	}
 	

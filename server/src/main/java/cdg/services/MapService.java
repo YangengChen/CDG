@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.geotools.geometry.jts.JTSFactoryFinder;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.wololo.geojson.Feature;
 import org.wololo.geojson.FeatureCollection;
@@ -25,14 +24,29 @@ import cdg.dao.CongressionalDistrict;
 import cdg.dao.Precinct;
 import cdg.dao.Region;
 import cdg.dao.State;
+import cdg.domain.map.MapType;
 import cdg.properties.CdgConstants;
 import cdg.properties.CdgPropertiesManager;
 
 @Service
 public class MapService {
-	@Autowired
-	CdgPropertiesManager propertiesManager;
 	
+	public static String generateMap(State state, MapType type) {
+		if (state == null || type == null)
+			throw new IllegalArgumentException();
+		
+		switch (type)
+		{
+			case STATE:
+				return generateStateMap(state);
+			case CONGRESSIONAL:
+				return generateCongressionalDistrictMap(state, true);
+			case PRECINCT:
+				return generatePrecinctMap(state);
+			default:
+				return null;
+		}
+	}
 	
 	public static byte[] getMapAsBytes(String map) {
 		if (map == null) {
@@ -41,7 +55,7 @@ public class MapService {
 		return map.getBytes(StandardCharsets.UTF_8);
 	}
 	
-	public String generateUnitedStatesMap(Collection<State> states) throws IllegalStateException {
+	public static String generateUnitedStatesMap(Collection<State> states) throws IllegalStateException {
 		if (states == null || states.size() == 0) {
 			throw new IllegalArgumentException();
 		}
@@ -70,7 +84,7 @@ public class MapService {
 		return unitedStatesMap;
 	}
 	
-	private Collection<Geometry> getAllStateGeometries(Collection<State> states) throws IllegalStateException {
+	private static Collection<Geometry> getAllStateGeometries(Collection<State> states) throws IllegalStateException {
 		if (states == null) {
 			throw new IllegalArgumentException();
 		}
@@ -97,7 +111,7 @@ public class MapService {
 		return stateGeoms;
 	}
 	
-	public String generateStateMap(State state) throws IllegalStateException {
+	public static String generateStateMap(State state) throws IllegalStateException {
 		if (state == null) {
 			throw new IllegalArgumentException();
 		}
@@ -117,7 +131,7 @@ public class MapService {
 		return stateMap;
 	}
 	
-	public Geometry createStateGeometry(State state) throws IllegalStateException {
+	public static Geometry createStateGeometry(State state) throws IllegalStateException {
 		if (state == null) {
 			throw new IllegalArgumentException();
 		}
@@ -146,7 +160,7 @@ public class MapService {
 		return stateGeom;
 	}
 	
-	public String generateCongressionalDistrictMap(State state, boolean regenerateDistricts) throws IllegalStateException {
+	public static String generateCongressionalDistrictMap(State state, boolean regenerateDistricts) throws IllegalStateException {
 		if (state == null) {
 			throw new IllegalArgumentException();
 		}
@@ -180,7 +194,7 @@ public class MapService {
 		return congressionalDistrictMap;
 	}
 	
-	private Collection<Geometry> getAllDistrictGeometries(Collection<CongressionalDistrict> districts, boolean regenerateDistricts)  throws IllegalStateException {
+	private static Collection<Geometry> getAllDistrictGeometries(Collection<CongressionalDistrict> districts, boolean regenerateDistricts)  throws IllegalStateException {
 		if (districts == null) {
 			throw new IllegalArgumentException();
 		}
@@ -206,7 +220,7 @@ public class MapService {
 		return districtGeoms;
 	}
 	
-	public String convertToGeoJSONGeometry(Geometry region) throws IllegalStateException {
+	public static String convertToGeoJSONGeometry(Geometry region) throws IllegalStateException {
 		if (region == null) {
 			throw new IllegalArgumentException();
 		}
@@ -221,7 +235,7 @@ public class MapService {
 		}
 	}
 	
-	public Geometry createDistrictGeometry(CongressionalDistrict district) throws IllegalStateException {
+	public static Geometry createDistrictGeometry(CongressionalDistrict district) throws IllegalStateException {
 		if (district == null) {
 			throw new IllegalArgumentException();
 		}
@@ -231,7 +245,7 @@ public class MapService {
 		return districtGeom;
 	}
 	
-	private Geometry createDistrictGeometry(CongressionalDistrict district, GeoJSONReader reader) throws IllegalStateException {
+	private static Geometry createDistrictGeometry(CongressionalDistrict district, GeoJSONReader reader) throws IllegalStateException {
 		if (district == null || reader == null) {
 			throw new IllegalArgumentException();
 		}
@@ -253,7 +267,7 @@ public class MapService {
 		return districtGeom;
 	}
 	
-	public String generatePrecinctMap(State state) throws IllegalStateException {
+	public static String generatePrecinctMap(State state) throws IllegalStateException {
 		if (state == null) {
 			throw new IllegalArgumentException();
 		}
@@ -262,7 +276,7 @@ public class MapService {
 		if (precincts == null || precincts.size() == 0) {
 			throw new IllegalStateException();
 		}
-		
+		CdgPropertiesManager propertiesManager = CdgPropertiesManager.getInstance();
 		String geoJSON = null;
 		GeoJSONReader reader = new GeoJSONReader();
 		GeoJSONWriter writer = new GeoJSONWriter();
@@ -290,6 +304,8 @@ public class MapService {
 				properties.put((String)propertiesManager.getProperty(CdgConstants.PRECINCT_NEIGHBORS_FIELD), neighborIDs);
 				properties.put((String)propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD), precinct.getPublicID());
 				properties.put((String)propertiesManager.getProperty(CdgConstants.PRECINCT_NAME_FIELD), precinct.getName());
+				properties.put((String)propertiesManager.getProperty(CdgConstants.PRECINCT_POPULATION_FIELD), precinct.getPopulation());
+				properties.put((String)propertiesManager.getProperty(CdgConstants.DISTRICT_IDENTIFIER_FIELD), precinct.getConDistrict().getPublicID());
 				currFeature = new Feature(currGeoJson, properties);
 				features.add(currFeature);
 			}
@@ -301,7 +317,7 @@ public class MapService {
 		return geoJSON;
 	}
 	
-	private Collection<Geometry> getAllPrecinctGeometries(CongressionalDistrict district, GeoJSONReader reader) {
+	private static Collection<Geometry> getAllPrecinctGeometries(CongressionalDistrict district, GeoJSONReader reader) {
 		if (district == null || reader == null) {
 			throw new IllegalArgumentException();
 		}

@@ -20,9 +20,9 @@ public class CdgConstants {
 	public static final String GENERATION_START_PATH = "/start";
 	public static final String GENERATION_CANCEL_PATH = "/cancel";
 	public static final String GENERATION_STATUS_PATH = "/status";
-	public static final String GENERATION_MAP_PATH = "/map";
+	public static final String GENERATION_MAP_PATH = "/file/{maptype}";
 	public static final String GENERATION_SAVE_MAP_PATH = "/save/map";
-	public static final String GENERATION_MAP_DATA_PATH = "/data";
+	public static final String GENERATION_MAP_DATA_PATH = "/data/{maptype}";
 	public static final String GENERATION_SAVE_MAP_DATA_PATH = "/save/data";
 	public static final String MAP_CONTROLLER_PATH_PREFIX = "/api/map";
 	public static final String MAP_STATEID_PATH_VARIABLE = "stateid";

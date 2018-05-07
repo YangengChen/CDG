@@ -87,6 +87,7 @@ public class CongressionalDistrictMap {
 			}
 		}
 		mapNeighborPrecincts(allPrecincts);
+		state.setPrecincts(allPrecincts); //allow for retrieving maps and data later
 	}
 	
 	private void mapGeometry(Region region, GeoJSONReader reader) {

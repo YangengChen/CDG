@@ -9,7 +9,10 @@ import javax.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -25,6 +28,7 @@ import cdg.domain.generation.GenerationStatus;
 import cdg.domain.generation.GoodnessEvaluator;
 import cdg.domain.generation.MapGenerator;
 import cdg.domain.map.MapType;
+import cdg.domain.map.MapTypeEnumConverter;
 import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
 import cdg.properties.CdgConstants;
@@ -38,8 +42,11 @@ import cdg.services.MapService;
 public class GenerationController {
 	@Autowired
 	private StateRepository stateRepo;
-	@Autowired
-	private MapService mapService;
+	
+	@InitBinder
+	public void initBinder(WebDataBinder dataBinder) {
+	    dataBinder.registerCustomEditor(MapType.class, new MapTypeEnumConverter());
+	}
 
 	@RequestMapping( value = CdgConstants.GENERATION_START_PATH, method=RequestMethod.POST)
 	public ResponseEntity<GenerationStatus> startGeneration(@RequestBody GenerationConfiguration config, HttpSession session)
@@ -116,7 +123,7 @@ public class GenerationController {
 	}
 	
 	@RequestMapping( value = CdgConstants.GENERATION_MAP_PATH, method=RequestMethod.GET)
-	public ResponseEntity<byte[]> getGeneratedMap(HttpSession session) {
+	public ResponseEntity<byte[]> getGeneratedMap(HttpSession session, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) {
 		User user = (User) session.getAttribute(SESSION_USER);
 		if (user == null) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
@@ -130,14 +137,17 @@ public class GenerationController {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		State generatedState = generator.getGeneratedState();
-		String generatedConDistMap = null;
+		String generatedMap;
 		try {
-			generatedConDistMap = mapService.generateCongressionalDistrictMap(generatedState, true);
+			generatedMap = MapService.generateMap(generatedState, type);
 		} catch (Exception e) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		generatedState.setMapGeoJSON(generatedConDistMap, MapType.CONGRESSIONAL);
-		byte[] mapFile = generatedState.getMapFile(MapType.CONGRESSIONAL);
+		if (generatedMap == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		generatedState.setMapGeoJSON(generatedMap, type);
+		byte[] mapFile = generatedState.getMapFile(type);
 
 		return new ResponseEntity<byte[]>(mapFile, HttpStatus.OK);
 	}
@@ -149,9 +159,26 @@ public class GenerationController {
 	}
 	
 	@RequestMapping( value = CdgConstants.GENERATION_MAP_DATA_PATH, method=RequestMethod.GET)
-	public MapDataDTO getGeneratedData() 
+	public ResponseEntity<MapDataDTO> getGeneratedData(HttpSession session, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) 
 	{
-		return null;
+		User user = (User) session.getAttribute(SESSION_USER);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		MapGenerator generator = user.getGenerator();
+		if (generator == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if (!generator.getStatus().equals(GenerationStatus.COMPLETE)) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+		State generatedState = generator.getGeneratedState();
+		MapDataDTO data = generatedState.getMapData(type);
+		if (data == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+		return new ResponseEntity<>(data, HttpStatus.OK);
 	}
 	
 	@RequestMapping( value = CdgConstants.GENERATION_SAVE_MAP_DATA_PATH, method=RequestMethod.POST)
