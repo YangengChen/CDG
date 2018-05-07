@@ -10,23 +10,24 @@
         </div>
       </nb-layout-header>
       <nb-sidebar id="sidebar">
-        <nb-card>
-          <nb-tabset class="full-width">
+        <nb-flip-card [flipped]="algoRunning" style="height:100%;">
+        <nb-card-front style="height:100%">
+        <nb-card style="height:83vh">
+          <nb-card-body style="height:100%">
+          <div *ngIf="startingGeneration" id="spinner-container">
+            <h1> Starting Generation ... </h1>
+            <mat-spinner mode="spinnerMode"></mat-spinner>
+          </div>
+         <nb-tabset *ngIf="!startingGeneration"  class="full-width">
           <nb-tab tabTitle="Generate">
             <div id="generate-tool-container">
-              Compare Toggle:
-              <mat-slide-toggle (change)="compareToggle($event)"></mat-slide-toggle>
-              <div *ngIf="compare" id="pick-state-button">
-                Compare Map:
-                <cdg-dropdown [values]="stateList" (change)="changeCompareState($event)" name="States"></cdg-dropdown>
-              </div>
               <br>
               <div id="pick-state-button">
                 {{stateListLabel}}:
                 <cdg-dropdown [values]="stateList" (change)="changeState($event)" name="States"></cdg-dropdown>
               </div>
               <br>
-              <div id="slider-container">
+              <div *ngIf="!algoRunning" id="slider-container">
                 <cdg-slider  [disabled]="!genConfig || compare" (change)="updateCompactness($event)" name="{{compactnessSliderLabel}}" [slider]="!genConfig ? 50 : genConfig.getCompactnessWeight()"
 
                 ></cdg-slider>
@@ -38,18 +39,18 @@
               <div id="generate-button">
                 <cdg-button [disabled]="!genConfig || compare || algoRunning" (click)="startGeneration()" name="{{generateDistrictsButtonLabel}}"></cdg-button>
               </div>
-              <div class="map-button">
-                <cdg-button [disabled]="!algoRunning || !algoPaused" [img]="pauseImage"></cdg-button>
-              </div>
-              <div class="map-button">
-                <cdg-button [disabled]="!algoRunning" [img]="stopImage"></cdg-button>
-              </div>
             </div>
           </nb-tab>
           <nb-tab tabTitle="{{informationTabLabel}}">
-            <div id="information-container" class="container">
-              <div id="tab-data-block">
+            <div style="height:100%" id="information-container" class="container">
+              Compare Toggle:
+              <mat-slide-toggle *ngIf="!algoRunning" (change)="compareToggle($event)"></mat-slide-toggle>
               <br>
+              <div *ngIf="compare" id="pick-state-button">
+                Compare Map:
+                <cdg-dropdown [values]="stateList" (change)="changeCompareState($event)" name="States"></cdg-dropdown>
+              </div>
+              <div id="tab-data-block">
               <br><br>
               <br><p>Name: Wisconson</p>
               <br><p>Socioeconomic Status: </p>
@@ -60,7 +61,7 @@
               </div>
             </div>
            </nb-tab>
-          <nb-tab tabTitle="{{fileTabLabel}}">
+          <nb-tab style="height:100%" tabTitle="{{fileTabLabel}}">
             <div id="information-container" class="container">
             <div id="file-buttons">
               <cdg-button name="Load File" class="file-button"></cdg-button>
@@ -69,16 +70,39 @@
             </div>
             </div>
           </nb-tab>
-          </nb-tabset>
+          </nb-tabset> 
+        </nb-card-body>
         </nb-card>
-      </nb-sidebar>
+        </nb-card-front>
+          <nb-card-back class="inner-card">
+            <nb-card class="inner-card"><nb-card-body class="inner-card">
+              <nb-tabset class="full-width">   
+                <nb-tab tabTitle="Generation">
+                  <div class="container" id="generation-started-controls"> 
+                    <div class="map-button">
+                      <cdg-button [disabled]="!algoRunning || !algoPaused" [img]="pauseImage"></cdg-button>
+                    </div>
+                    <div class="map-button">
+                      <cdg-button [disabled]="!algoRunning" (click)="stopGenerationClicked()" [img]="stopImage"></cdg-button>
+                    </div>
+                  </div>
+                </nb-tab>
+                <nb-tab tabTitle="Info">
+                </nb-tab>
+              </nb-tabset>
+              </nb-card-body></nb-card>
+          </nb-card-back>
+          </nb-flip-card>
+        </nb-sidebar>
 
       <nb-layout-column>
         <map 
           (clicked)="precinctSelected($event)" 
           (mapTypeChanged)="mapTypeChanged($event)"
           (savedMapChanged)="savedMapChanged"
+          (updateGenConfig)="updateGenConfig($event)"
           (mapReset)="mapReset()"
+          [genConfig]="genConfig"
           [mapObject]="mapObject"
           [mapTypeList]="mapTypeList" 
           [savedMapList]="savedMapList"
@@ -86,7 +110,7 @@
           [mapTypeListLabel]="mapTypeListLabel"
           [disableMapTypeList]="!genConfig"
           [disableResetButton]="!genConfig"
-          >
+          > 
           </map>
       </nb-layout-column>
           <nb-layout-column *ngIf="compare">
@@ -94,14 +118,15 @@
           (mapTypeChanged)="compareMapTypeChanged($event)"
           (savedMapChanged)="compareSavedMapChanged"
           [mapObject]="compareMapObject"
+          [genConfig]="genConfig"
           [mapTypeList]="mapTypeList" 
           [savedMapList]="savedMapList"
           [savedMapListLabel]="savedMapListLabel"
           [mapTypeListLabel]="mapTypeListLabel"
           [disableResetButton]="true" 
           [disableMapTypeList]="compareSelectedStateId == 0"
-   
-          >
+          >         
           </map>
+
       </nb-layout-column>
     </nb-layout>

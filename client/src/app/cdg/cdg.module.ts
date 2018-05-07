@@ -2,11 +2,12 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CdgComponent } from './cdg.component';
 import { CdgUiModule } from '../cdg-ui/cdg-ui.module';
-import { MapService } from "./map/map.service";
+import { CdgMapService } from "./map/map.service";
 import { HttpClientModule } from "@angular/common/http"
 import {  MatSliderModule, MatSlideToggleModule} from "@angular/material";
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { GenerationService } from "./generation.service";
-import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
+import { NgxMapboxGLModule, MapService } from 'ngx-mapbox-gl';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { BrowserModule } from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
@@ -24,14 +25,14 @@ import { CdgRoutingModule } from './cdg-routing.module';
 import { MapComponent } from './map/map.component';
 import {AgmCoreModule} from '@agm/core';
 @NgModule({
-  imports: [
+  imports: [  
+    NgxMapboxGLModule, 
     BrowserModule,
     MatSliderModule,
     MatSlideToggleModule,
+    MatProgressSpinnerModule,
     LeafletModule,
-    NgxMapboxGLModule.forRoot({
-      accessToken:"pk.eyJ1IjoiYnJvYmljaGVhdSIsImEiOiJjamZ2cGlsZXczaHA5MzNtZG52MWoxMjJtIn0.jnvZ-TdxfZ5Qm8zoWzO65g"
-    }),    HttpClientModule,
+    HttpClientModule,
     CommonModule,
     NbSidebarModule, 
     NbLayoutModule,
@@ -47,8 +48,8 @@ import {AgmCoreModule} from '@agm/core';
   ],
   declarations: [
     CdgComponent,
-    MapComponent
+    MapComponent,
   ],
-  providers:[NbSidebarService,MapService,GenerationService]
+  providers:[NbSidebarService,CdgMapService,GenerationService, MapService]
 })
 export class CdgModule { }

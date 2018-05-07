@@ -76,6 +76,28 @@ public class UserController {
 		// This returns a JSON or XML with the users
 		return userRepository.findAll();
 	}	
+
+	@RequestMapping(value="/delete_user", method=RequestMethod.POST) 
+	public ResponseEntity<User> delete_user(@RequestBody User user,HttpSession session) {
+		userService.deleteUser(user);
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/edit_user", method=RequestMethod.POST) 
+	public ResponseEntity<User> edit_user(@RequestBody User user,HttpSession session) {
+		userService.editUser(user);
+		return new ResponseEntity<>(user, HttpStatus.OK);
+	}
+	
+	@RequestMapping(path="/get_user", method=RequestMethod.GET)
+	public ResponseEntity<Boolean> get_user(HttpSession session) {
+		User user = (User) session.getAttribute(CdgConstants.SESSION_USER);
+		if(user != null) {
+			return new ResponseEntity<>(true, HttpStatus.OK);
+		} else {
+			return new ResponseEntity<>(false, HttpStatus.OK);
+		}
+	}	
 	
 }
 

@@ -3,11 +3,16 @@ import {  Component,
           Input, 
           Output, 
           EventEmitter }  from '@angular/core';
-import { MapService }     from './map.service';
+import { CdgMapService }     from './map.service';
+import { CdgModule }      from '../cdg.module';
 import { DropdownValue }  from "../../cdg-objects/dropdownvalue";
 import { AppProperties }  from "../../app.properties";
 import * as mapboxgl      from 'mapbox-gl';
 import { Constants }      from "../../constants";
+import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
+import {MatDialogModule, MatDialog} from '@angular/material/dialog';
+import { CdgPermPickerComponent } from "../../cdg-ui/cdg-perm-picker/cdg-perm-picker.component";
+import { GenerationConfiguration } from "../generation.service";
 
 @Component({
   selector: 'map',
@@ -34,18 +39,23 @@ export class MapComponent implements OnInit{
   @Input() algoPaused:boolean;
   @Input() disableMapTypeList:boolean = false;
   @Input() disableResetButton:boolean = false;
+  @Input() genConfig:GenerationConfiguration;
   @Output() clicked: EventEmitter<any>
   @Output() mapTypeChanged: EventEmitter<any>;
   @Output() savedMapChanged: EventEmitter<any>;
   @Output() mapReset: EventEmitter<any>;
+  @Output() updateGenConfig: EventEmitter<any>;
   constructor(
-      private mapService: MapService,
-      private appProperties:AppProperties
+      private mapService: CdgMapService,
+      private appProperties:AppProperties,
+      private permPicker: CdgPermPickerComponent
       ) {
     this.clicked = new EventEmitter<any>();
     this.mapTypeChanged = new EventEmitter<any>();
     this.savedMapChanged = new EventEmitter<any>();
     this.mapReset = new EventEmitter<any>();
+    this.updateGenConfig = new EventEmitter<any>();
+
   }
   ngOnInit() { 
     let properties = this.appProperties.getProperties();
@@ -80,8 +90,41 @@ export class MapComponent implements OnInit{
   onSavedMapChanged(event){
     this.savedMapChanged.emit(event.value);
   }
-  mapClick(event){
-    this.clicked.emit(event.feature);
+  onMapClick(event){
+    console.log("HELLO")
+    let permConDist = this.genConfig.getPermConDist();
+    let permPrecinct = this.genConfig.getPermPreceint()
+    let data = event.features[0].properties;
+    let precinctIsPerm;
+    let districtIsPerm;
+    console.log("PRECINCT: " + data.precinctID)
+    console.log("DISTRICT: " + data.districtID)
+    if(permPrecinct.includes(data.precinctID)){
+      precinctIsPerm = true;
+    }
+    else{
+      precinctIsPerm = false;
+    }
+    if(permConDist.includes(data.districtID)){
+      districtIsPerm = true;
+    }
+    else{
+      districtIsPerm = false;
+    }
+    let ref = this.permPicker.generatePermPicker(precinctIsPerm, districtIsPerm, data);
+    ref.afterClosed().subscribe(result => {
+      let res: any = result;
+      if(result){
+        this.updateGenConfig.emit({
+            precinct : result.precinctIsLocked, 
+            precinctID : data.precinctID, 
+            districtID : data.districtID,
+            district : result.districtIsLocked 
+          })
+      }
+    });
+    
+
   }
   resetMap(){
     this.mapReset.emit();

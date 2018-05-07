@@ -27,6 +27,7 @@ import {
 } from '@nebular/auth';
 
 import {AgmCoreModule} from '@agm/core';
+import { ManageComponent } from './manage/manage.component';
 @NgModule({
   imports: [
     NbSidebarModule,
@@ -47,6 +48,7 @@ import {AgmCoreModule} from '@agm/core';
   ],
   declarations: [
     LoginComponent,
+    ManageComponent,
   ],
   providers:[NbSidebarService,LoginService]
 })

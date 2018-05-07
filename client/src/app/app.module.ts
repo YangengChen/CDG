@@ -3,6 +3,7 @@ import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AppComponent } from './app.component';
 import { CdgModule } from './cdg/cdg.module';
+import { CdgUiModule } from './cdg-ui/cdg-ui.module';
 import { PagesModule } from './pages/pages.module';
 import { NbThemeModule } from '@nebular/theme';
 import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
@@ -23,6 +24,8 @@ import { AppRoutingModule } from './app-routing.module';
 import { HomeComponent } from './pages/home/home.component';
 import {platformBrowserDynamic} from '@angular/platform-browser-dynamic';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { CdgMapService } from "./cdg/map/map.service";
+
 import {
   MatAutocompleteModule,
   MatButtonModule,
@@ -58,13 +61,19 @@ import {
   MatTooltipModule,
 } from '@angular/material';
 import { HttpClientModule } from '@angular/common/http';
-import 'hammerjs'
+import 'hammerjs';
+//import { CdgStepComponent } from './cdg-step/cdg-step.component'
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent,
+    HomeComponent
+  //  CdgStepComponent,
   ],
   imports: [
+        NgxMapboxGLModule.forRoot({
+      accessToken:"pk.eyJ1IjoiYnJvYmljaGVhdSIsImEiOiJjamZ2cGlsZXczaHA5MzNtZG52MWoxMjJtIn0.jnvZ-TdxfZ5Qm8zoWzO65g",
+      geocoderAccessToken: "pk.eyJ1IjoiYnJvYmljaGVhdSIsImEiOiJjamZ2cGlsZXczaHA5MzNtZG52MWoxMjJtIn0.jnvZ-TdxfZ5Qm8zoWzO65g"
+    }), 
     HttpModule,
     BrowserModule,
     NbThemeModule.forRoot({ name: 'default' }),

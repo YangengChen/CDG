@@ -16,8 +16,14 @@
     nb-layout-colum{
         padding:0px, 0px ,0px , 0px;
     }
-    nb-card {
+    .card {
         height:98%;
+    }
+    .inner-card{
+        height:97%;
+    }
+    .card-body{
+        height:96%;
     }
 
     nb-tab{
@@ -73,4 +79,8 @@
         width:100px;
         display: inline-block;
         margin-left:7%;
+    }
+
+    #spinner-container{
+        padding-top:100;
     }

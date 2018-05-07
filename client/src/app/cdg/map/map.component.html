@@ -36,6 +36,7 @@
       source="states"
       (mouseMove)="onPrecinctHover($event)"
       (mouseLeave)="onPrecinctExit()"
+      (click)="onMapClick($event)"
       [paint]="stylePattern">
       <mgl-popup *ngIf="currPrecinct" [(lngLat)]="popupCords" >
       <a *ngIf="currPrecinct.districtID"> Congresisonal District: {{currPrecinct.districtID}}<br></a>
@@ -50,6 +51,10 @@
       <a *ngIf="currPrecinct.prsOTH"> Other Presidental Votes: {{currPrecinct.prsOTH}}<br> </a>
     </mgl-popup>
     </mgl-layer>
+        <mgl-control
+      mglGeocoder
+    ></mgl-control>
   </mgl-map>
+
   </nb-card-body>
 </nb-card>
