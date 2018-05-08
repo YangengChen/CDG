@@ -30,12 +30,12 @@ public class GenerateMapAlgorithm {
 	private ExecutorService executor;
 	private final UUID generationID;
 	
-	public GenerateMapAlgorithm(State state, GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval) {
+	public GenerateMapAlgorithm(State state, GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval, Map<String,String> manualMappings) {
 		if (goodnessEval == null || constraintEval == null || state == null) {
 			throw new IllegalArgumentException();
 		}
 		try {
-			CONDISTRICTMAP = new CongressionalDistrictMap(state, goodnessEval, constraintEval);
+			CONDISTRICTMAP = new CongressionalDistrictMap(state, goodnessEval, constraintEval, manualMappings);
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new IllegalArgumentException();

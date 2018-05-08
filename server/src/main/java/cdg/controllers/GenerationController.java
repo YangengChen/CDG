@@ -2,6 +2,7 @@ package cdg.controllers;
 
 import static cdg.properties.CdgConstants.SESSION_USER;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -71,9 +72,11 @@ public class GenerationController {
 		if (generator == null) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		Map<String,String> manualMappings = null;
 		ConstraintEvaluator constraintEval;
 		GoodnessEvaluator goodnessEval;
 		try {
+			manualMappings = config.getPrecinctToDistrict();
 			constraintEval = CdgConstraintEvaluator.toConstraintEvaluator(config);
 			goodnessEval = CdgGoodnessEvaluator.toGoodnessEvaluator(CdgConstants.MAX_GOODNESS, config);
 		} catch (IllegalArgumentException iae) {
@@ -82,7 +85,7 @@ public class GenerationController {
 		generator.resetGenerator(config.getStateId(), goodnessEval, constraintEval);
 		
 		try {
-			generator.startGeneration(state);
+			generator.startGeneration(state, manualMappings);
 		} catch (IllegalArgumentException iae) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.BAD_REQUEST);
 		} catch (IllegalStateException ise) {
