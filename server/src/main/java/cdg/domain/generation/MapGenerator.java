@@ -42,6 +42,13 @@ public class MapGenerator {
 		}
 	}
 	
+	public boolean pauseGeneration() {
+		if (currAlgorithmRun == null) {
+			return false;
+		}
+		return currAlgorithmRun.pause();
+	}
+	
 	public GenerationStatus getStatus() {
 		if (currAlgorithmRun == null) {
 			return GenerationStatus.NOTSTARTED;

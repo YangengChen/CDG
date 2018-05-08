@@ -78,6 +78,17 @@ public class GenerateMapAlgorithm {
 		}
 	}
 	
+	public boolean pause() {
+		if (generation == null) {
+			return false;
+		}
+		if (this.isComplete()) {
+			return true;
+		}
+		STATE.setPaused(true);
+		return true;
+	}
+	
 	public boolean isComplete() {
 		if (generation == null) {
 			return false;
@@ -260,6 +271,9 @@ public class GenerateMapAlgorithm {
 	
 	private boolean continueWithGeneration()
 	{
+		if (STATE.isPaused()) {
+			return false;
+		}
 		int iteration = STATE.getCurrGenIteration();
 		if (iteration >= MAX_GENERATION_ITERATIONS) {
 			System.err.println("Reached max iterations");

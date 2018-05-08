@@ -13,6 +13,7 @@ public class GenerationState implements Cloneable {
 	private long genStartTime;
 	private long genStopTime;
 	private int timesBelowGenThreshold;
+	private boolean paused;
 
 	public int getCurrDistrictID() {
 		return currDistrictID;
@@ -116,5 +117,13 @@ public class GenerationState implements Cloneable {
 	
 	public void incrementTimesBelowGenThreshold() {
 		timesBelowGenThreshold++;
+	}
+
+	public boolean isPaused() {
+		return paused;
+	}
+
+	public void setPaused(boolean paused) {
+		this.paused = paused;
 	}
 }

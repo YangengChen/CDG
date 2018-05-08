@@ -109,6 +109,25 @@ public class GenerationController {
 		return new ResponseEntity<GenerationStatus>(GenerationStatus.CANCELED, HttpStatus.OK);
 	}
 	
+	@RequestMapping( value = CdgConstants.GENERATION_PAUSE_PATH, method=RequestMethod.POST)
+	public ResponseEntity<?> pauseGeneration(HttpSession session)
+	{
+		User user = (User) session.getAttribute(SESSION_USER);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		MapGenerator generator = user.getGenerator();
+		if (generator == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		boolean paused = generator.pauseGeneration();
+		if (!paused) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
 	@RequestMapping( value = CdgConstants.GENERATION_STATUS_PATH, method=RequestMethod.GET)
 	public ResponseEntity<GenerationResponse> getGenerationStatus(HttpSession session)
 	{
