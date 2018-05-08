@@ -41,6 +41,9 @@ public class GenerateMapAlgorithm {
 			throw new IllegalArgumentException();
 		}
 		STATE = new GenerationState();
+		if (manualMappings != null) {
+			STATE.getPrecinctToDistrict().putAll(manualMappings);
+		}
 		GOODNESSEVAL = goodnessEval;
 		CONSTRAINTEVAL = constraintEval;
 		generationID = createGenerationID();
