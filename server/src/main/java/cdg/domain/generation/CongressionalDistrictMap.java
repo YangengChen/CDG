@@ -339,6 +339,22 @@ public class CongressionalDistrictMap {
 	public State getGeneratedState() {
 		return state;
 	}
+	
+	public String getDistrictPublicID(int districtID) {
+		CongressionalDistrict district = districts.get(districtID);
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
+		return district.getPublicID();
+	}
+	
+	public String getPrecinctPublicID(int precinctID) {
+		Precinct precinct = state.getPrecincts().get(precinctID);
+		if (precinct == null) {
+			throw new IllegalArgumentException();
+		}		
+		return precinct.getPublicID();
+	}
 
 	public int getDistrictID(CongressionalDistrict district) {
 		return -1;

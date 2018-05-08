@@ -1,5 +1,7 @@
 package cdg.domain.generation;
 
+import java.util.HashMap;
+import java.util.Map;
 
 public class GenerationState implements Cloneable {
 	private int currDistrictID;
@@ -13,8 +15,13 @@ public class GenerationState implements Cloneable {
 	private long genStartTime;
 	private long genStopTime;
 	private int timesBelowGenThreshold;
+	private Map<String,String> precinctToDistrict;
 	private boolean paused;
 
+	public GenerationState() {
+		precinctToDistrict = new HashMap<String,String>();
+	}
+	
 	public int getCurrDistrictID() {
 		return currDistrictID;
 	}
@@ -125,5 +132,13 @@ public class GenerationState implements Cloneable {
 
 	public void setPaused(boolean paused) {
 		this.paused = paused;
+	}
+
+	public Map<String, String> getPrecinctToDistrict() {
+		return precinctToDistrict;
+	}
+
+	public void setPrecinctToDistrict(Map<String, String> precinctToDistrict) {
+		this.precinctToDistrict = precinctToDistrict;
 	}
 }

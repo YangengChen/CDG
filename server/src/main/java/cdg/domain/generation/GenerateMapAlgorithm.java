@@ -1,5 +1,7 @@
 package cdg.domain.generation;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
@@ -106,6 +108,7 @@ public class GenerateMapAlgorithm {
 	public GenerationState getState() {
 		try {
 			GenerationState genState = (GenerationState)STATE.clone();
+			genState.setPrecinctToDistrict((Map)(((HashMap)STATE.getPrecinctToDistrict()).clone()));
 			return genState;
 		} catch (CloneNotSupportedException ce) {
 			return null;
@@ -241,6 +244,9 @@ public class GenerateMapAlgorithm {
 			unmoveCandidatePrecinct();
 			CONDISTRICTMAP.evaluateGoodness(currDistID, GOODNESSEVAL);
 			CONDISTRICTMAP.evaluateGoodness(neighborDistID, GOODNESSEVAL);
+		} else {
+			int precinctID = STATE.getCandidatePrecinctUID();
+			STATE.getPrecinctToDistrict().put(CONDISTRICTMAP.getPrecinctPublicID(precinctID), CONDISTRICTMAP.getDistrictPublicID(neighborDistID));
 		}
 	}
 	
