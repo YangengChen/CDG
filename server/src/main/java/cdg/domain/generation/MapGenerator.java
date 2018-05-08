@@ -26,8 +26,10 @@ public class MapGenerator {
 		try {
 			currAlgorithmRun = new GenerateMapAlgorithm(state, goodnessEvaluator, constraintEvaluator);
 		} catch (IllegalArgumentException iae) {
+			System.err.println(iae);
 			throw iae;
 		} catch (Exception e) {
+			System.err.println(e);
 			throw new IllegalStateException();
 		}
 		

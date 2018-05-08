@@ -12,6 +12,7 @@ public class GenerationState implements Cloneable {
 	private double startTotalGoodness;
 	private long genStartTime;
 	private long genStopTime;
+	private int timesBelowGenThreshold;
 
 	public int getCurrDistrictID() {
 		return currDistrictID;
@@ -103,5 +104,17 @@ public class GenerationState implements Cloneable {
 	
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
+	}
+
+	public int getTimesBelowGenThreshold() {
+		return timesBelowGenThreshold;
+	}
+
+	public void setTimesBelowGenThreshold(int timesBelowGenThreshold) {
+		this.timesBelowGenThreshold = timesBelowGenThreshold;
+	}
+	
+	public void incrementTimesBelowGenThreshold() {
+		timesBelowGenThreshold++;
 	}
 }

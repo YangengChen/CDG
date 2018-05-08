@@ -50,4 +50,11 @@ public class CdgConstants {
 	public static final String PRECINCT_IDENTIFIER_FIELD = "geojson_precinctIdentifier";
 	public static final String PRECINCT_NEIGHBORS_FIELD = "geojson_precinctNeighbors";
 	public static final String PRECINCT_POPULATION_FIELD = "geojson_precinctPopulation";
+	public static final String THRESHOLD_PERCENT = "generation_thresholdPercent";
+	public static final String MAX_DISTRICT_ITERATIONS = "generation_maxDistrictIterations";
+	public static final String MAX_GENERATION_ITERATIONS = "generation_maxGenIterations";
+	public static final String DISTRICT_ITERATION_MAX_PERCENT = "generation_districtMaxPercent";
+	public static final String END_THRESHOLD_PERCENT = "generation_endThresholdPercent";
+	public static final String END_THRESHOLD_FORGIVENESS = "generation_endThresholdForgiveness";
+	public static final String POLICY = "generation_policy";
 }

@@ -9,6 +9,8 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
 import cdg.dao.State;
+import cdg.properties.CdgConstants;
+import cdg.properties.CdgPropertiesManager;
 
 public class GenerateMapAlgorithm {
 	private final GenerationState STATE;
@@ -20,6 +22,7 @@ public class GenerateMapAlgorithm {
 	private final int MAX_GENERATION_ITERATIONS;
 	private final double DISTRICT_ITERATION_MAX_PERCENT;
 	private final double END_THRESHOLD_PERCENT;
+	private final int END_THRESHOLD_FORGIVENESS;
 	private final NextDistrictPolicy POLICY;
 	private Future<Boolean> generation;
 	private ExecutorService executor;
@@ -40,12 +43,14 @@ public class GenerateMapAlgorithm {
 		CONSTRAINTEVAL = constraintEval;
 		generationID = createGenerationID();
 		//from properties
-		THRESHOLD_PERCENT = 0;
-		MAX_DISTRICT_ITERATIONS = 0;
-		MAX_GENERATION_ITERATIONS = 0;
-		DISTRICT_ITERATION_MAX_PERCENT = 0;
-		END_THRESHOLD_PERCENT = 0;
-		POLICY = NextDistrictPolicy.RANDOM;
+		CdgPropertiesManager properties = CdgPropertiesManager.getInstance();
+		THRESHOLD_PERCENT = Double.parseDouble((String)properties.getProperty(CdgConstants.THRESHOLD_PERCENT));
+		MAX_DISTRICT_ITERATIONS = Integer.parseInt((String)properties.getProperty(CdgConstants.MAX_DISTRICT_ITERATIONS));
+		MAX_GENERATION_ITERATIONS = Integer.parseInt((String)properties.getProperty(CdgConstants.MAX_GENERATION_ITERATIONS));
+		DISTRICT_ITERATION_MAX_PERCENT = Double.parseDouble((String)properties.getProperty(CdgConstants.DISTRICT_ITERATION_MAX_PERCENT));
+		END_THRESHOLD_PERCENT = Double.parseDouble((String)properties.getProperty(CdgConstants.END_THRESHOLD_PERCENT));
+		END_THRESHOLD_FORGIVENESS = Integer.parseInt((String)properties.getProperty(CdgConstants.END_THRESHOLD_FORGIVENESS));
+		POLICY = NextDistrictPolicy.valueOf(((String)properties.getProperty(CdgConstants.POLICY)));
 	}
 	
 	public boolean start() {
@@ -126,6 +131,8 @@ public class GenerateMapAlgorithm {
 			double startStateGoodness = CONDISTRICTMAP.getTotalGoodness();
 			STATE.setStartTotalGoodness(startStateGoodness);
 			while (continueWithGeneration()) {
+				double currStateGoodness = CONDISTRICTMAP.getTotalGoodness();
+				STATE.setLastTotalGoodness(currStateGoodness);
 				STATE.incrementGenIteration();
 				chooseNextStartingDistrict();
 				operateOnDistrict();
@@ -147,6 +154,7 @@ public class GenerateMapAlgorithm {
 		if (!CONDISTRICTMAP.resetPrecinctQueue(STATE.getCurrDistrictID())) {
 			throw new IllegalStateException();
 		}
+		STATE.setCurrDistrictIteration(0);
 		do {
 			STATE.incrementDistrictIteration();
 			boolean precinctChosen = chooseNextCandidatePrecinct();
@@ -234,16 +242,44 @@ public class GenerateMapAlgorithm {
 	
 	private boolean continueWithDistrict()
 	{
-		//fake
+		int iteration = STATE.getCurrDistrictIteration();
+		if (iteration >= MAX_DISTRICT_ITERATIONS) {
+			System.err.println("District reached max iterations");
+			return false;
+		}
+		double startDistGoodness = STATE.getCurrDistrictStartGoodness();
+		int distID = STATE.getCurrDistrictID();
+		double currDistGoodness = CONDISTRICTMAP.getGoodness(distID);
+		double percentageChange = (currDistGoodness - startDistGoodness)/startDistGoodness;
+		if (percentageChange >= DISTRICT_ITERATION_MAX_PERCENT) {
+			System.err.println("District reached max percent changed");
+			return false;
+		}
 		return true;
 	}
 	
 	private boolean continueWithGeneration()
 	{
-		//fake
-		if (STATE.getCurrGenIteration() > 100) {
+		int iteration = STATE.getCurrGenIteration();
+		if (iteration >= MAX_GENERATION_ITERATIONS) {
+			System.err.println("Reached max iterations");
 			return false;
 		}
+		/*double lastTotalGoodness = STATE.getLastTotalGoodness();
+		double currTotalGoodness = CONDISTRICTMAP.getTotalGoodness();
+		if (lastTotalGoodness == 0) {
+			return true;
+		}
+		double percentageChange = (currTotalGoodness - lastTotalGoodness)/lastTotalGoodness;
+		if (percentageChange < END_THRESHOLD_PERCENT) {
+			System.err.println("Below threshold- " + percentageChange);
+			STATE.incrementTimesBelowGenThreshold();
+			if (STATE.getTimesBelowGenThreshold() < END_THRESHOLD_FORGIVENESS) {
+				return true;
+			}
+			return false;
+		}
+		STATE.setTimesBelowGenThreshold(0);*/
 		return true;
 	}
 }
