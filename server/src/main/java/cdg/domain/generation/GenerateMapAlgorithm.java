@@ -63,6 +63,10 @@ public class GenerateMapAlgorithm {
 		return uid;
 	}
 	
+	public UUID getGenerationID() {
+		return generationID;
+	}
+	
 	public void stop() {
 		if (generation != null) {
 			generation.cancel(true);

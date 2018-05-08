@@ -26,7 +26,7 @@ import javax.persistence.MapKey;
 public class CongressionalDistrict extends Region {
 	@ManyToOne(fetch = FetchType.LAZY)
 	private State state;
-	@OneToMany(mappedBy="conDistrict", cascade= {CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval=true)
+	@OneToMany(mappedBy="conDistrict", cascade= {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval=true)
 	@MapKey(name = "id")
 	private Map<Integer,Precinct> precincts;
 	@Transient

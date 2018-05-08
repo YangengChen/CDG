@@ -1,9 +1,15 @@
 package cdg.domain.generation;
 
 import java.util.Calendar;
-import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
+import cdg.dao.CongressionalDistrict;
+import cdg.dao.Precinct;
+import cdg.dao.SavedMap;
+import cdg.dao.SavedMapping;
 import cdg.dao.State;
+import cdg.repository.StateRepository;
 import cdg.responses.GenerationResponse;
 
 public class MapGenerator {
@@ -88,6 +94,29 @@ public class MapGenerator {
 		return genState;
 	}
 	
+	public SavedMap createSavedMap(StateRepository repo) {
+		if (currAlgorithmRun == null) {
+			return null;
+		}
+		if (!getStatus().equals(GenerationStatus.COMPLETE)) {
+			return null;
+		}
+		State genState = currAlgorithmRun.getGeneratedState();
+		repo.detach(genState);
+		SavedMap savedMap = new SavedMap(currAlgorithmRun.getGenerationID().toString());
+		savedMap.setState(genState);
+		savedMap.setDistricts(new HashSet<>());
+		SavedMapping currDistrictMapping;
+		Set<Precinct> currPrecinctSet;
+		for (CongressionalDistrict district : genState.getConDistricts().values()) {
+			currDistrictMapping = new SavedMapping();
+			currDistrictMapping.setDistrict(district);
+			currPrecinctSet = new HashSet<>(district.getPrecincts().values());
+			currDistrictMapping.setPrecincts(currPrecinctSet);
+			savedMap.getDistricts().add(currDistrictMapping);
+		}
+		return savedMap;
+	}
 	
 	public void setState(String stateId) {
 		this.stateId = stateId;

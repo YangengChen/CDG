@@ -26,10 +26,10 @@ import javax.persistence.CascadeType;
 @Entity
 @Table(name = "States")
 public class State extends Region {
-	@OneToMany(mappedBy="state", cascade= {CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval=true)
+	@OneToMany(mappedBy="state", cascade= {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval=true)
 	@MapKey(name = "id")
 	private Map<Integer,CongressionalDistrict> conDistricts;
-	@OneToMany(mappedBy="state", cascade= {CascadeType.REFRESH, CascadeType.REMOVE}, orphanRemoval=true)
+	@OneToMany(mappedBy="state", cascade= {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval=true)
 	@MapKey(name = "id")
 	private Map<Integer,Precinct> precincts;
 	@Lob

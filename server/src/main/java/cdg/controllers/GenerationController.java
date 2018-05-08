@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
+import cdg.dao.SavedMap;
 import cdg.dao.State;
 import cdg.dao.User;
 import cdg.domain.generation.CdgConstraintEvaluator;
@@ -29,9 +30,9 @@ import cdg.domain.generation.GoodnessEvaluator;
 import cdg.domain.generation.MapGenerator;
 import cdg.domain.map.MapType;
 import cdg.domain.map.MapTypeEnumConverter;
-import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
 import cdg.properties.CdgConstants;
+import cdg.repository.SavedMapRepository;
 import cdg.repository.StateRepository;
 import cdg.responses.GenerationResponse;
 import cdg.services.MapService;
@@ -42,6 +43,8 @@ import cdg.services.MapService;
 public class GenerationController {
 	@Autowired
 	private StateRepository stateRepo;
+	@Autowired
+	private SavedMapRepository savedMapRepo;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
@@ -153,9 +156,26 @@ public class GenerationController {
 	}
 	
 	@RequestMapping( value = CdgConstants.GENERATION_SAVE_MAP_PATH, method=RequestMethod.POST)
-	public void saveGeneratedMap(@RequestBody MapDTO mapToSave)
+	public ResponseEntity<?> saveGeneratedMap(HttpSession session)
 	{
+		User user = (User) session.getAttribute(SESSION_USER);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
 		
+		MapGenerator generator = user.getGenerator();
+		if (generator == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		if (!generator.getStatus().equals(GenerationStatus.COMPLETE)) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+		SavedMap savedMap = generator.createSavedMap(stateRepo);
+		if (savedMap == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		savedMapRepo.save(savedMap);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@RequestMapping( value = CdgConstants.GENERATION_MAP_DATA_PATH, method=RequestMethod.GET)
