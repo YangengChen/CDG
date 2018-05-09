@@ -413,20 +413,13 @@ public class ImportService {
 					throw new IllegalArgumentException();
 				}
 				districtElection.setYear(precinctElection.getYear());
-				districtElection.setVotingAgePopulation(districtElection.getVotingAgePopulation() + precinctElection.getVotingAgePopulation());
-				districtElection.setTotalVotes(districtElection.getTotalVotes() + precinctElection.getTotalVotes());
-				districtElection.setTotal(Party.DEMOCRATIC, districtElection.getTotal(Party.DEMOCRATIC) + precinctElection.getTotal(Party.DEMOCRATIC));
-				districtElection.setTotal(Party.REPUBLICAN, districtElection.getTotal(Party.REPUBLICAN) + precinctElection.getTotal(Party.REPUBLICAN));
-				districtElection.setTotal(Party.OTHER, districtElection.getTotal(Party.OTHER) + precinctElection.getTotal(Party.OTHER));
+				districtElection.addElectionResult(precinctElection);
 			}
 			electionRepo.saveAndFlush(districtElection);
 			district.setPresidentialVoteTotals(districtElection);
+			
 			stateElection.setYear(districtElection.getYear());
-			stateElection.setVotingAgePopulation(stateElection.getVotingAgePopulation() + districtElection.getVotingAgePopulation());
-			stateElection.setTotalVotes(stateElection.getTotalVotes() + districtElection.getTotalVotes());
-			stateElection.setTotal(Party.DEMOCRATIC, stateElection.getTotal(Party.DEMOCRATIC) + districtElection.getTotal(Party.DEMOCRATIC));
-			stateElection.setTotal(Party.REPUBLICAN, stateElection.getTotal(Party.REPUBLICAN) + districtElection.getTotal(Party.REPUBLICAN));
-			stateElection.setTotal(Party.OTHER, stateElection.getTotal(Party.OTHER) + districtElection.getTotal(Party.OTHER));
+			stateElection.addElectionResult(districtElection);
 		}
 		electionRepo.saveAndFlush(stateElection);
 		state.setPresidentialVoteTotals(stateElection);

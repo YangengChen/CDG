@@ -88,4 +88,32 @@ public class ElectionResult {
 	public void setVotingAgePopulation(long votingAgePopulation) {
 		this.votingAgePopulation = votingAgePopulation;
 	}
+	
+	public void addElectionResult(ElectionResult election) {
+		if (election == null) {
+			throw new IllegalArgumentException();
+		}
+		if (this.getPartyTotals() == null) {
+			throw new IllegalStateException();
+		}
+		setVotingAgePopulation(this.getVotingAgePopulation() + election.getVotingAgePopulation());
+		setTotalVotes(this.getTotalVotes() + election.getTotalVotes());
+		setTotal(Party.DEMOCRATIC, this.getTotal(Party.DEMOCRATIC) + election.getTotal(Party.DEMOCRATIC));
+		setTotal(Party.REPUBLICAN, this.getTotal(Party.REPUBLICAN) + election.getTotal(Party.REPUBLICAN));
+		setTotal(Party.OTHER, this.getTotal(Party.OTHER) + election.getTotal(Party.OTHER));
+	}
+	
+	public void subtractElectionResult(ElectionResult election) {
+		if (election == null) {
+			throw new IllegalArgumentException();
+		}
+		if (this.getPartyTotals() == null) {
+			throw new IllegalStateException();
+		}
+		setVotingAgePopulation(this.getVotingAgePopulation() - election.getVotingAgePopulation());
+		setTotalVotes(this.getTotalVotes() - election.getTotalVotes());
+		setTotal(Party.DEMOCRATIC, this.getTotal(Party.DEMOCRATIC) - election.getTotal(Party.DEMOCRATIC));
+		setTotal(Party.REPUBLICAN, this.getTotal(Party.REPUBLICAN) - election.getTotal(Party.REPUBLICAN));
+		setTotal(Party.OTHER, this.getTotal(Party.OTHER) - election.getTotal(Party.OTHER));
+	}
 }

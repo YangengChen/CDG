@@ -63,7 +63,7 @@ public class CongressionalDistrictMap {
 	private void initMap(Map<String,String> manualMappings) {
 		mapPrecincts();
 		applyManualMappings(manualMappings);
-		setPopulationStatistics();
+		//setPopulationStatistics();
 		setGeometries();
 		mapBorderPrecincts();
 	}
@@ -198,17 +198,24 @@ public class CongressionalDistrictMap {
 			if (toDistrict == fromDistrict) {
 				continue;
 			}
+			if (toDistrict.getPresidentialVoteTotals() == null || fromDistrict.getPresidentialVoteTotals() == null) {
+				throw new IllegalStateException();
+			}
 			
 			currPrecinct = fromDistrict.getPrecincts().remove(currPrecinct.getId());
 			if (currPrecinct == null) {
 				throw new IllegalStateException();
 			}
+			fromDistrict.setPopulation(fromDistrict.getPopulation() - currPrecinct.getPopulation());
+			fromDistrict.getPresidentialVoteTotals().subtractElectionResult(currPrecinct.getPresidentialVoteTotals());
 			toDistrict.getPrecincts().put(currPrecinct.getId(), currPrecinct);
+			toDistrict.setPopulation(toDistrict.getPopulation() + currPrecinct.getPopulation());
+			toDistrict.getPresidentialVoteTotals().addElectionResult(currPrecinct.getPresidentialVoteTotals());
 			currPrecinct.setConDistrict(toDistrict);
 		}
 	}
 	
-	private void setPopulationStatistics() {
+	/*private void setPopulationStatistics() {
 		Map<Integer, Precinct> currPrecincts;
 		long totalDistrictPopulation;
 		for (CongressionalDistrict district : districts.values()) {
@@ -222,7 +229,7 @@ public class CongressionalDistrictMap {
 			}
 			district.setPopulation(totalDistrictPopulation);
 		}
-	}
+	}*/
 	
 	private void initHelpers(ConstraintEvaluator evaluator) {
 		ignoredDistricts = new HashMap<Integer, CongressionalDistrict>();
