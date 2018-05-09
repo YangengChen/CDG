@@ -51,6 +51,11 @@ public class CdgConstants {
 	public static final String PRECINCT_IDENTIFIER_FIELD = "geojson_precinctIdentifier";
 	public static final String PRECINCT_NEIGHBORS_FIELD = "geojson_precinctNeighbors";
 	public static final String PRECINCT_POPULATION_FIELD = "geojson_precinctPopulation";
+	public static final String PRECINCT_VOTING_AGE_POPULATION_FIELD = "geojson_precinctVotingAgePopulation";
+	public static final String PRESIDENTIAL_ELECTION_YEAR_FIELD = "geojson_presidentialElectionYear";
+	public static final String PRECINCT_PRESIDENTIAL_TOTAL_VOTE_FIELD = "geojson_precinctPresidentialTotalVote";
+	public static final String PRECINCT_PRESIDENTIAL_DEM_VOTE_FIELD = "geojson_precinctPresidentialDemVote";
+	public static final String PRECINCT_PRESIDENTIAL_REP_VOTE_FIELD = "geojson_precinctPresidentialRepVote";
 	public static final String THRESHOLD_PERCENT = "generation_thresholdPercent";
 	public static final String MAX_DISTRICT_ITERATIONS = "generation_maxDistrictIterations";
 	public static final String MAX_GENERATION_ITERATIONS = "generation_maxGenIterations";

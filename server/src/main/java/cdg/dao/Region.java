@@ -20,6 +20,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinTable;
 import javax.persistence.Lob;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 
 //import org.hibernate.annotations.LazyGroup;
@@ -46,7 +47,7 @@ public class Region {
 	private byte[] geoJson;
 	@Transient
 	private Geometry geometry;
-	@Transient
+	@OneToOne(fetch = FetchType.LAZY)
 	private ElectionResult presidentialVoteTotals;
 	@ManyToMany
     @JoinTable(
