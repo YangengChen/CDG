@@ -16,6 +16,7 @@ public class GenerationState implements Cloneable {
 	private long genStopTime;
 	private int timesBelowGenThreshold;
 	private Map<String,String> precinctToDistrict;
+	private Map<String,Double> districtsGoodness;
 	private boolean paused;
 
 	public GenerationState() {
@@ -140,5 +141,13 @@ public class GenerationState implements Cloneable {
 
 	public void setPrecinctToDistrict(Map<String, String> precinctToDistrict) {
 		this.precinctToDistrict = precinctToDistrict;
+	}
+
+	public Map<String,Double> getDistrictsGoodness() {
+		return districtsGoodness;
+	}
+
+	public void setDistrictsGoodness(Map<String,Double> districtsGoodness) {
+		this.districtsGoodness = districtsGoodness;
 	}
 }

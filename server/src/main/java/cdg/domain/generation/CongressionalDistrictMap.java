@@ -427,4 +427,12 @@ public class CongressionalDistrictMap {
 		}		
 		return precinct.getPublicID();
 	}
+	
+	public Map<String,Double> getAllDistrictGoodness() {
+		Map<String,Double> districtsGoodness = new HashMap<String,Double>();
+		for (CongressionalDistrict district : districts.values()) {
+			districtsGoodness.put(district.getPublicID(), district.getGoodnessValue());
+		}
+		return districtsGoodness;
+	}
 }

@@ -15,6 +15,7 @@ public class GenerationResponse {
 	private double currTotalGoodness;
 	private int currIteration;
 	private Map<String,String> precinctToDistrict;
+	private Map<String,Double> districtsGoodness;
 
 	public GenerationResponse() {}
 	
@@ -89,5 +90,13 @@ public class GenerationResponse {
 
 	public void setPrecinctToDistrict(Map<String, String> precinctToDistrict) {
 		this.precinctToDistrict = precinctToDistrict;
+	}
+
+	public Map<String,Double> getDistrictsGoodness() {
+		return districtsGoodness;
+	}
+
+	public void setDistrictsGoodness(Map<String,Double> districtsGoodness) {
+		this.districtsGoodness = districtsGoodness;
 	}
 }

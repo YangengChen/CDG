@@ -80,6 +80,7 @@ public class MapGenerator {
 			response.setCurrTotalGoodness(currGenState.getLastTotalGoodness());
 			response.setCurrIteration(currGenState.getCurrGenIteration());
 			response.setPrecinctToDistrict(currGenState.getPrecinctToDistrict());
+			response.setDistrictsGoodness(currGenState.getDistrictsGoodness());
 			
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(currGenState.getGenStartTime());
