@@ -315,6 +315,7 @@ public class CongressionalDistrict extends Region {
 			data.setNumPrecincts(precincts.size());
 		}
 		data.setGoodness(this.goodnessValue);
+		data.setPresidentialElection(this.getPresidentialVoteTotals());
 		return data;
 	}
 	

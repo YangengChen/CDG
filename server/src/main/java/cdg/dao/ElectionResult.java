@@ -18,21 +18,24 @@ import javax.persistence.MapKeyColumn;
 import javax.persistence.MapKeyEnumerated;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table( name = "ElectionResults")
 public class ElectionResult {
 	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY)
 	@Column(name="id", updatable = false, nullable = false)
+	@JsonIgnore
 	private long id;
 	private int year;
-	@ElementCollection(fetch = FetchType.LAZY)
-	@CollectionTable(name = "voteTotals")
+	@ElementCollection(fetch = FetchType.EAGER)
+	@CollectionTable(name = "partyTotals")
 	@MapKeyColumn(name = "party", length = 40, nullable = false)
 	@MapKeyClass(Party.class)
 	@MapKeyEnumerated(EnumType.STRING)
 	@Column(name = "voteTotal", nullable = false)
-	private Map<Party,Long> voteTotals;
+	private Map<Party,Long> partyTotals;
 	private long totalVotes;
 	private long votingAgePopulation;
 	
@@ -54,12 +57,12 @@ public class ElectionResult {
 		this.year = year;
 	}
 
-	public Map<Party, Long> getVoteTotals() {
-		return voteTotals;
+	public Map<Party, Long> getPartyTotals() {
+		return partyTotals;
 	}
 
-	public void setVoteTotals(Map<Party, Long> voteTotals) {
-		this.voteTotals = voteTotals;
+	public void setPartyTotals(Map<Party, Long> voteTotals) {
+		this.partyTotals = voteTotals;
 	}
 
 	public long getTotalVotes() {
@@ -71,11 +74,11 @@ public class ElectionResult {
 	}
 	
 	public void setTotal(Party party, long voteTotal) {
-		voteTotals.put(party, voteTotal);
+		partyTotals.put(party, voteTotal);
 	}
 	
 	public long getTotal(Party party) {
-		return voteTotals.get(party);
+		return partyTotals.get(party);
 	}
 
 	public long getVotingAgePopulation() {

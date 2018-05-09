@@ -110,6 +110,7 @@ public class Precinct extends Region {
 		if (conDistrict != null) {
 			data.setDistrictID(conDistrict.getPublicID());
 		}
+		data.setPresidentialElection(this.getPresidentialVoteTotals());
 		return data;
 	}
 }

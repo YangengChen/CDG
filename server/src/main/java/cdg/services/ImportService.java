@@ -79,7 +79,7 @@ public class ImportService {
 			setGeometries(state);
 			setMaps(state);
 			setPopulation(state);
-			//setElectionData(state);
+			setElectionData(state);
 			
 			//store to database and use returned state value - will generate all mappings
 			state = stateRepo.saveAndFlush(state);
@@ -215,11 +215,13 @@ public class ImportService {
 		ElectionResult result = new ElectionResult();
 		result.setVotingAgePopulation(votingAgePopulation);
 		result.setYear(electionYear);
-		result.setTotalVotes(repVotes + demVotes);
+		result.setTotalVotes(totalVotes);
 		Map<Party,Long> voteTotals = new EnumMap<Party,Long>(Party.class);
 		voteTotals.put(Party.REPUBLICAN, repVotes);
 		voteTotals.put(Party.DEMOCRATIC, demVotes);
-		result.setVoteTotals(voteTotals);
+		long otherVotes = totalVotes - (repVotes + demVotes);
+		voteTotals.put(Party.OTHER, otherVotes);
+		result.setPartyTotals(voteTotals);
 		result = electionRepo.saveAndFlush(result);
 		return result;
 	}
@@ -385,21 +387,50 @@ public class ImportService {
 		state.setPopulation(totalStatePopulation);
 	}
 	
-	/*private void setElectionData(State state) {
+	private void setElectionData(State state) {
 		if (state == null || state.getConDistricts() == null) {
 			throw new IllegalArgumentException();
 		}
 		ElectionResult stateElection = new ElectionResult();
-		ElectionResult districtElection = new ElectionResult();
+		stateElection.setPartyTotals(new EnumMap<Party,Long>(Party.class));
+		stateElection.setTotal(Party.DEMOCRATIC, 0);
+		stateElection.setTotal(Party.REPUBLICAN, 0);
+		stateElection.setTotal(Party.OTHER, 0);
+		ElectionResult districtElection;
+		ElectionResult precinctElection;
 		for (CongressionalDistrict district : state.getConDistricts().values()) {
 			if (district.getPrecincts() == null) {
 				throw new IllegalArgumentException();
 			}
+			districtElection = new ElectionResult();
+			districtElection.setPartyTotals(new EnumMap<Party,Long>(Party.class));
+			districtElection.setTotal(Party.DEMOCRATIC, 0);
+			districtElection.setTotal(Party.REPUBLICAN, 0);
+			districtElection.setTotal(Party.OTHER, 0);
 			for (Precinct precinct : district.getPrecincts().values()) {
-				result.setYear(precinct);
+				precinctElection = precinct.getPresidentialVoteTotals();
+				if (precinctElection == null) {
+					throw new IllegalArgumentException();
+				}
+				districtElection.setYear(precinctElection.getYear());
+				districtElection.setVotingAgePopulation(districtElection.getVotingAgePopulation() + precinctElection.getVotingAgePopulation());
+				districtElection.setTotalVotes(districtElection.getTotalVotes() + precinctElection.getTotalVotes());
+				districtElection.setTotal(Party.DEMOCRATIC, districtElection.getTotal(Party.DEMOCRATIC) + precinctElection.getTotal(Party.DEMOCRATIC));
+				districtElection.setTotal(Party.REPUBLICAN, districtElection.getTotal(Party.REPUBLICAN) + precinctElection.getTotal(Party.REPUBLICAN));
+				districtElection.setTotal(Party.OTHER, districtElection.getTotal(Party.OTHER) + precinctElection.getTotal(Party.OTHER));
 			}
-
+			electionRepo.saveAndFlush(districtElection);
+			district.setPresidentialVoteTotals(districtElection);
+			stateElection.setYear(districtElection.getYear());
+			stateElection.setVotingAgePopulation(stateElection.getVotingAgePopulation() + districtElection.getVotingAgePopulation());
+			stateElection.setTotalVotes(stateElection.getTotalVotes() + districtElection.getTotalVotes());
+			stateElection.setTotal(Party.DEMOCRATIC, stateElection.getTotal(Party.DEMOCRATIC) + districtElection.getTotal(Party.DEMOCRATIC));
+			stateElection.setTotal(Party.REPUBLICAN, stateElection.getTotal(Party.REPUBLICAN) + districtElection.getTotal(Party.REPUBLICAN));
+			stateElection.setTotal(Party.OTHER, stateElection.getTotal(Party.OTHER) + districtElection.getTotal(Party.OTHER));
 		}
-
-	}*/
+		electionRepo.saveAndFlush(stateElection);
+		state.setPresidentialVoteTotals(stateElection);
+		
+		stateRepo.saveAndFlush(state);
+	}
 }

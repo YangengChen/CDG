@@ -31,7 +31,6 @@ import javax.persistence.JoinColumn;
 @Entity
 @Table(name = "Regions")
 @Inheritance(strategy = InheritanceType.JOINED)
-//@DiscriminatorColumn(name = "type")
 public class Region {
 	@Id
 	@GeneratedValue( strategy = GenerationType.IDENTITY)
@@ -47,7 +46,7 @@ public class Region {
 	private byte[] geoJson;
 	@Transient
 	private Geometry geometry;
-	@OneToOne(fetch = FetchType.LAZY)
+	@OneToOne(fetch = FetchType.EAGER)
 	private ElectionResult presidentialVoteTotals;
 	@ManyToMany
     @JoinTable(
@@ -167,6 +166,7 @@ public class Region {
 		data.setID(this.getPublicID());
 		data.setName(this.getName());
 		data.setPopulation(this.getPopulation());
+		data.setPresidentialElection(this.getPresidentialVoteTotals());
 		return data;
 	}
 }
