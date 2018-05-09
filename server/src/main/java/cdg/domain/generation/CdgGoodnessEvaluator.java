@@ -143,7 +143,7 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		if (percentage > 1) {
 			throw new IllegalStateException();
 		}
-		partisanFairnessValue = MAXGOODNESS - MAXGOODNESS*(1 - percentage);
+		partisanFairnessValue = MAXGOODNESS - (MAXGOODNESS * percentage);
 		return partisanFairnessValue;
 	}
 	
