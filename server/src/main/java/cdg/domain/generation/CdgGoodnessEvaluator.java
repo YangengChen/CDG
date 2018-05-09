@@ -114,6 +114,15 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 			throw new IllegalArgumentException();
 		}
 		double partisanFairnessValue;
+		double efficiencyGapPercentage = CdgGoodnessEvaluator.getEfficiencyGap(district);
+		partisanFairnessValue = MAXGOODNESS - (MAXGOODNESS * efficiencyGapPercentage);
+		return partisanFairnessValue;
+	}
+	
+	public static double getEfficiencyGap(CongressionalDistrict district) {
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
 		ElectionResult election = district.getPresidentialVoteTotals();
 		if (election == null) {
 			throw new IllegalArgumentException();
@@ -123,7 +132,7 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		long wastedDemVotes;
 		long wastedRepVotes;
 		if (repVotes == demVotes) {
-			return MAXGOODNESS;
+			return 0;
 		} else if (repVotes < demVotes) {
 			wastedDemVotes = demVotes - (repVotes+demVotes)/2;
 			wastedRepVotes = repVotes;
@@ -142,9 +151,8 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		}
 		if (percentage > 1) {
 			throw new IllegalStateException();
-		}
-		partisanFairnessValue = MAXGOODNESS - (MAXGOODNESS * percentage);
-		return partisanFairnessValue;
+		};
+		return percentage;
 	}
 	
 	public double evaluateRacialFairness(CongressionalDistrict district)

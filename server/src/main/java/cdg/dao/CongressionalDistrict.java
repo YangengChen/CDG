@@ -3,6 +3,7 @@ package cdg.dao;
 import java.util.HashMap;
 import java.util.Map;
 
+import cdg.domain.generation.CdgGoodnessEvaluator;
 import cdg.dto.CongressionalDistrictDTO;
 import cdg.dto.DistrictDTO;
 
@@ -330,6 +331,9 @@ public class CongressionalDistrict extends Region {
 		}
 		data.setGoodness(this.goodnessValue);
 		data.setPresidentialElection(this.getPresidentialVoteTotals());
+		if (this.getPresidentialVoteTotals() != null) {
+			data.setEfficiencyGap(CdgGoodnessEvaluator.getEfficiencyGap(this));
+		}
 		return data;
 	}
 
