@@ -162,8 +162,16 @@ public class ImportService {
 			currGeom = features[i].getGeometry();
 			currPrecinctName = (String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_NAME_FIELD));
 			currPrecinctPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD));
-			currPrecinctPopulation = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_POPULATION_FIELD))).longValue();	
-			currPrecinctVotingAgePop = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_VOTING_AGE_POPULATION_FIELD))).longValue();	
+			try {
+				currPrecinctPopulation = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_POPULATION_FIELD))).longValue();	
+			} catch (Exception e) {
+				currPrecinctPopulation = 0;
+			}
+			try {
+				currPrecinctVotingAgePop = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_VOTING_AGE_POPULATION_FIELD))).longValue();
+			} catch (Exception e) {
+				currPrecinctVotingAgePop = 0;
+			}
 			currPrecinctElectionYear = (Integer)currProp.get(propertiesManager.getProperty(CdgConstants.PRESIDENTIAL_ELECTION_YEAR_FIELD));	
 			currPrecinctPresTotal = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_PRESIDENTIAL_TOTAL_VOTE_FIELD))).longValue();		
 			currPrecinctPresRep = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_PRESIDENTIAL_REP_VOTE_FIELD))).longValue();		
