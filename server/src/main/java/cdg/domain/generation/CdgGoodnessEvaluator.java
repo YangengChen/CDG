@@ -4,7 +4,9 @@ import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygonal;
 
 import cdg.dao.CongressionalDistrict;
+import cdg.dao.ElectionResult;
 import cdg.dao.State;
+import cdg.domain.region.Party;
 
 public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 
@@ -36,7 +38,8 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		double compactnessValue = evaluateCompactness(district);
 		double contiguityValue = evaluateContiguity(district);
 		double populationEqualityValue = evaluatePopulationEquality(district);
-		double goodness = runObjectiveFunction(compactnessValue, contiguityValue, populationEqualityValue, 0, 0);
+		double partisanFairnessValue = evaluatePartisanFairness(district);
+		double goodness = runObjectiveFunction(compactnessValue, contiguityValue, populationEqualityValue, partisanFairnessValue, 0);
 		return goodness;
 	}
 	
@@ -107,7 +110,41 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 	
 	public double evaluatePartisanFairness(CongressionalDistrict district)
 	{
-		return 0;
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
+		double partisanFairnessValue;
+		ElectionResult election = district.getPresidentialVoteTotals();
+		if (election == null) {
+			throw new IllegalArgumentException();
+		}
+		long demVotes = election.getTotal(Party.DEMOCRATIC);
+		long repVotes = election.getTotal(Party.REPUBLICAN);
+		long wastedDemVotes;
+		long wastedRepVotes;
+		if (repVotes == demVotes) {
+			return MAXGOODNESS;
+		} else if (repVotes < demVotes) {
+			wastedDemVotes = demVotes - (repVotes+demVotes)/2;
+			wastedRepVotes = repVotes;
+		} else {
+			wastedDemVotes = demVotes;
+			wastedRepVotes = repVotes - (repVotes+demVotes)/2;
+		}
+		if (wastedDemVotes < 0 || wastedRepVotes < 0) {
+			throw new IllegalStateException();
+		}
+		double percentage;
+		if (wastedDemVotes <= wastedRepVotes) {
+			percentage = (double)(wastedRepVotes - wastedDemVotes)/(double)(demVotes + repVotes);
+		} else {
+			percentage = (double)(wastedDemVotes - wastedRepVotes)/(double)(demVotes + repVotes);
+		}
+		if (percentage > 1) {
+			throw new IllegalStateException();
+		}
+		partisanFairnessValue = MAXGOODNESS - MAXGOODNESS*(1 - percentage);
+		return partisanFairnessValue;
 	}
 	
 	public double evaluateRacialFairness(CongressionalDistrict district)
