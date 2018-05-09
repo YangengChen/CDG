@@ -42,6 +42,9 @@ public class CdgConstants {
 	//domain constants
 	public static final String DISTRICT_NAME_PREFIX = "Congressional District ";
 	public static final double MAX_GOODNESS = 100;
+	public static final double SCHWARZBERG_WEIGHT = 0.34;
+	public static final double HULL_RATIO_WEIGHT = 0.33;
+	public static final double REOCK_WEIGHT = 0.33;
 
 	//properties file keys
 	public static final String STATE_NAME_FIELD = "geojson_stateName";

@@ -1,5 +1,7 @@
 package cdg.domain.generation;
 
+import com.vividsolutions.jts.algorithm.ConvexHull;
+import com.vividsolutions.jts.algorithm.MinimumBoundingCircle;
 import com.vividsolutions.jts.geom.Geometry;
 import com.vividsolutions.jts.geom.Polygonal;
 
@@ -7,6 +9,7 @@ import cdg.dao.CongressionalDistrict;
 import cdg.dao.ElectionResult;
 import cdg.dao.State;
 import cdg.domain.region.Party;
+import cdg.properties.CdgConstants;
 
 public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 
@@ -44,7 +47,7 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 	}
 	
 	/**
-	 * Schwarzenburg compactness
+	 * Compactness using Schwarzberg, Hull Ratio, and Reock compactness measures
 	 * @param district Congressional district
 	 * @return compactness value normalized between 0 and MAXGOODNESS
 	 */
@@ -52,7 +55,20 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		if (district == null) {
 			throw new IllegalArgumentException();
 		}
-		double compactnessValue;
+		
+		double schwarzbergScore = getSchwartzbergCompactness(district);
+		double hullRatioScore = getHullRatioCompactness(district);
+		double reockScore = getReockCompactness(district);
+		double compactnessValue = MAXGOODNESS * schwarzbergScore * CdgConstants.SCHWARZBERG_WEIGHT +
+						MAXGOODNESS * hullRatioScore * CdgConstants.HULL_RATIO_WEIGHT +
+						MAXGOODNESS * reockScore * CdgConstants.REOCK_WEIGHT;
+		return compactnessValue;
+	}
+	
+	private double getSchwartzbergCompactness(CongressionalDistrict district) {
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
 		Geometry districtGeom = district.getGeometry();
 		if (!(districtGeom instanceof Polygonal)) {
 			throw new IllegalArgumentException();
@@ -64,9 +80,58 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		}
 		double equalARadius = Math.sqrt(area/Math.PI);
 		double circumferance = 2 * Math.PI * equalARadius;
-		double schwarzenburgScore = 1 / (perimeter/circumferance);
-		compactnessValue = MAXGOODNESS * schwarzenburgScore;
-		return compactnessValue;
+		double schwarzbergScore = 1 / (perimeter/circumferance);
+		if (schwarzbergScore > 1) {
+			throw new IllegalArgumentException();
+		}
+		return schwarzbergScore;
+	}
+	
+	private double getHullRatioCompactness(CongressionalDistrict district) {
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
+		Geometry districtGeom = district.getGeometry();
+		if (!(districtGeom instanceof Polygonal)) {
+			throw new IllegalArgumentException();
+		}
+		ConvexHull minConvexHullGenerator = new ConvexHull(districtGeom);
+		Geometry minConvexHull = minConvexHullGenerator.getConvexHull();
+		if (!(minConvexHull instanceof Polygonal)) {
+			throw new IllegalArgumentException();
+		}
+		double districtArea = districtGeom.getArea();
+		double hullArea = minConvexHull.getArea();
+		if (districtArea == 0 || hullArea == 0) {
+			throw new IllegalArgumentException();
+		}
+		double hullRatioScore = districtArea/hullArea;
+		if (hullRatioScore > 1) {
+			throw new IllegalArgumentException();
+		}
+		return hullRatioScore;
+	}
+	
+	private double getReockCompactness(CongressionalDistrict district) {
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
+		Geometry districtGeom = district.getGeometry();
+		if (!(districtGeom instanceof Polygonal)) {
+			throw new IllegalArgumentException();
+		}
+		MinimumBoundingCircle minBoundingCircleGenerator = new MinimumBoundingCircle(districtGeom);
+		Geometry minBoundingCircle = minBoundingCircleGenerator.getCircle();
+		double districtArea = districtGeom.getArea();
+		double mbcArea = minBoundingCircle.getArea();
+		if (districtArea == 0 || mbcArea == 0) {
+			throw new IllegalArgumentException();
+		}
+		double reockScore = districtArea/mbcArea;
+		if (reockScore > 1) {
+			throw new IllegalArgumentException();
+		}
+		return reockScore;
 	}
 	
 	/**
