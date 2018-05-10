@@ -2,6 +2,7 @@ package cdg.controllers;
 
 import static cdg.properties.CdgConstants.SESSION_USER;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -35,6 +36,7 @@ import cdg.dto.MapDataDTO;
 import cdg.properties.CdgConstants;
 import cdg.repository.SavedMapRepository;
 import cdg.repository.StateRepository;
+import cdg.repository.UserRepository;
 import cdg.responses.GenerationResponse;
 import cdg.services.MapService;
 
@@ -46,6 +48,8 @@ public class GenerationController {
 	private StateRepository stateRepo;
 	@Autowired
 	private SavedMapRepository savedMapRepo;
+	@Autowired
+	private UserRepository userRepo;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
@@ -196,7 +200,13 @@ public class GenerationController {
 		if (savedMap == null) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		savedMapRepo.save(savedMap);
+		savedMap = savedMapRepo.save(savedMap);
+		if (user.getSavedMaps() == null) {
+			user.setSavedMaps(new HashMap<String,SavedMap>());
+		}
+		user.getSavedMaps().put(savedMap.getId(), savedMap);
+		userRepo.save(user);
+		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	

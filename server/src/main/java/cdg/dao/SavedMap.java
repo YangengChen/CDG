@@ -19,8 +19,6 @@ public class SavedMap {
 	@ManyToOne
 	private State state;
 	@OneToMany(cascade= {CascadeType.ALL}, orphanRemoval=true)
-	//@JoinColumn(referencedColumnName="id")
-	//@JoinColumn(name="districts_id")
 	@JoinTable
 	(
 		name="SavedMapMappings",
