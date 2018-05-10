@@ -19,6 +19,7 @@ public class SavedMapping {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
+	private double goodness;
 	@ManyToOne
 	private CongressionalDistrict district;
 	@ManyToMany
@@ -47,5 +48,11 @@ public class SavedMapping {
 	}
 	public void setPrecincts(Set<Precinct> precincts) {
 		this.precincts = precincts;
+	}
+	public double getGoodness() {
+		return goodness;
+	}
+	public void setGoodness(double goodness) {
+		this.goodness = goodness;
 	}
 }
