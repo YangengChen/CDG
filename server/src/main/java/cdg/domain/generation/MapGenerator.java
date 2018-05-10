@@ -2,6 +2,7 @@ package cdg.domain.generation;
 
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import cdg.dao.CongressionalDistrict;
@@ -18,16 +19,18 @@ public class MapGenerator {
 	private String stateId;
 	private GenerateMapAlgorithm currAlgorithmRun;
 
-	public boolean startGeneration(State state) {
+	public boolean startGeneration(State state, Map<String,String> manualMappings) {
 		if (goodnessEvaluator == null || constraintEvaluator == null || state == null) {
 			throw new IllegalStateException();
 		}
 
 		try {
-			currAlgorithmRun = new GenerateMapAlgorithm(state, goodnessEvaluator, constraintEvaluator);
+			currAlgorithmRun = new GenerateMapAlgorithm(state, goodnessEvaluator, constraintEvaluator, manualMappings);
 		} catch (IllegalArgumentException iae) {
+			System.err.println(iae);
 			throw iae;
 		} catch (Exception e) {
+			System.err.println(e);
 			throw new IllegalStateException();
 		}
 		
@@ -38,6 +41,13 @@ public class MapGenerator {
 		if (currAlgorithmRun != null) {
 			currAlgorithmRun.stop();
 		}
+	}
+	
+	public boolean pauseGeneration() {
+		if (currAlgorithmRun == null) {
+			return false;
+		}
+		return currAlgorithmRun.pause();
 	}
 	
 	public GenerationStatus getStatus() {
@@ -69,6 +79,8 @@ public class MapGenerator {
 			response.setStartTotalGoodness(currGenState.getStartTotalGoodness());
 			response.setCurrTotalGoodness(currGenState.getLastTotalGoodness());
 			response.setCurrIteration(currGenState.getCurrGenIteration());
+			response.setPrecinctToDistrict(currGenState.getPrecinctToDistrict());
+			response.setDistrictsGoodness(currGenState.getDistrictsGoodness());
 			
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(currGenState.getGenStartTime());

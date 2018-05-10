@@ -2,6 +2,7 @@ package cdg.controllers;
 
 import static cdg.properties.CdgConstants.SESSION_USER;
 
+import java.util.Map;
 import java.util.Optional;
 
 import javax.servlet.http.HttpSession;
@@ -87,9 +88,11 @@ public class GenerationController {
 		if (generator == null) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		Map<String,String> manualMappings = null;
 		ConstraintEvaluator constraintEval;
 		GoodnessEvaluator goodnessEval;
 		try {
+			manualMappings = config.getPrecinctToDistrict();
 			constraintEval = CdgConstraintEvaluator.toConstraintEvaluator(config);
 			goodnessEval = CdgGoodnessEvaluator.toGoodnessEvaluator(CdgConstants.MAX_GOODNESS, config);
 		} catch (IllegalArgumentException iae) {
@@ -98,7 +101,7 @@ public class GenerationController {
 		generator.resetGenerator(config.getStateId(), goodnessEval, constraintEval);
 		
 		try {
-			generator.startGeneration(state);
+			generator.startGeneration(state, manualMappings);
 		} catch (IllegalArgumentException iae) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.BAD_REQUEST);
 		} catch (IllegalStateException ise) {
@@ -122,6 +125,25 @@ public class GenerationController {
 		generator.stopGeneration();
 		
 		return new ResponseEntity<GenerationStatus>(GenerationStatus.CANCELED, HttpStatus.OK);
+	}
+	
+	@RequestMapping( value = CdgConstants.GENERATION_PAUSE_PATH, method=RequestMethod.POST)
+	public ResponseEntity<?> pauseGeneration(HttpSession session)
+	{
+		User user = (User) session.getAttribute(SESSION_USER);
+		if (user == null) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		
+		MapGenerator generator = user.getGenerator();
+		if (generator == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		boolean paused = generator.pauseGeneration();
+		if (!paused) {
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
 	@RequestMapping( value = CdgConstants.GENERATION_STATUS_PATH, method=RequestMethod.GET)

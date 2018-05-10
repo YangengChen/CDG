@@ -1,5 +1,7 @@
 package cdg.domain.generation;
 
+import java.util.HashMap;
+import java.util.Map;
 
 public class GenerationState implements Cloneable {
 	private int currDistrictID;
@@ -12,7 +14,15 @@ public class GenerationState implements Cloneable {
 	private double startTotalGoodness;
 	private long genStartTime;
 	private long genStopTime;
+	private int timesBelowGenThreshold;
+	private Map<String,String> precinctToDistrict;
+	private Map<String,Double> districtsGoodness;
+	private boolean paused;
 
+	public GenerationState() {
+		precinctToDistrict = new HashMap<String,String>();
+	}
+	
 	public int getCurrDistrictID() {
 		return currDistrictID;
 	}
@@ -103,5 +113,41 @@ public class GenerationState implements Cloneable {
 	
 	public Object clone() throws CloneNotSupportedException {
 		return super.clone();
+	}
+
+	public int getTimesBelowGenThreshold() {
+		return timesBelowGenThreshold;
+	}
+
+	public void setTimesBelowGenThreshold(int timesBelowGenThreshold) {
+		this.timesBelowGenThreshold = timesBelowGenThreshold;
+	}
+	
+	public void incrementTimesBelowGenThreshold() {
+		timesBelowGenThreshold++;
+	}
+
+	public boolean isPaused() {
+		return paused;
+	}
+
+	public void setPaused(boolean paused) {
+		this.paused = paused;
+	}
+
+	public Map<String, String> getPrecinctToDistrict() {
+		return precinctToDistrict;
+	}
+
+	public void setPrecinctToDistrict(Map<String, String> precinctToDistrict) {
+		this.precinctToDistrict = precinctToDistrict;
+	}
+
+	public Map<String,Double> getDistrictsGoodness() {
+		return districtsGoodness;
+	}
+
+	public void setDistrictsGoodness(Map<String,Double> districtsGoodness) {
+		this.districtsGoodness = districtsGoodness;
 	}
 }

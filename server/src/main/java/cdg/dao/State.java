@@ -196,6 +196,7 @@ public class State extends Region {
 		data.setID(this.getPublicID());
 		data.setName(this.getName());
 		data.setPopulation(this.getPopulation());
+		data.setPresidentialElection(this.getPresidentialVoteTotals());
 		return data;
 	}
 	

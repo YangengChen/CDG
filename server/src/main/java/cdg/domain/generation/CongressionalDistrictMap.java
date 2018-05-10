@@ -2,9 +2,9 @@ package cdg.domain.generation;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.PriorityQueue;
 import java.util.Random;
 import java.util.Set;
@@ -20,6 +20,7 @@ import cdg.dao.CongressionalDistrict;
 import cdg.dao.Precinct;
 import cdg.dao.Region;
 import cdg.dao.State;
+import cdg.services.MapService;
 
 public class CongressionalDistrictMap {
 	private State state;
@@ -30,7 +31,7 @@ public class CongressionalDistrictMap {
 	private Random randGenerator;
 	private final int MAXID;
 	
-	public CongressionalDistrictMap(State state, GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval) {
+	public CongressionalDistrictMap(State state, GoodnessEvaluator goodnessEval, ConstraintEvaluator constraintEval, Map<String,String> manualMappings) {
 		if (goodnessEval == null || constraintEval == null || state == null) {
 			throw new IllegalArgumentException();
 		}
@@ -41,7 +42,7 @@ public class CongressionalDistrictMap {
 			throw new IllegalStateException();
 		}
 		MAXID = generateCustomMap(allDistricts.values());
-		initMap();
+		initMap(manualMappings);
 		evaluateAllGoodness(goodnessEval);
 		initHelpers(constraintEval);
 	}
@@ -59,8 +60,11 @@ public class CongressionalDistrictMap {
 		
 	}
 	
-	private void initMap() {
+	private void initMap(Map<String,String> manualMappings) {
 		mapPrecincts();
+		applyManualMappings(manualMappings);
+		//setPopulationStatistics();
+		setGeometries();
 		mapBorderPrecincts();
 	}
 	
@@ -70,11 +74,9 @@ public class CongressionalDistrictMap {
 	 * used in bidirectional mappings
 	 */
 	private void mapPrecincts() {
-		GeoJSONReader reader = new GeoJSONReader();
 		Map<Integer, Precinct> allPrecincts = new HashMap<Integer, Precinct>();
 		Map<Integer, Precinct> currPrecincts;
 		for (CongressionalDistrict district : districts.values()) {
-			mapGeometry(district, reader);
 			currPrecincts = district.getPrecincts(); // lazy loaded
 			if (currPrecincts == null) {
 				throw new IllegalStateException();
@@ -82,11 +84,27 @@ public class CongressionalDistrictMap {
 			allPrecincts.putAll(currPrecincts);
 			for (Precinct precinct : currPrecincts.values()) {
 				precinct.setConDistrict(district); // make sure the object is the same
-				mapGeometry(precinct, reader);
 			}
 		}
 		mapNeighborPrecincts(allPrecincts);
 		state.setPrecincts(allPrecincts); //allow for retrieving maps and data later
+	}
+	
+	private void setGeometries() {
+		GeoJSONReader reader = new GeoJSONReader();
+		Map<Integer, Precinct> currPrecincts;
+		Geometry districtGeom;
+		for (CongressionalDistrict district : districts.values()) {
+			currPrecincts = district.getPrecincts();
+			if (currPrecincts == null) {
+				throw new IllegalStateException();
+			}
+			for (Precinct precinct : currPrecincts.values()) {
+				mapGeometry(precinct, reader);
+			}
+			districtGeom = MapService.createDistrictGeometry(district);
+			district.setGeometry(districtGeom);
+		}
 	}
 	
 	private void mapGeometry(Region region, GeoJSONReader reader) {
@@ -155,6 +173,64 @@ public class CongressionalDistrictMap {
 		return false;
 	}
 	
+	private void applyManualMappings(Map<String,String> manualMappings) {
+		if (manualMappings == null) {
+			return;
+		}
+		Map<String,Precinct> precinctByPubID = new HashMap<String,Precinct>();
+		Map<String,CongressionalDistrict> districtByPubID = new HashMap<String,CongressionalDistrict>();
+		for (Precinct precinct : state.getPrecincts().values()) {
+			precinctByPubID.put(precinct.getPublicID(), precinct);
+		}
+		for (CongressionalDistrict district : districts.values()) {
+			districtByPubID.put(district.getPublicID(), district);
+		}
+		Precinct currPrecinct;
+		CongressionalDistrict toDistrict;
+		CongressionalDistrict fromDistrict;
+		for (Entry<String,String> mapping : manualMappings.entrySet()) {
+			currPrecinct = precinctByPubID.get(mapping.getKey());
+			toDistrict = districtByPubID.get(mapping.getValue());
+			if (currPrecinct == null || toDistrict == null) {
+				throw new IllegalStateException();
+			}
+			fromDistrict = currPrecinct.getConDistrict();
+			if (toDistrict == fromDistrict) {
+				continue;
+			}
+			if (toDistrict.getPresidentialVoteTotals() == null || fromDistrict.getPresidentialVoteTotals() == null) {
+				throw new IllegalStateException();
+			}
+			
+			currPrecinct = fromDistrict.getPrecincts().remove(currPrecinct.getId());
+			if (currPrecinct == null) {
+				throw new IllegalStateException();
+			}
+			fromDistrict.setPopulation(fromDistrict.getPopulation() - currPrecinct.getPopulation());
+			fromDistrict.getPresidentialVoteTotals().subtractElectionResult(currPrecinct.getPresidentialVoteTotals());
+			toDistrict.getPrecincts().put(currPrecinct.getId(), currPrecinct);
+			toDistrict.setPopulation(toDistrict.getPopulation() + currPrecinct.getPopulation());
+			toDistrict.getPresidentialVoteTotals().addElectionResult(currPrecinct.getPresidentialVoteTotals());
+			currPrecinct.setConDistrict(toDistrict);
+		}
+	}
+	
+	/*private void setPopulationStatistics() {
+		Map<Integer, Precinct> currPrecincts;
+		long totalDistrictPopulation;
+		for (CongressionalDistrict district : districts.values()) {
+			totalDistrictPopulation = 0;
+			currPrecincts = district.getPrecincts();
+			if (currPrecincts == null) {
+				throw new IllegalStateException();
+			}
+			for (Precinct precinct : currPrecincts.values()) {
+				totalDistrictPopulation +=  precinct.getPopulation();
+			}
+			district.setPopulation(totalDistrictPopulation);
+		}
+	}*/
+	
 	private void initHelpers(ConstraintEvaluator evaluator) {
 		ignoredDistricts = new HashMap<Integer, CongressionalDistrict>();
 		lowestGoodnessDistrict = new PriorityQueue<CongressionalDistrict>(districts.size(), new GoodnessComparator());
@@ -175,10 +251,6 @@ public class CongressionalDistrictMap {
 		
 		borderPrecinctQueues = new HashMap<Integer,LinkedList<Integer>>();
 		randGenerator = new Random(0);
-	}
-	
-	private CongressionalDistrict getIgnoredDistrict(int districtID) {
-		return null;
 	}
 
 	public double evaluateGoodness(int districtID, GoodnessEvaluator evaluator) {
@@ -339,12 +411,28 @@ public class CongressionalDistrictMap {
 	public State getGeneratedState() {
 		return state;
 	}
-
-	public int getDistrictID(CongressionalDistrict district) {
-		return -1;
+	
+	public String getDistrictPublicID(int districtID) {
+		CongressionalDistrict district = districts.get(districtID);
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
+		return district.getPublicID();
 	}
 	
-	private Iterator<CongressionalDistrict> getDistrictIterator() {
-		return districts.values().iterator();
+	public String getPrecinctPublicID(int precinctID) {
+		Precinct precinct = state.getPrecincts().get(precinctID);
+		if (precinct == null) {
+			throw new IllegalArgumentException();
+		}		
+		return precinct.getPublicID();
+	}
+	
+	public Map<String,Double> getAllDistrictGoodness() {
+		Map<String,Double> districtsGoodness = new HashMap<String,Double>();
+		for (CongressionalDistrict district : districts.values()) {
+			districtsGoodness.put(district.getPublicID(), district.getGoodnessValue());
+		}
+		return districtsGoodness;
 	}
 }

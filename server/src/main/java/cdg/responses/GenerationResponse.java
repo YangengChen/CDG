@@ -2,6 +2,8 @@ package cdg.responses;
 
 
 
+import java.util.Map;
+
 import cdg.domain.generation.GenerationStatus;
 
 public class GenerationResponse {
@@ -12,6 +14,8 @@ public class GenerationResponse {
 	private double startTotalGoodness;
 	private double currTotalGoodness;
 	private int currIteration;
+	private Map<String,String> precinctToDistrict;
+	private Map<String,Double> districtsGoodness;
 
 	public GenerationResponse() {}
 	
@@ -78,5 +82,21 @@ public class GenerationResponse {
 
 	public int getCurrIteration() {
 		return currIteration;
+	}
+
+	public Map<String, String> getPrecinctToDistrict() {
+		return precinctToDistrict;
+	}
+
+	public void setPrecinctToDistrict(Map<String, String> precinctToDistrict) {
+		this.precinctToDistrict = precinctToDistrict;
+	}
+
+	public Map<String,Double> getDistrictsGoodness() {
+		return districtsGoodness;
+	}
+
+	public void setDistrictsGoodness(Map<String,Double> districtsGoodness) {
+		this.districtsGoodness = districtsGoodness;
 	}
 }
