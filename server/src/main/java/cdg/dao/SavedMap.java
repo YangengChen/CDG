@@ -4,9 +4,9 @@ import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -16,10 +16,17 @@ import javax.persistence.Table;
 public class SavedMap {	
 	@Id
 	private String id;
-	@ManyToOne(fetch = FetchType.LAZY, cascade= {})
+	@ManyToOne
 	private State state;
-	@OneToMany(fetch = FetchType.LAZY, cascade= {CascadeType.ALL}, orphanRemoval=true)
-	@JoinColumn(name="id", referencedColumnName="id")
+	@OneToMany(cascade= {CascadeType.ALL}, orphanRemoval=true)
+	//@JoinColumn(referencedColumnName="id")
+	//@JoinColumn(name="districts_id")
+	@JoinTable
+	(
+		name="SavedMapMappings",
+		joinColumns={ @JoinColumn(name="map_id", referencedColumnName="id", nullable = false) },
+		inverseJoinColumns={ @JoinColumn(name="mapping_id", referencedColumnName="id", nullable = false) }
+	)
 	private Set<SavedMapping> districts;
 	
 	public SavedMap() {}
