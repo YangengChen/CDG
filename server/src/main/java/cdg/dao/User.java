@@ -1,10 +1,15 @@
 package cdg.dao;
 
+import java.util.Map;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MapKey;
+import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 
 import org.springframework.security.crypto.bcrypt.BCrypt;
@@ -29,6 +34,10 @@ public class User {
 
     @Transient
     private MapGenerator generator;
+    
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval=true)
+	@MapKey(name = "id")
+    private Map<String,SavedMap> savedMaps;
     
     public User() {}
     
@@ -105,5 +114,13 @@ public class User {
 		user.setLastName(lastName);
 		user.setEmail(email);
 		return user;
+	}
+
+	public Map<String, SavedMap> getSavedMaps() {
+		return savedMaps;
+	}
+
+	public void setSavedMaps(Map<String, SavedMap> savedMaps) {
+		this.savedMaps = savedMaps;
 	}
 }

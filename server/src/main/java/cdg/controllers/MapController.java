@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 
 import cdg.dao.NameOnly;
 import cdg.dao.State;
+import cdg.dao.StateStat;
 import cdg.domain.map.MapType;
 import cdg.domain.map.MapTypeEnumConverter;
 import cdg.dto.MapDTO;
@@ -30,6 +31,7 @@ import cdg.dto.MapDataDTO;
 import cdg.properties.CdgConstants;
 import cdg.repository.FakeData;
 import cdg.repository.StateRepository;
+import cdg.repository.StateStatRepository;
 import cdg.services.MapService;
 
 @RestController
@@ -40,6 +42,8 @@ public class MapController {
 	FakeData importRepo;
 	@Autowired
 	StateRepository stateRepo;
+	@Autowired
+	StateStatRepository stateStatRepo;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
@@ -122,4 +126,10 @@ public class MapController {
 	public void importAllData() {
 		importRepo.initialize();
 	}
+
+	@RequestMapping( value = "/get_state_stats", method=RequestMethod.GET)
+	public Iterable<StateStat> getAllStateStats() {
+		return stateStatRepo.findAll();
+	}
+
 }

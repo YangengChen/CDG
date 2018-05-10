@@ -2,6 +2,7 @@ package cdg.controllers;
 
 import static cdg.properties.CdgConstants.SESSION_USER;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import cdg.dao.SavedMap;
 import cdg.dao.State;
+import cdg.dao.StateStat;
 import cdg.dao.User;
 import cdg.domain.generation.CdgConstraintEvaluator;
 import cdg.domain.generation.CdgGoodnessEvaluator;
@@ -35,6 +37,8 @@ import cdg.dto.MapDataDTO;
 import cdg.properties.CdgConstants;
 import cdg.repository.SavedMapRepository;
 import cdg.repository.StateRepository;
+import cdg.repository.UserRepository;
+import cdg.repository.StateStatRepository;
 import cdg.responses.GenerationResponse;
 import cdg.services.MapService;
 
@@ -46,6 +50,10 @@ public class GenerationController {
 	private StateRepository stateRepo;
 	@Autowired
 	private SavedMapRepository savedMapRepo;
+	@Autowired
+	private UserRepository userRepo;
+	@Autowired
+	private StateStatRepository stateStatRepo;
 	
 	@InitBinder
 	public void initBinder(WebDataBinder dataBinder) {
@@ -67,6 +75,17 @@ public class GenerationController {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.NOT_FOUND);
 		}
 		State state = stateOpt.get();
+		
+		StateStat oldStateStat = stateStatRepo.findOneByName(state.getName());
+		if(oldStateStat != null){
+			oldStateStat.increaseActivityCount();
+			stateStatRepo.save(oldStateStat);
+		} else {
+			StateStat newStateStat = new StateStat();
+			newStateStat.setName(state.getName());
+			newStateStat.setActivityCount(1L);
+			stateStatRepo.save(newStateStat);
+		}
 		
 		MapGenerator generator = user.getGenerator();
 		if (generator == null) {
@@ -91,7 +110,6 @@ public class GenerationController {
 		} catch (IllegalStateException ise) {
 			return new ResponseEntity<GenerationStatus>(GenerationStatus.ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
 		return new ResponseEntity<GenerationStatus>(GenerationStatus.INPROGRESS, HttpStatus.OK);
 	}
 	
@@ -196,7 +214,13 @@ public class GenerationController {
 		if (savedMap == null) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-		savedMapRepo.save(savedMap);
+		savedMap = savedMapRepo.save(savedMap);
+		if (user.getSavedMaps() == null) {
+			user.setSavedMaps(new HashMap<String,SavedMap>());
+		}
+		user.getSavedMaps().put(savedMap.getId(), savedMap);
+		userRepo.save(user);
+		
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	

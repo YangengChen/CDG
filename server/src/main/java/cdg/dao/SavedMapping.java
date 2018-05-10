@@ -3,11 +3,12 @@ package cdg.dao;
 import java.util.Set;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -18,10 +19,15 @@ public class SavedMapping {
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private long id;
-	@ManyToOne(fetch = FetchType.LAZY, cascade= {})
+	@ManyToOne
 	private CongressionalDistrict district;
-	@OneToMany(fetch = FetchType.LAZY, cascade= {})
-	@JoinColumn(name="id", referencedColumnName="id")
+	@ManyToMany
+	@JoinTable
+	(
+		name="MappingPrecincts",
+		joinColumns={ @JoinColumn(name="mapping_id", referencedColumnName="id", nullable = false) },
+		inverseJoinColumns={ @JoinColumn(name="precinct_id", referencedColumnName="id", nullable = false) }
+	)
 	private Set<Precinct> precincts;
 	
 	public long getId() {

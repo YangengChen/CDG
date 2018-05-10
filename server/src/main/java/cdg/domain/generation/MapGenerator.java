@@ -149,6 +149,14 @@ public class MapGenerator {
 		setConstraintEvaluator(constraintEval);
 	}
 	
+	public String getCurrGenerationID() {
+		if (currAlgorithmRun == null) {
+			return null;
+		}
+		String generationID = currAlgorithmRun.getGenerationID().toString();
+		return generationID;
+	}
+	
 	private void reset() {
 		goodnessEvaluator = null;
 		constraintEvaluator = null;
