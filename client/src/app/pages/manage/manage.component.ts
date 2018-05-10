@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from "../../cdg-objects/user"
+import { StateStat } from "../../cdg-objects/statestat"
 import { LoginService } from "../login/login.service"
 import { Observable } from 'rxjs/Observable';
 import { FlashMessagesService } from 'ngx-flash-messages';
@@ -15,12 +16,13 @@ import { Constants } from '../../constants';
 export class ManageComponent implements OnInit {
   
   Users : User[];
+  StateStats : StateStat[];
   statusCode: number;
   modalUser : User;
   
   constructor(private router: Router, private loginService: LoginService, private flashMessagesService: FlashMessagesService) {
     this.loginService.isUserLoggedIn().subscribe(
-      data => data ? this.getUsers() : this.router.navigate(["/"]),
+      data => data ? this.getPageData() : this.router.navigate(["/"]),
       errorCode =>  this.statusCode = errorCode
     );
     this.modalUser = new User();
@@ -30,19 +32,29 @@ export class ManageComponent implements OnInit {
   }
   logout(){
     this.loginService.logout().subscribe(
-      (data) =>{
+      (data) => {
         this.router.navigate(["/"]);
       },
-      (err) =>{
-      }
+      (err) => { }
     )
+  }
+  getPageData() {
+    this.getUsers();
+    this.getStateStats();
   }
   getUsers(): void {
     this.loginService.getAllUsers().subscribe(
       data => this.Users = data, 
       errorCode =>  this.statusCode = errorCode        
-    )
+    );
   }
+  getStateStats(): void {
+    this.loginService.getStateStats().subscribe(
+      data => this.StateStats = data, 
+      errorCode =>  this.statusCode = errorCode        
+    );
+  }
+
   clickEdit(form){
     this.isFormValid(form) ? this.editUser() : this.flashError(environment.INVALID_CRED);
   }
@@ -102,16 +114,25 @@ export class ManageComponent implements OnInit {
     document.getElementById("usersTab").className = "active";
     document.getElementById("propertiesTab").className = "";
     document.getElementById("mapsTab").className = "";
+    document.getElementById("statsTab").className = "";
   }
   selectPropertiesTab(){
     document.getElementById("usersTab").className = "";
     document.getElementById("propertiesTab").className = "active";
     document.getElementById("mapsTab").className = "";
+    document.getElementById("statsTab").className = "";
   }
   selectMapsTab(){
     document.getElementById("usersTab").className = "";
     document.getElementById("propertiesTab").className = "";
     document.getElementById("mapsTab").className = "active";
+    document.getElementById("statsTab").className = "";
+  }
+  selectStatsTab(){
+    document.getElementById("usersTab").className = "";
+    document.getElementById("propertiesTab").className = "";
+    document.getElementById("mapsTab").className = "";
+    document.getElementById("statsTab").className = "active";
   }
   isFormValid(form){
     return form.valid && this.validEmail(this.modalUser.email)
