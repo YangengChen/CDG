@@ -18,7 +18,7 @@ Congressional District: {{districtData.districtID}}
 <br>
 Current District: {{currentDist}}
 <div class="dialog-dropdown">
-  Move to District: <cdg-dropdown [values]="districtDropdownValues" name="Move District To"></cdg-dropdown>
+  Move to District: <cdg-dropdown (change)="choseNewDistrict($event)" [values]="districtDropdownValues" name="Move District To"></cdg-dropdown>
 </div>
 <br>
 <br>

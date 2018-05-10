@@ -24,15 +24,14 @@ export class MapComponent implements OnInit{
   map: mapboxgl.Map;
   stateName:string;
   stylePattern:any;
-  districtLockedStylePattern:any;
+  lockedStylePattern:any;
   precinctLockedStylePattern:any;
   restartImage:string;
   popupFilter = ['==', 'name', '']
   disableSavedMapList:boolean = false;
   numberOfDistricts:number = 8;
   lockedOpacityStops: Array<any>;
-  districtLockedFillStops: Array<Array<any>>;
-  precinctLockedFillStops: Array<Array<any>>;
+  lockedRegions:Object= {}
   _mapObject:mapboxgl.GeoJSONSource;
   @Input() mapTypeListLabel: string;
   @Input() savedMapListLabel:string;
@@ -68,12 +67,6 @@ export class MapComponent implements OnInit{
     this.savedMapChanged = new EventEmitter<any>();
     this.mapReset = new EventEmitter<any>();
     this.updateGenConfig = new EventEmitter<any>();
-    this.lockedOpacityStops = new Array<any>();
-    this.lockedOpacityStops.push(["01", .7])
-    this.districtLockedFillStops = new Array<Array<any>>();
-    this.districtLockedFillStops.push(["00", "black"])
-    this.precinctLockedFillStops = new Array<Array<any>>();
-    this.precinctLockedFillStops.push(["00", "black"])
   }
   ngOnInit() { 
     let properties = this.appProperties.getProperties();
@@ -91,28 +84,7 @@ export class MapComponent implements OnInit{
         },
         'fill-opacity': properties.mapOpacity,
       };
-    this.districtLockedFillStops = new Array<Array<any>>();
-    this.districtLockedFillStops.push(["00", "black"])
-    this.precinctLockedFillStops = new Array<Array<any>>();
-    this.precinctLockedFillStops.push(["00", "black"])
-    this.districtLockedStylePattern = {
-        'line-color': {
-        type:'categorical',
-        property: Constants.COLOR_PROPERTY,
-        stops: this.districtLockedFillStops,
-        default: "black"
-      },
-      'line-opacity': 0
-    };
-    this.precinctLockedStylePattern = {
-        'line-color': {
-          type:'categorical',
-          property: "precinctID",
-          stops: this.precinctLockedFillStops,
-          default: "black"
-        },
-        'line-opacity': .7
-    };
+    this.reloadStyle();
   }
   onPrecinctHover(event){
     this.popupCords = event.lngLat;
@@ -162,7 +134,8 @@ export class MapComponent implements OnInit{
             precinct : result.precinctIsLocked, 
             precinctID : data.precinctID, 
             districtID : data.districtID,
-            district : result.districtIsLocked 
+            district : result.districtIsLocked,
+            movedPrecinct: result.movedPrecinct
           })
       }
     });
@@ -170,54 +143,39 @@ export class MapComponent implements OnInit{
 
   setPermStyle(precinctIsLocked, precinctID, districtIsLocked, districtID){
         if(districtIsLocked == "true"){
-          if(!this.districtLockedFillStops.includes(districtID)){
-            this.districtLockedFillStops.push([districtID, "red"]);
-            console.log("PUSHED LINE: " + this.districtLockedFillStops[0])
+          if(!this.lockedRegions[districtID]){
+            this.lockedRegions[districtID] = "red";
+            console.log("PUSHED LINE: " + this.lockedRegions)
           }
         }
         else{
-          this.districtLockedFillStops.splice(this.districtLockedFillStops.indexOf([districtID, "red"]), 1);
+          delete this.lockedRegions[districtID]
         }
 
         if(precinctIsLocked == "true"){
-          if(!this.precinctLockedFillStops.includes(precinctID)){
-            this.precinctLockedFillStops.push([precinctID, "red"]);
-            console.log("PUSHED PRECINCT LINE: " + this.precinctLockedFillStops[0])
+          if(!this.lockedRegions[precinctID]){
+            this.lockedRegions[precinctID] = "red"
+            console.log("PUSHED PRECINCT LINE: " + this.lockedRegions)
           }
         }
         else{
-          this.precinctLockedFillStops.splice(this.precinctLockedFillStops.indexOf([precinctID, "red"]), 1);
+          delete this.lockedRegions[precinctID]
         }
         this.reloadStyle();
   }
   resetAndReloadStyle(){
-    this.districtLockedFillStops = new Array<Array<any>>(["00", "black"]);
-    this.precinctLockedFillStops = new Array<Array<any>>(["00", "black"]);
+    this.lockedRegions =  {}
     this.reloadStyle();
   }
   reloadStyle() {
     let ob ={"01" :"red"}
-    let distStops:Array<Array<any>> = this.districtLockedFillStops;
-    if(distStops.length == 0)
-      distStops.push(["00", "black"])
-    let precStops:Array<Array<any>> = this.precinctLockedFillStops;
-    if(precStops.length == 0)
-      precStops.push(["00", "black"])
-    console.log("PREC STOPS: " + precStops)
-    console.log("DISt STOPS: " + distStops)
-      this.districtLockedStylePattern = {
-        'line-color': ["case", ["has", ["get", "districtID"], ["literal", ({"01":"red"})]], "red", "black"],// ['has', ['get', 'districtID'], {'01':'red'}], ['get', ['get', 'districtID'], {'01':'red'}], 'black'],
-        'line-opacity': ["case", !["has", ["get", "districtID"], ["literal", ({"01":"red"})]], 0, .7]
+    let distStops  = this.lockedRegions;
+    console.log("DISt STOPS: " +   JSON.stringify({ data: distStops}, null, 4))
+      this.lockedStylePattern = {
+        'line-color': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], "red", ["has", ["get", "districtID"], ["literal", (distStops)]], "red", "black"],// ['has', ['get', 'districtID'], {'01':'red'}], ['get', ['get', 'districtID'], {'01':'red'}], 'black'],
+        'line-width': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], 1, ["has", ["get", "districtID"], ["literal", (distStops)]], 1, .05],
       };
-      this.precinctLockedStylePattern = {
-          'line-color': {
-            type:'categorical',
-            property: "precinctID",
-            stops: precStops,
-            default: "black"
-          },
-          'line-opacity': 0
-      };
+ 
   }
 
   resetMap(){

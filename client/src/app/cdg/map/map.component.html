@@ -52,23 +52,12 @@
       mglGeocoder
     ></mgl-control>
     <mgl-layer 
-      id="district-locks" 
+      id="region-locks" 
       type="line"
       source="states" 
-      [paint]="districtLockedStylePattern">
+      [paint]="lockedStylePattern">
    </mgl-layer>
-      <mgl-layer 
-      id="precinct-locks" 
-      type="line"
-      source="states" 
-      [paint]="precinctLockedStylePattern">
-   </mgl-layer>
-    <mgl-layer 
-      id="precinct-locks" 
-      type="line"
-      source="states" 
-      [paint]="baseLinePattern">
-   </mgl-layer>
+
   </mgl-map>
 
   </nb-card-body>

@@ -23,6 +23,8 @@ import { Constants }                  from "../constants";
 import { saveAs }                     from 'file-saver/FileSaver';
 import { StartGenerationSuccessComponent } from '../cdg-ui/cdg-snackbar/start-generation-success/start-generation-success.component';
 import { StartGenerationFailedComponent } from '../cdg-ui/cdg-snackbar/start-generation-failed/start-generation-failed.component';
+import * as mapboxgl      from 'mapbox-gl';
+
 @Component({
   selector: 'app-cdg',
   templateUrl: './cdg.component.html',
@@ -37,7 +39,7 @@ export class CdgComponent implements OnInit {
   spinnerMode = "indeterminate";
   flipped=false;
   steps: Array<Object>;
-  mapObject: Object;
+  mapObject: any ;
   compareMapObject:Object;
   compareSelectedStateId: string;
   compareSelectedMapType:string;
@@ -320,6 +322,24 @@ export class CdgComponent implements OnInit {
       }
       else {
         this.genConfig.removePermConDist(updates.districtID);
+      }
+      console.log(updates.movedPrecinct);
+      if(updates.movedPrecinct && updates.movedPrecinct[1] != null){
+        this.genConfig.addMovedPrecinct(updates.movedPrecinct[0], updates.movedPrecinct[1])
+        let newMap:any = this.mapObject;
+        let features:Array<any> = newMap.features;
+        let i;
+        for( i = 0; i < features.length; i++){
+          //console.log("PRECINCTID: " + JSON.stringify(features[i], null, 4))
+          if(features[i].properties.precinctID == updates.precinctID){
+            features[i].properties.districtID = updates.movedPrecinct[1];
+            break;
+          }
+        }
+        newMap.features = features;
+        this.mapObject = null;
+        this.mapObject = newMap;
+        console.log("YASS: " + JSON.stringify({data:this.mapObject.features[i].properties}, null, 4))
       }
       console.log("PRECINCT LOCK: " + updates.precinctID)
       console.log("DISTRICT LOCK: " + updates.districtID)
