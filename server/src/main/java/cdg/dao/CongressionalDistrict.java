@@ -3,6 +3,7 @@ package cdg.dao;
 import java.util.HashMap;
 import java.util.Map;
 
+import cdg.domain.generation.CdgGoodnessEvaluator;
 import cdg.dto.CongressionalDistrictDTO;
 import cdg.dto.DistrictDTO;
 
@@ -122,6 +123,13 @@ public class CongressionalDistrict extends Region {
 		precinct.setConDistrict(this);
 		precincts.put(precinct.getId(), precinct);
 		this.setPopulation(this.getPopulation() + precinct.getPopulation());
+		ElectionResult districtElection = this.getPresidentialVoteTotals();
+		ElectionResult precinctElection = precinct.getPresidentialVoteTotals();
+		if (districtElection == null || precinctElection == null) {
+			throw new IllegalStateException();
+		}
+		districtElection.addElectionResult(precinctElection);
+		
 		return precinct;
 	}
 	
@@ -242,6 +250,13 @@ public class CongressionalDistrict extends Region {
 		}
 		currPrecinct = precincts.remove(precinctID);
 		this.setPopulation(this.getPopulation() - currPrecinct.getPopulation());
+		ElectionResult districtElection = this.getPresidentialVoteTotals();
+		ElectionResult precinctElection = currPrecinct.getPresidentialVoteTotals();
+		if (districtElection == null || precinctElection == null) {
+			throw new IllegalStateException();
+		}
+		districtElection.subtractElectionResult(precinctElection);
+		
 		return currPrecinct;
 	}
 	
@@ -315,16 +330,11 @@ public class CongressionalDistrict extends Region {
 			data.setNumPrecincts(precincts.size());
 		}
 		data.setGoodness(this.goodnessValue);
+		data.setPresidentialElection(this.getPresidentialVoteTotals());
+		if (this.getPresidentialVoteTotals() != null) {
+			data.setEfficiencyGap(CdgGoodnessEvaluator.getEfficiencyGap(this));
+		}
 		return data;
 	}
-	
-	/*@Override
-	public boolean equals(Object obj) {
-		if (!(obj instanceof CongressionalDistrict)) {
-			return false;
-		}
-		CongressionalDistrict district = (CongressionalDistrict)obj;
-		return (district.getId() == this.getId());
-	}*/
 
 }

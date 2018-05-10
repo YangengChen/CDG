@@ -1,6 +1,7 @@
 package cdg.domain.generation;
 
 import java.util.List;
+import java.util.Map;
 
 public class GenerationConfiguration {
 	private String stateId;
@@ -11,6 +12,7 @@ public class GenerationConfiguration {
 	private double equalPopWeight;
 	private double partisanFairWeight;
 	private double racialFairWeight;
+	private Map<String,String> precinctToDistrict;
 	
 	public List<String> getPermConDist() {
 		return permConDist;
@@ -74,5 +76,13 @@ public class GenerationConfiguration {
 
 	public void setStateId(String stateId) {
 		this.stateId = stateId;
+	}
+
+	public Map<String, String> getPrecinctToDistrict() {
+		return precinctToDistrict;
+	}
+
+	public void setPrecinctToDistrict(Map<String, String> precinctToDistrict) {
+		this.precinctToDistrict = precinctToDistrict;
 	}
 }

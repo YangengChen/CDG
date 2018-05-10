@@ -15,6 +15,7 @@ public class Precinct extends Region {
 	private CongressionalDistrict conDistrict;
 	@ManyToOne(fetch = FetchType.LAZY)
 	private State state;
+	private String county;
 	
 	public Precinct()
 	{
@@ -40,6 +41,14 @@ public class Precinct extends Region {
 
 	public void setState(State state) {
 		this.state = state;
+	}
+	
+	public String getCounty() {
+		return county;
+	}
+	
+	public void setCounty(String county) {
+		this.county = county;
 	}
 	
 	/*
@@ -116,6 +125,7 @@ public class Precinct extends Region {
 		if (conDistrict != null) {
 			data.setDistrictID(conDistrict.getPublicID());
 		}
+		data.setPresidentialElection(this.getPresidentialVoteTotals());
 		return data;
 	}
 }

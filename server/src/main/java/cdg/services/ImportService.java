@@ -3,7 +3,10 @@ package cdg.services;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.Reader;
+import java.time.DateTimeException;
+import java.time.Year;
 import java.util.Collection;
+import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,12 +30,15 @@ import com.vividsolutions.jts.geom.TopologyException;
 
 import cdg.repository.StateRepository;
 import cdg.repository.DistrictRepository;
+import cdg.repository.ElectionResultRepository;
 import cdg.repository.PrecinctRepository;
 import cdg.dao.CongressionalDistrict;
+import cdg.dao.ElectionResult;
 import cdg.dao.Precinct;
 import cdg.dao.Region;
 import cdg.dao.State;
 import cdg.domain.map.MapType;
+import cdg.domain.region.Party;
 import cdg.properties.CdgConstants;
 import cdg.properties.CdgPropertiesManager;
 
@@ -45,6 +51,8 @@ public class ImportService {
 	DistrictRepository districtRepo;
 	@Autowired
 	PrecinctRepository precinctRepo;
+	@Autowired
+	ElectionResultRepository electionRepo;
 	
 	public State createState(String geoJSON) {
 		if (geoJSON == null) {
@@ -68,9 +76,10 @@ public class ImportService {
 			state.setConDistricts(districts);
 			state.setPrecincts(precincts);
 			
+			setPopulation(state);
+			setElectionData(state);
 			setGeometries(state);
 			setMaps(state);
-			setPopulation(state);
 			
 			//store to database and use returned state value - will generate all mappings
 			state = stateRepo.saveAndFlush(state);
@@ -123,7 +132,7 @@ public class ImportService {
 		state.setName(name);
 		state.setPublicID(publicID);
 		//fake
-		state.setMapGeoJSON(geoJSON, MapType.PRECINCT);
+//		state.setMapGeoJSON(geoJSON, MapType.PRECINCT);
 		
 		//store to database and use returned state value
 		state = stateRepo.saveAndFlush(state);
@@ -139,7 +148,14 @@ public class ImportService {
 		Precinct currPrecinct;
 		String currPrecinctName;
 		String currPrecinctPubID;
+		String currPrecinctCounty;
 		long currPrecinctPopulation;
+		long currPrecinctVotingAgePop;
+		int currPrecinctElectionYear;
+		long currPrecinctPresTotal;
+		long currPrecinctPresRep;
+		long currPrecinctPresDem;
+		ElectionResult currPrecinctElection;
 		CongressionalDistrict currDistrict;
 		String currDistPubID;
 		for (int i = 0; i < features.length; i++) {
@@ -147,12 +163,31 @@ public class ImportService {
 			currGeom = features[i].getGeometry();
 			currPrecinctName = (String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_NAME_FIELD));
 			currPrecinctPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD));
-			currPrecinctPopulation = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_POPULATION_FIELD))).longValue();	
+			try {
+				currPrecinctPopulation = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_POPULATION_FIELD))).longValue();	
+			} catch (Exception e) {
+				currPrecinctPopulation = 0;
+			}
+			try {
+				currPrecinctVotingAgePop = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_VOTING_AGE_POPULATION_FIELD))).longValue();
+			} catch (Exception e) {
+				currPrecinctVotingAgePop = 0;
+			}
+			currPrecinctElectionYear = (Integer)currProp.get(propertiesManager.getProperty(CdgConstants.PRESIDENTIAL_ELECTION_YEAR_FIELD));	
+			currPrecinctPresTotal = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_PRESIDENTIAL_TOTAL_VOTE_FIELD))).longValue();		
+			currPrecinctPresRep = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_PRESIDENTIAL_REP_VOTE_FIELD))).longValue();		
+			currPrecinctPresDem = ((Number)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_PRESIDENTIAL_DEM_VOTE_FIELD))).longValue();		
+			currPrecinctCounty = (String)currProp.get(propertiesManager.getProperty(CdgConstants.PRECINCT_COUNTY_FIELD));
 			if (precinctsPubID.containsKey(currPrecinctPubID)) {
 				throw new IllegalStateException();
 			}
 			precinctsPubID.put(currPrecinctPubID, currPrecinctPubID);
-			currPrecinct = generatePrecinct(currPrecinctPubID, currPrecinctName, currPrecinctPopulation, currGeom.toString());
+			currPrecinctElection = generateElectionResult(currPrecinctVotingAgePop, currPrecinctElectionYear, currPrecinctPresTotal, currPrecinctPresRep, currPrecinctPresDem);
+			if (currPrecinctElection == null) {
+				System.err.println(currPrecinctPubID);
+				throw new IllegalArgumentException();
+			}
+			currPrecinct = generatePrecinct(currPrecinctPubID, currPrecinctName, currPrecinctCounty, currPrecinctPopulation, currGeom.toString(), currPrecinctElection);
 			precincts.put(currPrecinct.getId(), currPrecinct);
 			
 			currDistPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.DISTRICT_IDENTIFIER_FIELD));
@@ -173,11 +208,40 @@ public class ImportService {
 		}
 	}
 	
-	private Precinct generatePrecinct(String publicID, String name, long population, String geoJSON) {
+	private ElectionResult generateElectionResult(long votingAgePopulation, int electionYear, long totalVotes, long repVotes, long demVotes) {
+		try {
+			Year.of(electionYear);
+		} catch (DateTimeException dte) {
+			return null;
+		}
+		if (votingAgePopulation < 0 || totalVotes < 0 || repVotes < 0 || demVotes < 0) {
+			return null;
+		}
+		if ((repVotes + demVotes) > totalVotes) {
+			return null;
+		}
+		
+		ElectionResult result = new ElectionResult();
+		result.setVotingAgePopulation(votingAgePopulation);
+		result.setYear(electionYear);
+		result.setTotalVotes(totalVotes);
+		Map<Party,Long> voteTotals = new EnumMap<Party,Long>(Party.class);
+		voteTotals.put(Party.REPUBLICAN, repVotes);
+		voteTotals.put(Party.DEMOCRATIC, demVotes);
+		long otherVotes = totalVotes - (repVotes + demVotes);
+		voteTotals.put(Party.OTHER, otherVotes);
+		result.setPartyTotals(voteTotals);
+		result = electionRepo.saveAndFlush(result);
+		return result;
+	}
+	
+	private Precinct generatePrecinct(String publicID, String name, String county, long population, String geoJSON, ElectionResult election) {
 		Precinct precinct = new Precinct();
 		precinct.setName(name);
 		precinct.setPublicID(publicID);
+		precinct.setCounty(county);
 		precinct.setPopulation(population);
+		precinct.setPresidentialVoteTotals(election);
 		precinct.setGeoJsonGeometry(geoJSON);
 		//store to database and use returned precinct value
 		precinct = precinctRepo.saveAndFlush(precinct);
@@ -274,8 +338,8 @@ public class ImportService {
 			throw new IllegalArgumentException();
 		}
 		
-		//String precinctMap = mapService.generatePrecinctMap(state);
-		//state.setPrecinctMapGeoJSON(precinctMap);
+		String precinctMap = MapService.generatePrecinctMap(state);
+		state.setMapGeoJSON(precinctMap, MapType.PRECINCT);
 		
 		String congressionalDistrictMap = MapService.generateCongressionalDistrictMap(state, true);
 		state.setMapGeoJSON(congressionalDistrictMap, MapType.CONGRESSIONAL);
@@ -331,5 +395,45 @@ public class ImportService {
 			totalStatePopulation += totalDistrictPopulation;
 		}
 		state.setPopulation(totalStatePopulation);
+	}
+	
+	private void setElectionData(State state) {
+		if (state == null || state.getConDistricts() == null) {
+			throw new IllegalArgumentException();
+		}
+		ElectionResult stateElection = new ElectionResult();
+		stateElection.setPartyTotals(new EnumMap<Party,Long>(Party.class));
+		stateElection.setTotal(Party.DEMOCRATIC, 0);
+		stateElection.setTotal(Party.REPUBLICAN, 0);
+		stateElection.setTotal(Party.OTHER, 0);
+		ElectionResult districtElection;
+		ElectionResult precinctElection;
+		for (CongressionalDistrict district : state.getConDistricts().values()) {
+			if (district.getPrecincts() == null) {
+				throw new IllegalArgumentException();
+			}
+			districtElection = new ElectionResult();
+			districtElection.setPartyTotals(new EnumMap<Party,Long>(Party.class));
+			districtElection.setTotal(Party.DEMOCRATIC, 0);
+			districtElection.setTotal(Party.REPUBLICAN, 0);
+			districtElection.setTotal(Party.OTHER, 0);
+			for (Precinct precinct : district.getPrecincts().values()) {
+				precinctElection = precinct.getPresidentialVoteTotals();
+				if (precinctElection == null) {
+					throw new IllegalArgumentException();
+				}
+				districtElection.setYear(precinctElection.getYear());
+				districtElection.addElectionResult(precinctElection);
+			}
+			electionRepo.saveAndFlush(districtElection);
+			district.setPresidentialVoteTotals(districtElection);
+			
+			stateElection.setYear(districtElection.getYear());
+			stateElection.addElectionResult(districtElection);
+		}
+		electionRepo.saveAndFlush(stateElection);
+		state.setPresidentialVoteTotals(stateElection);
+		
+		stateRepo.saveAndFlush(state);
 	}
 }

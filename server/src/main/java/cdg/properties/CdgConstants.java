@@ -19,6 +19,7 @@ public class CdgConstants {
 	public static final String GENERATION_CONTROLLER_PATH_PREFIX = "/api/generation";
 	public static final String GENERATION_START_PATH = "/start";
 	public static final String GENERATION_CANCEL_PATH = "/cancel";
+	public static final String GENERATION_PAUSE_PATH = "/pause";
 	public static final String GENERATION_STATUS_PATH = "/status";
 	public static final String GENERATION_MAP_PATH = "/file/{maptype}";
 	public static final String GENERATION_SAVE_MAP_PATH = "/save/map";
@@ -41,6 +42,26 @@ public class CdgConstants {
 	//domain constants
 	public static final String DISTRICT_NAME_PREFIX = "Congressional District ";
 	public static final double MAX_GOODNESS = 100;
+	public static final double SCHWARZBERG_WEIGHT = 0.34;
+	public static final double HULL_RATIO_WEIGHT = 0.33;
+	public static final double REOCK_WEIGHT = 0.33;
+	
+	//geojson output
+	public static final String PRECINCT_NAME = "precinctName";
+	public static final String DISTRICT_NAME = "districtName";
+	public static final String STATE_NAME = "stateName";
+	public static final String PRECINCT_ID = "precinctID";
+	public static final String DISTRICT_ID = "districtID";
+	public static final String STATE_ID = "stateID";
+	public static final String POPULATION = "population";
+	public static final String COUNTY= "county";
+	public static final String VOTING_AGE_POPULATION = "votingAgePop";
+	public static final String ELECTION_YEAR = "electionYear";
+	public static final String TOTAL_VOTE = "prsTOTAL";
+	public static final String DEM_VOTE = "prsDFL";
+	public static final String REP_VOTE = "prsR";
+	public static final String OTH_VOTE = "prsOTH";
+	
 
 	//properties file keys
 	public static final String STATE_NAME_FIELD = "geojson_stateName";
@@ -50,4 +71,17 @@ public class CdgConstants {
 	public static final String PRECINCT_IDENTIFIER_FIELD = "geojson_precinctIdentifier";
 	public static final String PRECINCT_NEIGHBORS_FIELD = "geojson_precinctNeighbors";
 	public static final String PRECINCT_POPULATION_FIELD = "geojson_precinctPopulation";
+	public static final String PRECINCT_COUNTY_FIELD = "geojson_precinctCounty";
+	public static final String PRECINCT_VOTING_AGE_POPULATION_FIELD = "geojson_precinctVotingAgePopulation";
+	public static final String PRESIDENTIAL_ELECTION_YEAR_FIELD = "geojson_presidentialElectionYear";
+	public static final String PRECINCT_PRESIDENTIAL_TOTAL_VOTE_FIELD = "geojson_precinctPresidentialTotalVote";
+	public static final String PRECINCT_PRESIDENTIAL_DEM_VOTE_FIELD = "geojson_precinctPresidentialDemVote";
+	public static final String PRECINCT_PRESIDENTIAL_REP_VOTE_FIELD = "geojson_precinctPresidentialRepVote";
+	public static final String THRESHOLD_PERCENT = "generation_thresholdPercent";
+	public static final String MAX_DISTRICT_ITERATIONS = "generation_maxDistrictIterations";
+	public static final String MAX_GENERATION_ITERATIONS = "generation_maxGenIterations";
+	public static final String DISTRICT_ITERATION_MAX_PERCENT = "generation_districtMaxPercent";
+	public static final String END_THRESHOLD_PERCENT = "generation_endThresholdPercent";
+	public static final String END_THRESHOLD_FORGIVENESS = "generation_endThresholdForgiveness";
+	public static final String POLICY = "generation_policy";
 }

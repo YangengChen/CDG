@@ -69,9 +69,12 @@ public class MapService {
 		org.wololo.geojson.Geometry currGeoJson;
 		Feature currFeature;
 		try {
-			for (Geometry geom : stateGeoms) {
-				currGeoJson = writer.write(geom);
+			for (State state : states) {
+				currGeoJson = writer.write(state.getGeometry());
 				properties = new HashMap<String, Object>();
+				properties.put(CdgConstants.STATE_ID, state.getPublicID());
+				properties.put(CdgConstants.STATE_NAME, state.getName());
+				properties.put(CdgConstants.POPULATION, state.getPopulation());
 				currFeature = new Feature(currGeoJson, properties);
 				features.add(currFeature);
 			}
@@ -100,6 +103,7 @@ public class MapService {
 				else {
 					geom = reader.read(state.getGeoJsonGeometry());
 				}
+				state.setGeometry(geom);
 				stateGeoms.add(geom);
 			}
 		} catch (IllegalStateException ise) {
@@ -122,6 +126,9 @@ public class MapService {
 		String stateMap;
 		try {
 			org.wololo.geojson.Geometry geoJson = writer.write(stateGeom);
+			properties.put(CdgConstants.STATE_ID, state.getPublicID());
+			properties.put(CdgConstants.STATE_NAME, state.getName());
+			properties.put(CdgConstants.POPULATION, state.getPopulation());	
 			Feature feature = new Feature(geoJson, properties);
 			stateMap = feature.toString();
 		} catch (Exception e) {
@@ -179,9 +186,12 @@ public class MapService {
 		Map<String, Object> properties;
 		Feature currFeature;
 		try {
-			for (Geometry geom : districtGeoms) {
-				currGeoJson = writer.write(geom);
+			for (CongressionalDistrict district : districts.values()) {
+				currGeoJson = writer.write(district.getGeometry());
 				properties = new HashMap<String, Object>();
+				properties.put(CdgConstants.DISTRICT_ID, district.getPublicID());
+				properties.put(CdgConstants.DISTRICT_NAME, district.getName());
+				properties.put(CdgConstants.POPULATION, district.getPopulation());
 				currFeature = new Feature(currGeoJson, properties);
 				features.add(currFeature);
 			}
@@ -209,6 +219,7 @@ public class MapService {
 				} else {
 					geom = reader.read(dist.getGeoJsonGeometry());
 				}
+				dist.setGeometry(geom);
 				districtGeoms.add(geom);
 			}
 		} catch (IllegalStateException ise) {
@@ -301,11 +312,11 @@ public class MapService {
 				currJTSGeom = reader.read(precinct.getGeoJsonGeometry());
 				currGeoJson = writer.write(currJTSGeom);
 				properties = new HashMap<String, Object>();
-				properties.put((String)propertiesManager.getProperty(CdgConstants.PRECINCT_NEIGHBORS_FIELD), neighborIDs);
-				properties.put((String)propertiesManager.getProperty(CdgConstants.PRECINCT_IDENTIFIER_FIELD), precinct.getPublicID());
-				properties.put((String)propertiesManager.getProperty(CdgConstants.PRECINCT_NAME_FIELD), precinct.getName());
-				properties.put((String)propertiesManager.getProperty(CdgConstants.PRECINCT_POPULATION_FIELD), precinct.getPopulation());
-				properties.put((String)propertiesManager.getProperty(CdgConstants.DISTRICT_IDENTIFIER_FIELD), precinct.getConDistrict().getPublicID());
+				properties.put(CdgConstants.PRECINCT_ID, precinct.getPublicID());
+				properties.put(CdgConstants.PRECINCT_NAME, precinct.getName());
+				properties.put(CdgConstants.COUNTY, precinct.getCounty());
+				properties.put(CdgConstants.POPULATION, precinct.getPopulation());
+				properties.put(CdgConstants.DISTRICT_ID, precinct.getConDistrict().getPublicID());
 				currFeature = new Feature(currGeoJson, properties);
 				features.add(currFeature);
 			}
@@ -334,6 +345,7 @@ public class MapService {
 					throw new IllegalStateException();
 				}
 				currPrecinctGeom = reader.read(precinct.getGeoJsonGeometry());
+				precinct.setGeometry(currPrecinctGeom);
 				precinctGeoms.add(currPrecinctGeom);
 			}
 		} catch (IllegalStateException ise) {

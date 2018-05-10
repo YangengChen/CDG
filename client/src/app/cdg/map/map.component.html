@@ -36,16 +36,16 @@
       (click)="onMapClick($event)"
       [paint]="stylePattern">
       <mgl-popup *ngIf="currPrecinct" [(lngLat)]="popupCords" >
-      <a *ngIf="currPrecinct.districtID"> Congresisonal District: {{currPrecinct.districtID}}<br></a>
+      <a *ngIf="currPrecinct.districtID"> Congressional District: {{currPrecinct.districtID}}<br></a>
       <a *ngIf="currPrecinct.county"> County: {{currPrecinct.county}} <br></a>
       <a *ngIf="currPrecinct.precinctName"> Precinct: {{currPrecinct.precinctName}}<br> </a>
       <a *ngIf="currPrecinct.precinctID"> PrecinctID: {{currPrecinct.precinctID}} <br></a>
       <a *ngIf="currPrecinct.population"> Population: {{currPrecinct.population}}<br></a>
       <a *ngIf="currPrecinct.electionYear"> Election Year: {{currPrecinct.electionYear}}<br> </a>
-      <a *ngIf="currPrecinct.prsTOTAL"> Total Presidental Votes: {{currPrecinct.prsTOTAL}} <br></a>
-      <a *ngIf="currPrecinct.prsDFL"> Democratic Presidental Votes: {{currPrecinct.prsDFL}} <br></a>
-      <a *ngIf="currPrecinct.prsR"> Republican Presidental Votes: {{currPrecinct.prsTOTAL}} <br></a>
-      <a *ngIf="currPrecinct.prsOTH"> Other Presidental Votes: {{currPrecinct.prsOTH}}<br> </a>
+      <a *ngIf="currPrecinct.prsTOTAL"> Total Presidential Votes: {{currPrecinct.prsTOTAL}} <br></a>
+      <a *ngIf="currPrecinct.prsDFL"> Democratic Presidential Votes: {{currPrecinct.prsDFL}} <br></a>
+      <a *ngIf="currPrecinct.prsR"> Republican Presidential Votes: {{currPrecinct.prsTOTAL}} <br></a>
+      <a *ngIf="currPrecinct.prsOTH"> Other Presidential Votes: {{currPrecinct.prsOTH}}<br> </a>
     </mgl-popup>
     </mgl-layer>
         <mgl-control

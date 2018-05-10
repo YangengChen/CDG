@@ -20,6 +20,7 @@ public class CdgConstraintEvaluator extends ConstraintEvaluator {
 		ConstraintEvaluator evaluator = new CdgConstraintEvaluator();
 		List<String> permConDistIDs = configuration.getPermConDist();
 		List<String> permPrecinctIDs = configuration.getPermPrecinct();
+		Map<String,String> precinctToDistrict = configuration.getPrecinctToDistrict();
 		Map<String,String> permConDists = new HashMap<String,String>();
 		if (permConDistIDs != null) {
 			for (String id : permConDistIDs) {
@@ -33,7 +34,13 @@ public class CdgConstraintEvaluator extends ConstraintEvaluator {
 				permPrecincts.put(id, id);
 			}
 		}
+		if (precinctToDistrict != null) {
+			for (String precinctID : precinctToDistrict.keySet()) {
+				permPrecincts.put(precinctID, precinctID);
+			}
+		}
 		evaluator.setConstraint(UserConstraint.PERMPRECINCT, permPrecincts);
+		
 		
 		return evaluator;
 	}
