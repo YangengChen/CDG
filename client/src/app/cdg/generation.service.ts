@@ -32,6 +32,8 @@ export class GenerationConfiguration {
     equalPopWeight: Number;
     racialFairWeight: Number;
     partisanFairWeight:Number;
+    lockedPrecincts:any;
+    lockedDistricts:Array<string>;
     constructor(){
         this.compactnessWeight = .4;
         this.contiguityWeight = .4;
@@ -39,7 +41,6 @@ export class GenerationConfiguration {
         this.racialFairWeight = 0.0;
         this.partisanFairWeight = 0.0;
         this.permConDist = new Array<string>();
-        this.permConDist.push();
         this.permPrecinct = new Array<string>();
     }
     setState(state:string){
@@ -99,11 +100,10 @@ export class GenerationConfiguration {
         return this.racialFairWeight;
     }
     restartConfig(){
-        this.compactnessWeight = 50;
-        this.contiguityWeight = 50;
-        this.equalPopWeight = 50;
-        this.racialFairWeight = 50;
-        this.partisanFairWeight = 50;
+        this.compactnessWeight = .4;
+        this.contiguityWeight = .4;
+        this.equalPopWeight = .2;
+        this.partisanFairWeight = 0.0;
         this.permConDist = new Array<string>();
         this.permPrecinct = new Array<string>();
     }

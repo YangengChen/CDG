@@ -16,6 +16,9 @@ import { GenerationFinishedComponent } from './cdg-snackbar/generation-finished/
 import { CdgPermPickerComponent } from './cdg-perm-picker/cdg-perm-picker.component';
 import { PermPickerDialogComponent } from './cdg-perm-picker/perm-picker-dialog/perm-picker-dialog.component';
 import {MatRadioModule} from '@angular/material/radio';
+import { CdgStepComponent } from "./cdg-step/cdg-step.component";  
+import { NbCardModule } from "@nebular/theme"
+
 @NgModule({
   imports: [
     FormsModule,
@@ -24,8 +27,10 @@ import {MatRadioModule} from '@angular/material/radio';
     MatSliderModule,
     BrowserAnimationsModule,
     MatRadioModule,
+    NbCardModule
   ],
   declarations: [
+    CdgStepComponent,
     CdgDropdownComponent,
     CdgButtonComponent,
     CdgSliderComponent,
@@ -38,6 +43,7 @@ import {MatRadioModule} from '@angular/material/radio';
     PermPickerDialogComponent
   ],
   exports: [
+    CdgStepComponent,
     CdgDropdownComponent,
     CdgButtonComponent,
     CdgSliderComponent,

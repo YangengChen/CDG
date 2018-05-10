@@ -14,7 +14,7 @@
 	"generateTabLabel":"Generate",
 	"fileTabLabel":"File",
 	"mapColorPattern":[
-		["01", "red"],["02", "blue"],["03", "green"],["04", "yellow"],["05", "purple"],
+		["01", "Chartreuse"],["02", "blue"],["03", "green"],["04", "yellow"],["05", "purple"],
 		["06", "orange"], ["07", "navy"], ["08", "white"], ["09", "Cyan"],
 		["10", "Chartreuse"],["11", "Cornsilk"],["12", "MediumAquaMarine"],["13", "DarkCyan"],["14", "DarkGoldenRod"],
 		["15", "DarkGrey"], ["16", "DarkKhaki"], ["17", "DarkOliveGreen"], ["18", "DarkOrange"], ["19", "DarkTurquoise"],

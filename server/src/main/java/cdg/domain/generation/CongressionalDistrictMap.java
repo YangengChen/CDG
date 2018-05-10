@@ -310,6 +310,7 @@ public class CongressionalDistrictMap {
 		Precinct currPrecinct;
 		currPrecinct = currDistrict.removePrecinct(precinctID);
 		if (currPrecinct == null) {
+			System.out.println("current precinct is null");
 			throw new IllegalStateException();
 		}
 		if (neighborDistrict == null) {
@@ -317,20 +318,24 @@ public class CongressionalDistrictMap {
 			 * precinct object has not changed since this was last called */
 			Precinct neighborPrecinct = currPrecinct.getFromNeighborConDistrict();
 			if (neighborPrecinct == null) {
+				System.out.println("Neightbor Precinct is null");
 				throw new IllegalStateException();
 			}
 			neighborDistrict = neighborPrecinct.getConDistrict();
 		}
 		if (!currPrecinct.hasNeighborDistrict(neighborDistrict)) {
+			System.out.println("has no neighbor district");
 			throw new IllegalStateException();
 		}
 		currPrecinct = neighborDistrict.addPrecinct(currPrecinct);
 		if (currPrecinct == null) {
+			System.out.println("moved precinct is null");
 			throw new IllegalStateException();
 		}
 
 		Integer neighborID = districts.inverse().get(neighborDistrict);
 		if (neighborID == null) {
+			System.out.println("neighborID is null");
 			throw new IllegalStateException();
 		}
 		return neighborID;

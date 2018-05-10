@@ -20,22 +20,35 @@ import { GenerationConfiguration } from "../generation.service";
   styleUrls: ['./map.component.scss']
 })
 export class MapComponent implements OnInit{
+  test = 0;
   map: mapboxgl.Map;
   stateName:string;
   stylePattern:any;
+  districtLockedStylePattern:any;
+  precinctLockedStylePattern:any;
   restartImage:string;
   popupFilter = ['==', 'name', '']
   disableSavedMapList:boolean = false;
+  numberOfDistricts:number = 8;
+  lockedOpacityStops: Array<any>;
+  districtLockedFillStops: Array<Array<any>>;
+  precinctLockedFillStops: Array<Array<any>>;
+  _mapObject:mapboxgl.GeoJSONSource;
   @Input() mapTypeListLabel: string;
   @Input() savedMapListLabel:string;
-  @Input() mapObject:mapboxgl.GeoJSONSource;
+  @Input() 
+  set mapObject(map:mapboxgl.GeoJSONSource){
+    this.resetAndReloadStyle()
+    this._mapObject = map;
+  }
+  get mapObject():mapboxgl.GeoJSONSource{return this._mapObject}
   @Input() congressionalDistricts: Object[]
   @Input() savedMapList:DropdownValue<any>[];
   @Input() mapTypeList:DropdownValue<String>[];
   @Input() popupCords:mapboxgl.LngLatLike;
   @Input() currPrecinct:any;
   @Input() mapColorPattern:any;
-  @Input() algoRunning:boolean;
+  @Input() flipped:boolean;
   @Input() algoPaused:boolean;
   @Input() disableMapTypeList:boolean = false;
   @Input() disableResetButton:boolean = false;
@@ -55,7 +68,12 @@ export class MapComponent implements OnInit{
     this.savedMapChanged = new EventEmitter<any>();
     this.mapReset = new EventEmitter<any>();
     this.updateGenConfig = new EventEmitter<any>();
-
+    this.lockedOpacityStops = new Array<any>();
+    this.lockedOpacityStops.push(["01", .7])
+    this.districtLockedFillStops = new Array<Array<any>>();
+    this.districtLockedFillStops.push(["00", "black"])
+    this.precinctLockedFillStops = new Array<Array<any>>();
+    this.precinctLockedFillStops.push(["00", "black"])
   }
   ngOnInit() { 
     let properties = this.appProperties.getProperties();
@@ -73,6 +91,28 @@ export class MapComponent implements OnInit{
         },
         'fill-opacity': properties.mapOpacity,
       };
+    this.districtLockedFillStops = new Array<Array<any>>();
+    this.districtLockedFillStops.push(["00", "black"])
+    this.precinctLockedFillStops = new Array<Array<any>>();
+    this.precinctLockedFillStops.push(["00", "black"])
+    this.districtLockedStylePattern = {
+        'line-color': {
+        type:'categorical',
+        property: Constants.COLOR_PROPERTY,
+        stops: this.districtLockedFillStops,
+        default: "black"
+      },
+      'line-opacity': 0
+    };
+    this.precinctLockedStylePattern = {
+        'line-color': {
+          type:'categorical',
+          property: "precinctID",
+          stops: this.precinctLockedFillStops,
+          default: "black"
+        },
+        'line-opacity': .7
+    };
   }
   onPrecinctHover(event){
     this.popupCords = event.lngLat;
@@ -85,6 +125,7 @@ export class MapComponent implements OnInit{
     this.currPrecinct = null;
   }
   onMapTypeChange(event){
+    this.resetAndReloadStyle();
     this.mapTypeChanged.emit(event.value);
   }
   onSavedMapChanged(event){
@@ -95,6 +136,7 @@ export class MapComponent implements OnInit{
     let permConDist = this.genConfig.getPermConDist();
     let permPrecinct = this.genConfig.getPermPreceint()
     let data = event.features[0].properties;
+    data.numberOfDistricts = 8;
     let precinctIsPerm;
     let districtIsPerm;
     console.log("PRECINCT: " + data.precinctID)
@@ -111,10 +153,11 @@ export class MapComponent implements OnInit{
     else{
       districtIsPerm = false;
     }
-    let ref = this.permPicker.generatePermPicker(precinctIsPerm, districtIsPerm, data);
+    let ref = this.permPicker.generatePermPicker(precinctIsPerm, districtIsPerm,  data);
     ref.afterClosed().subscribe(result => {
       let res: any = result;
       if(result){
+        this.setPermStyle(result.precinctIsLocked, data.precinctID, result.districtIsLocked, data.districtID)
         this.updateGenConfig.emit({
             precinct : result.precinctIsLocked, 
             precinctID : data.precinctID, 
@@ -123,9 +166,60 @@ export class MapComponent implements OnInit{
           })
       }
     });
-    
-
   }
+
+  setPermStyle(precinctIsLocked, precinctID, districtIsLocked, districtID){
+        if(districtIsLocked == "true"){
+          if(!this.districtLockedFillStops.includes(districtID)){
+            this.districtLockedFillStops.push([districtID, "red"]);
+            console.log("PUSHED LINE: " + this.districtLockedFillStops[0])
+          }
+        }
+        else{
+          this.districtLockedFillStops.splice(this.districtLockedFillStops.indexOf([districtID, "red"]), 1);
+        }
+
+        if(precinctIsLocked == "true"){
+          if(!this.precinctLockedFillStops.includes(precinctID)){
+            this.precinctLockedFillStops.push([precinctID, "red"]);
+            console.log("PUSHED PRECINCT LINE: " + this.precinctLockedFillStops[0])
+          }
+        }
+        else{
+          this.precinctLockedFillStops.splice(this.precinctLockedFillStops.indexOf([precinctID, "red"]), 1);
+        }
+        this.reloadStyle();
+  }
+  resetAndReloadStyle(){
+    this.districtLockedFillStops = new Array<Array<any>>(["00", "black"]);
+    this.precinctLockedFillStops = new Array<Array<any>>(["00", "black"]);
+    this.reloadStyle();
+  }
+  reloadStyle() {
+    let ob ={"01" :"red"}
+    let distStops:Array<Array<any>> = this.districtLockedFillStops;
+    if(distStops.length == 0)
+      distStops.push(["00", "black"])
+    let precStops:Array<Array<any>> = this.precinctLockedFillStops;
+    if(precStops.length == 0)
+      precStops.push(["00", "black"])
+    console.log("PREC STOPS: " + precStops)
+    console.log("DISt STOPS: " + distStops)
+      this.districtLockedStylePattern = {
+        'line-color': ["case", ["has", ["get", "districtID"], ["literal", ({"01":"red"})]], "red", "black"],// ['has', ['get', 'districtID'], {'01':'red'}], ['get', ['get', 'districtID'], {'01':'red'}], 'black'],
+        'line-opacity': ["case", !["has", ["get", "districtID"], ["literal", ({"01":"red"})]], 0, .7]
+      };
+      this.precinctLockedStylePattern = {
+          'line-color': {
+            type:'categorical',
+            property: "precinctID",
+            stops: precStops,
+            default: "black"
+          },
+          'line-opacity': 0
+      };
+  }
+
   resetMap(){
     this.mapReset.emit();
   }

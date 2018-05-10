@@ -3,7 +3,8 @@ import {  Injectable,
          Component, 
          OnInit, 
          Input, 
-         Output }                     from '@angular/core';
+         Output 
+        }                     from '@angular/core';
 import { Observable }                 from 'rxjs/Rx';
 import { HttpClient }                 from '@angular/common/http';
 import { LoginService }               from "../pages/login/login.service";
@@ -28,11 +29,14 @@ import { StartGenerationFailedComponent } from '../cdg-ui/cdg-snackbar/start-gen
   styleUrls: ['./cdg.component.scss']
 })
 export class CdgComponent implements OnInit {
+
+
   interval = null;
   startingGeneration = false;
   spinnerValue:number;
   spinnerMode = "indeterminate";
   flipped=false;
+  steps: Array<Object>;
   mapObject: Object;
   compareMapObject:Object;
   compareSelectedStateId: string;
@@ -75,6 +79,7 @@ export class CdgComponent implements OnInit {
     private appProperties : AppProperties,
     private snackBar      : CdgSnackbarComponent) { 
   }
+
   logout(){
     this.loginService.logout().subscribe(
       (data) =>{
@@ -85,6 +90,7 @@ export class CdgComponent implements OnInit {
     )
   }
   ngOnInit() {
+    this.flipped = false;
     this.compare = false;
     this.algoPaused = false;
     this.algoRunning = false;
@@ -97,6 +103,7 @@ export class CdgComponent implements OnInit {
     this.setUpLabels(this.appProperties.getProperties());
     this.mapTypeList = new Array<DropdownValue<String>>();
     this.stateList = new Array<DropdownValue<State>>();
+    this.steps = new Array<Object>();
     this.stateList.push(Constants.UNITED_STATES_DROPDOWNVALUE);
     this.mapService.getStateList()
     .subscribe((stateList:any) => {
@@ -109,6 +116,7 @@ export class CdgComponent implements OnInit {
     });
     this.getUnitedStates();
     this.getCompareUnitedStates();
+    this.genConfig = new GenerationConfiguration();
   }
   precinctSelected(precinct){
     this.selectedPrecinct = precinct.f ;
@@ -156,6 +164,7 @@ export class CdgComponent implements OnInit {
     .subscribe(stateData =>{
       console.log(stateData);
         this.mapObject = stateData;
+        this.mapReset()
     });
   }
   updateRacialFairness(weight:number){
@@ -185,6 +194,7 @@ export class CdgComponent implements OnInit {
           this.snackBar.generateSnackbar(SnackbarEnum.START_GENERATION_SUCCESS)
           this.algoRunning = true;
           this.startingGeneration = false;
+          this.flipped = true;
         }
       });
     }
@@ -195,7 +205,7 @@ export class CdgComponent implements OnInit {
   startGenerationCheck(){
     if( (this.genConfig.getCompactnessWeight().valueOf() + this.genConfig.getContiguityWeight().valueOf()
     		+ this.genConfig.getEqualPopWeight().valueOf()
-        + this.genConfig.getPartisanFairnessWeight().valueOf() + this.genConfig.getRacialFairWeight().valueOf()) != 1){
+        + this.genConfig.getPartisanFairnessWeight().valueOf()) != 1){
             return SnackbarEnum.WEIGHT_FAILURE;
          }
   }
@@ -210,6 +220,9 @@ export class CdgComponent implements OnInit {
           clearInterval(this.interval)
           this.snackBar.generateSnackbar(SnackbarEnum.GENERATION_FINISHED);
           this.algoRunning = false;
+        }
+        else{
+          this.steps.push(check);
         }
       })
     }, 3000);
@@ -313,5 +326,12 @@ export class CdgComponent implements OnInit {
       console.log("NEW DISTRICT LOCKED: " + this.genConfig.getPermConDist())
       console.log("NEW PRECINCT LOCKED: " + this.genConfig.getPermPreceint())
   }
+  backToFront(){
+    this.flipped = false;
+  }
 
+  exitGeneration(){
+    this.backToFront();
+    this.steps = new Array<Object>();
+  }
 }

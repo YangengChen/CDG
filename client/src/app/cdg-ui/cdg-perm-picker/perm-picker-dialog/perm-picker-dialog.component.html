@@ -1,4 +1,5 @@
 Precinct Name: {{districtData.precinctName}}
+<br>
 <mat-radio-group [(ngModel)]="precinctSelection" name="precinctGroup"> 
   <mat-radio-button [value]="'true'">Lock Precinct</mat-radio-button>
   <br>
@@ -6,11 +7,19 @@ Precinct Name: {{districtData.precinctName}}
 </mat-radio-group> 
 <br>
 <br>
-Congressional District: {{districtData.precinctName}}
+Congressional District: {{districtData.districtID}}
+<br>
 <mat-radio-group [(ngModel)]="districtSelection" name="conDistGroup"> 
   <mat-radio-button  [value]="'true'">Lock District</mat-radio-button>
   <br>
   <mat-radio-button  [value]="'false'">Unlock District</mat-radio-button>
 </mat-radio-group> 
+<br>
+<br>
+Current District: {{currentDist}}
+<div class="dialog-dropdown">
+  Move to District: <cdg-dropdown [values]="districtDropdownValues" name="Move District To"></cdg-dropdown>
+</div>
+<br>
 <br>
 <cdg-button (click)="applyChanges()" name="Apply"></cdg-button>

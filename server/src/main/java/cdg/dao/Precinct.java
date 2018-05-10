@@ -72,16 +72,20 @@ public class Precinct extends Region {
 	
 	public boolean hasNeighborDistrict(CongressionalDistrict district) {
 		if (district == null) {
+			System.out.println("District is null");
 			throw new IllegalArgumentException();
 		}
 		CongressionalDistrict currDistrict = this.getConDistrict();
 		if (currDistrict == null) {
+			System.out.println("current is null");
 			throw new IllegalStateException();
 		}
 		if (currDistrict.getId() == district.getId()) {
+			System.out.println("the districts are the same");
 			return false;
 		}
 		if (this.getNeighborRegions() == null) {
+			System.out.println("neighbor regions null");
 			return false;
 		}
 		
@@ -89,6 +93,7 @@ public class Precinct extends Region {
 		Precinct neighborPrec;
 		CongressionalDistrict neighborDistrict;
 		for (Region neighbor : this.getNeighborRegions().values()) {
+			System.out.println("REGION: " + neighbor.getName());
 			neighborPrec = (Precinct) neighbor;
 			neighborDistrict = neighborPrec.getConDistrict();
 			if (neighborDistrict == null) {
@@ -98,6 +103,7 @@ public class Precinct extends Region {
 				return true;
 			}
 		}
+		System.out.println("through with no errors, returning false");
 		return false;
 	}
 

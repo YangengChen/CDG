@@ -2,7 +2,7 @@
   <button [disabled]="disabled" class="btn btn-primary" type="button" ngbDropdownToggle>
   {{selected}}
   </button>
-  <ul id="test" class="dropdown-menu" ngbDropdownMenu>
+  <ul  id="menu" class="dropdown-menu" ngbDropdownMenu>
     <li *ngFor="let val of values" (click)="select(val)" class="dropdown-item">{{val.label}}</li>
   </ul>
 </div>

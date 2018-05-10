@@ -18,14 +18,13 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		}
 		GoodnessEvaluator evaluator = new CdgGoodnessEvaluator(maxGoodness);
 		if ((configuration.getCompactnessWeight() + configuration.getContiguityWeight() + configuration.getEqualPopWeight() +
-				configuration.getPartisanFairWeight() + configuration.getRacialFairWeight()) != 1) {
+				configuration.getPartisanFairWeight()) != 1) {
 			throw new IllegalArgumentException();
 		}
 		evaluator.setGoodnessMeasure(GoodnessMeasure.COMPACTNESS, configuration.getCompactnessWeight());
 		evaluator.setGoodnessMeasure(GoodnessMeasure.CONTIGUITY, configuration.getContiguityWeight());
 		evaluator.setGoodnessMeasure(GoodnessMeasure.EQUALPOPULATION, configuration.getEqualPopWeight());
 		evaluator.setGoodnessMeasure(GoodnessMeasure.PARTISANFAIRNESS, configuration.getPartisanFairWeight());
-		evaluator.setGoodnessMeasure(GoodnessMeasure.RACIALFAIRNESS, configuration.getRacialFairWeight());
 		return evaluator;
 	}
 	

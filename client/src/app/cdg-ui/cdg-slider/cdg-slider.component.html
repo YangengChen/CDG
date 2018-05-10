@@ -1,15 +1,15 @@
 <div id="cdg-slider-container">
   <span style="display:inline-block;">
-    <label style="display:block;" for="slider"><a *ngIf="name">{{name}}: {{slider}}%</a><img *ngIf="img" src="{{picture}}"></label>
+    <label style="display:block;" for="slider"><a *ngIf="name">{{name}}: {{round(slider*100)}}%</a><img *ngIf="img" src="{{picture}}"></label>
     <mat-slider
       [(ngModel)]="slider"
       [disabled]="disabled"
       (change)="onChange($event)"
       id="slider"
       min="0" 
-      max="100" 
-      step="1" 
-      [value]="50"
+      max="1" 
+      step=".05" 
+      [value]="0"
       color="primary"
     ></mat-slider>
   </span>

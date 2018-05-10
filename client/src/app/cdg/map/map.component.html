@@ -1,6 +1,6 @@
 <nb-card>
   <nb-card-header>
-    <div style="position:relative" id="header-container">
+    <div *ngIf="!flipped"  style="position:relative" id="header-container">
       <div *ngIf="mapTypeList" class="map-dropdown">
         {{mapTypeListLabel}}:<br>
         <cdg-dropdown (change)="onMapTypeChange($event)" [values]="mapTypeList" name="MapType" [disabled]="disableMapTypeList"></cdg-dropdown>
@@ -13,6 +13,9 @@
         <cdg-button [disabled]="disableResetButton" [img]="restartImage" (click)="resetMap()"></cdg-button>
       </div>
     </div>
+    <div *ngIf="flipped"  style="position:relative" id="header-container">
+      <h2> Generated Map </h2>
+    </div>
   </nb-card-header>
   <nb-card-body>
   <mgl-map
@@ -24,12 +27,6 @@
      id="states"
      [(data)]="mapObject"
    ></mgl-geojson-source>
-   <mgl-layer 
-      id="state-lines" 
-      type="line"
-      source="states" 
-      [paint]="{'line-color':'black'}">
-   </mgl-layer>
    <mgl-layer
       id="state-fills"
       type="fill"
@@ -54,6 +51,24 @@
         <mgl-control
       mglGeocoder
     ></mgl-control>
+    <mgl-layer 
+      id="district-locks" 
+      type="line"
+      source="states" 
+      [paint]="districtLockedStylePattern">
+   </mgl-layer>
+      <mgl-layer 
+      id="precinct-locks" 
+      type="line"
+      source="states" 
+      [paint]="precinctLockedStylePattern">
+   </mgl-layer>
+    <mgl-layer 
+      id="precinct-locks" 
+      type="line"
+      source="states" 
+      [paint]="baseLinePattern">
+   </mgl-layer>
   </mgl-map>
 
   </nb-card-body>
