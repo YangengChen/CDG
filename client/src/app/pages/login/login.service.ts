@@ -26,9 +26,11 @@ export class LoginService {
   getAllUsers(): any {    
     return this.http.get(endpoints.GET_ALL_USERS_ENDPOINT,{withCredentials: true});
   }
+  getStateStats(): any {    
+    return this.http.get(endpoints.GET_ALL_STATE_STATS_ENDPOINT,{withCredentials: true});
+  }
   isUserLoggedIn(): any{    
     return this.http.get(endpoints.GET_LOGGED_IN_USER, {withCredentials: true});
-
   }
   // private handleError (error: Response | any) {
   //   console.error(error.message || error);

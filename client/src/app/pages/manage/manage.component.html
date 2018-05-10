@@ -1,110 +1,142 @@
 <head>
-  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
-  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+<script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 </head>
 
 <!-- Navigation -->
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" [ngClass]="{'navbar-shrink':isScrolled}" id="mainNav">
-<div class="container">
-  <a class="navbar-brand js-scroll-trigger" href="#page-top">Congressional District Generator</a>
-<a class="nav-link js-scroll-trigger" href="" style="float: right;" (click)="logout()">Logout</a>
-</div>
+  <div class="container">
+    <a class="navbar-brand js-scroll-trigger" href="#page-top">Congressional District Generator</a>
+    <a class="nav-link js-scroll-trigger" href="" style="float: right;" (click)="logout()">Logout</a>
+  </div>
 </nav>
+
 <body>
-
-<div id="modalEdit" class="modal">
-  <div class="modal-content">
-    <div class="innter-form">
-      <form class="sa-innate-form" #editForm="ngForm" (submit)="clickEdit(editForm)" method="post" name="registerForm">
-      <ngx-flash-messages></ngx-flash-messages>
-      <label>First Name</label>
-      <input type="text" name="fnametext" [(ngModel)]="modalUser.firstName" required>
-      <label>Last Name</label>
-      <input type="text" name="lnametext" [(ngModel)]="modalUser.lastName" required>
-      <label>Email Address</label>
-      <input type="email" name="email" name="emailtext" [(ngModel)]="modalUser.email" style="background-color: rgb(213, 214, 214);"readonly>
-      <label>Password</label>
-      <input type="password" name="password" name="passwordtext" [(ngModel)]="modalUser.password">
-      <button class="btn btn-success btn-sm" type="submit">Edit User</button>
-      <a class="btn btn-danger btn-sm" (click)="closeModal()">Close</a>		
-      </form>
-    </div>
-  </div>
-</div>
-
-<div id="modalAdd" class="modal">
-  <div class="modal-content">
-    <div class="innter-form">
-      <form class="sa-innate-form" #addForm="ngForm" (submit)="clickAdd(addForm)" method="post" name="registerForm">
-      <ngx-flash-messages></ngx-flash-messages>
-      <label>First Name</label>
-      <input type="text" name="fnametext" [(ngModel)]="modalUser.firstName" required>
-      <label>Last Name</label>
-      <input type="text" name="lnametext" [(ngModel)]="modalUser.lastName" required>
-      <label>Email Address</label>
-      <input type="email" name="email" name="emailtext" [(ngModel)]="modalUser.email" required>
-      <label>Password</label>
-      <input type="password" name="password" name="passwordtext" [(ngModel)]="modalUser.password" required>
-      <button class="btn btn-success btn-sm" type="submit">Add User</button>
-      <a class="btn btn-danger btn-sm" (click)="closeModal()">Close</a>		
-      </form>
-    </div>
-  </div>
-</div>
-<br>
-<div class="container">
-<div class="row">
-<div class="form-body">
-  <ul class="nav nav-tabs final-login">
-      <li id="usersTab" class="active" (click)="selectUsersTab($event)"><a data-toggle="pill" href="#sectionA">Users</a></li>
-      <li id="propertiesTab" class="" (click)="selectPropertiesTab($event)"><a data-toggle="pill" href="#sectionB">Properties</a></li>
-      <li id="mapsTab" class="" (click)="selectMapsTab($event)"><a data-toggle="pill" href="#sectionC">Maps</a></li>
-  </ul>
-  <div class="tab-content">
-      <div id="sectionA" class="tab-pane fade in active">
+  <!-- Modal for User tab -->
+  <div id="modalEdit" class="modal">
+    <div class="modal-content">
       <div class="innter-form">
-    <table id="cart" class="table table-condensed">
-      <thead>
-      <tr>
-        <th style="width:30%"><h4>Email</h4></th>
-        <th style="width:15%"><h4>First Name</h4></th>
-        <th style="width:13%"><h4>Last Name</h4></th>
-        <th style="width:22%" class="text-center"><h4>Delete</h4></th>
-        <th style="width:20%" class="text-center"><h4>Edit</h4></th>
-      </tr>
-      </thead>
-      <tbody>
-        <tr class="listItem" *ngFor="let user of Users">
-          <td data-th="Product">
-            <div class="row">
-              <div class="col-sm-10">
+        <form class="sa-innate-form" #editForm="ngForm" (submit)="clickEdit(editForm)" method="post" name="registerForm">
+        <ngx-flash-messages></ngx-flash-messages>
+        <label>First Name</label>
+        <input type="text" name="fnametext" [(ngModel)]="modalUser.firstName" required>
+        <label>Last Name</label>
+        <input type="text" name="lnametext" [(ngModel)]="modalUser.lastName" required>
+        <label>Email Address</label>
+        <input type="email" name="email" name="emailtext" [(ngModel)]="modalUser.email" style="background-color: rgb(213, 214, 214);"readonly>
+        <label>Password</label>
+        <input type="password" name="password" name="passwordtext" [(ngModel)]="modalUser.password">
+        <button class="btn btn-success btn-sm" type="submit">Edit User</button>
+        <a class="btn btn-danger btn-sm" (click)="closeModal()">Close</a>		
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div id="modalAdd" class="modal">
+    <div class="modal-content">
+      <div class="innter-form">
+        <form class="sa-innate-form" #addForm="ngForm" (submit)="clickAdd(addForm)" method="post" name="registerForm">
+        <ngx-flash-messages></ngx-flash-messages>
+        <label>First Name</label>
+        <input type="text" name="fnametext" [(ngModel)]="modalUser.firstName" required>
+        <label>Last Name</label>
+        <input type="text" name="lnametext" [(ngModel)]="modalUser.lastName" required>
+        <label>Email Address</label>
+        <input type="email" name="email" name="emailtext" [(ngModel)]="modalUser.email" required>
+        <label>Password</label>
+        <input type="password" name="password" name="passwordtext" [(ngModel)]="modalUser.password" required>
+        <button class="btn btn-success btn-sm" type="submit">Add User</button>
+        <a class="btn btn-danger btn-sm" (click)="closeModal()">Close</a>		
+        </form>
+      </div>
+    </div>
+  </div>
+  <br>
+  <div class="container">
+    <div class="row">
+      <div class="form-body">
+        <ul class="nav nav-tabs final-login">
+          <li id="usersTab" class="active" (click)="selectUsersTab($event)"><a data-toggle="pill" href="#sectionA">Users</a></li>
+          <li id="propertiesTab" class="" (click)="selectPropertiesTab($event)"><a data-toggle="pill" href="#sectionB">Properties</a></li>
+          <li id="mapsTab" class="" (click)="selectMapsTab($event)"><a data-toggle="pill" href="#sectionC">Maps</a></li>
+          <li id="statsTab" class="" (click)="selectStatsTab($event)"><a data-toggle="pill" href="#sectionD">Statistics</a></li>
+        </ul>
+        <div class="tab-content">
+          <div id="sectionA" class="tab-pane fade in active">
+          <div class="innter-form">
+            <table id="cart" class="table table-condensed">
+            <thead>
+              <tr>
+                <th style="width:30%"><h4>Email</h4></th>
+                <th style="width:15%"><h4>First Name</h4></th>
+                <th style="width:13%"><h4>Last Name</h4></th>
+                <th style="width:22%" class="text-center"><h4>Delete</h4></th>
+                <th style="width:20%" class="text-center"><h4>Edit</h4></th>
+              </tr>
+            </thead>
+            <tbody>
+            <tr class="listItem" *ngFor="let user of Users">
+              <td data-th="Product">
+              <div class="row">
+                <div class="col-sm-10">
                 <h5 class="nomargin">{{user.email}}</h5>
+                </div>
               </div>
-            </div>
-          </td>
-          <td data-th="firstName">{{user.firstName}}</td>
-          <td data-th="lastName">{{user.lastName}}</td>
-          <td class="actions" style="text-align:center;">
-            <button class="btn btn-danger btn-sm" (click)="deleteUser(user)" style="width: 50%;">DELETE </button>		
-          </td>
-          <td class="actions" style="text-align:center;">
-            <button class="btn btn-warning btn-sm" (click)="openModalEdit(user)" style="width: 50%;">EDIT</button>		
-          </td>
-        </tr>
-      </tbody>
-      <tfoot stlye="padding: 5px;">
-        <button class="btn btn-success btn-sm" (click)="openModalAdd()">Add User</button>								
-      </tfoot>
-    </table>
+              </td>
+                <td data-th="firstName">{{user.firstName}}</td>
+                <td data-th="lastName">{{user.lastName}}</td>
+                <td class="actions" style="text-align:center;">
+              <button class="btn btn-danger btn-sm" (click)="deleteUser(user)" style="width: 50%;">DELETE </button>		
+              </td>
+              <td class="actions" style="text-align:center;">
+              <button class="btn btn-warning btn-sm" (click)="openModalEdit(user)" style="width: 50%;">EDIT</button>		
+              </td>
+            </tr>
+            </tbody>
+            <tfoot stlye="padding: 5px;">
+            <button class="btn btn-success btn-sm" (click)="openModalAdd()">Add User</button>								
+            </tfoot>
+            </table>
+          </div>
+          </div>
+          <div id="sectionB" class="tab-pane fade">
+          <div class="innter-form">
+            <p>Properties Tab</p>
+          </div>
+          </div>
+          <div id="sectionC" class="tab-pane fade">
+          <div class="innter-form">
+              <p>Maps Tab</p>
+          </div>
+          </div>
+          <div id="sectionD" class="tab-pane fade">
+          <div class="innter-form">
+              <table id="cart" class="table table-condensed">
+                  <thead>
+                    <tr>
+                      <th style="width:75%"><h4>State</h4></th>
+                      <th style="width:25%"><h4>Activity Count</h4></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                  <tr class="listItem" *ngFor="let stateStat of StateStats">
+                    <td data-th="Product">
+                    <div class="row">
+                      <div class="col-sm-10">
+                      <h5 class="nomargin">{{stateStat.name}}</h5>
+                      </div>
+                    </div>
+                    </td>
+                    <td class="actions" style="text-align:center;" data-th="firstName">{{stateStat.activityCount}}</td>
+                  </tr>
+                  </tbody>
+                  </table>
+          </div>
+          </div>
+        </div>
       </div>
-  </div>
-      <div id="sectionB" class="tab-pane fade">
-    <div class="innter-form">
-      </div>
-      </div>
-  </div>
-  </div>
-  </div>
+    </div>
   </div>
 </body>
