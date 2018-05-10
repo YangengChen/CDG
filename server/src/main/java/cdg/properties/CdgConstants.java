@@ -45,6 +45,23 @@ public class CdgConstants {
 	public static final double SCHWARZBERG_WEIGHT = 0.34;
 	public static final double HULL_RATIO_WEIGHT = 0.33;
 	public static final double REOCK_WEIGHT = 0.33;
+	
+	//geojson output
+	public static final String PRECINCT_NAME = "precinctName";
+	public static final String DISTRICT_NAME = "districtName";
+	public static final String STATE_NAME = "stateName";
+	public static final String PRECINCT_ID = "precinctID";
+	public static final String DISTRICT_ID = "districtID";
+	public static final String STATE_ID = "stateID";
+	public static final String POPULATION = "population";
+	public static final String COUNTY= "county";
+	public static final String VOTING_AGE_POPULATION = "votingAgePop";
+	public static final String ELECTION_YEAR = "electionYear";
+	public static final String TOTAL_VOTE = "prsTOTAL";
+	public static final String DEM_VOTE = "prsDFL";
+	public static final String REP_VOTE = "prsR";
+	public static final String OTH_VOTE = "prsOTH";
+	
 
 	//properties file keys
 	public static final String STATE_NAME_FIELD = "geojson_stateName";
@@ -54,6 +71,7 @@ public class CdgConstants {
 	public static final String PRECINCT_IDENTIFIER_FIELD = "geojson_precinctIdentifier";
 	public static final String PRECINCT_NEIGHBORS_FIELD = "geojson_precinctNeighbors";
 	public static final String PRECINCT_POPULATION_FIELD = "geojson_precinctPopulation";
+	public static final String PRECINCT_COUNTY_FIELD = "geojson_precinctCounty";
 	public static final String PRECINCT_VOTING_AGE_POPULATION_FIELD = "geojson_precinctVotingAgePopulation";
 	public static final String PRESIDENTIAL_ELECTION_YEAR_FIELD = "geojson_presidentialElectionYear";
 	public static final String PRECINCT_PRESIDENTIAL_TOTAL_VOTE_FIELD = "geojson_precinctPresidentialTotalVote";
