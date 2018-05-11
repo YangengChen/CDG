@@ -226,6 +226,7 @@ public class MapService {
 				properties.put(CdgConstants.SCHWARTZBERG_COMPACTNESS, CdgGoodnessEvaluator.getSchwartzbergCompactness(district) * 100);
 				properties.put(CdgConstants.HULL_RATIO_COMPACTNESS, CdgGoodnessEvaluator.getHullRatioCompactness(district) * 100);
 				properties.put(CdgConstants.REOCK_COMPACTNESS, CdgGoodnessEvaluator.getReockCompactness(district) * 100);
+				properties.put(CdgConstants.GOODNESS, district.getGoodnessValue());
 				currFeature = new Feature(currGeoJson, properties);
 				features.add(currFeature);
 			}

@@ -65,6 +65,7 @@ public class CdgConstants {
 	public static final String SCHWARTZBERG_COMPACTNESS = "schwarzbergCompactness";
 	public static final String HULL_RATIO_COMPACTNESS = "hullRatioCompactness";
 	public static final String REOCK_COMPACTNESS = "reockCompactness";
+	public static final String GOODNESS = "goodness";
 	
 
 	//properties file keys

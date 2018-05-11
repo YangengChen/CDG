@@ -1,8 +1,10 @@
 package cdg.domain.generation;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.PriorityQueue;
@@ -433,10 +435,14 @@ public class CongressionalDistrictMap {
 		return precinct.getPublicID();
 	}
 	
-	public Map<String,Double> getAllDistrictGoodness() {
-		Map<String,Double> districtsGoodness = new HashMap<String,Double>();
+	public List<GoodnessResult> getAllDistrictGoodness() {
+		List<GoodnessResult> districtsGoodness = new ArrayList<>();
+		GoodnessResult result;
 		for (CongressionalDistrict district : districts.values()) {
-			districtsGoodness.put(district.getPublicID(), district.getGoodnessValue());
+			result = new GoodnessResult();
+			result.setDistrictID(district.getPublicID());
+			result.setGoodness(district.getGoodnessValue());
+			districtsGoodness.add(result);
 		}
 		return districtsGoodness;
 	}
