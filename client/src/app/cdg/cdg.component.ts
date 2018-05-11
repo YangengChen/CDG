@@ -3,7 +3,8 @@ import {  Injectable,
          Component, 
          OnInit, 
          Input, 
-         Output 
+         Output,
+         ViewChild
         }                     from '@angular/core';
 import { Observable }                 from 'rxjs/Rx';
 import { HttpClient }                 from '@angular/common/http';
@@ -24,6 +25,7 @@ import { saveAs }                     from 'file-saver/FileSaver';
 import { StartGenerationSuccessComponent } from '../cdg-ui/cdg-snackbar/start-generation-success/start-generation-success.component';
 import { StartGenerationFailedComponent } from '../cdg-ui/cdg-snackbar/start-generation-failed/start-generation-failed.component';
 import * as mapboxgl      from 'mapbox-gl';
+import { MapComponent }                 from "./map/map.component";
 
 @Component({
   selector: 'app-cdg',
@@ -38,9 +40,12 @@ export class CdgComponent implements OnInit {
   spinnerValue:number;
   spinnerMode = "indeterminate";
   flipped=false;
+  conDistData:any;
   steps: Array<Object>;
-  mapObject: any ;
+  @ViewChild("map") map:MapComponent;
+  mapObject: any;
   compareMapObject:Object;
+  compareData:any;
   compareSelectedStateId: string;
   compareSelectedMapType:string;
   stateList: DropdownValue<State>[];
@@ -70,6 +75,7 @@ export class CdgComponent implements OnInit {
   informationTabLabel:string;
   fileTabLabel:string;
   compactness:Number;
+  stateData:any;
 
   
   constructor(
@@ -135,6 +141,8 @@ export class CdgComponent implements OnInit {
       this.selectedStateName = event.label;
       this.selectedStateId = event.value.id;
       this.getState();
+      this.getStateData();
+      this.getCongressionalDistrictData();
     }
   }
   changeCompareState(event){
@@ -145,7 +153,14 @@ export class CdgComponent implements OnInit {
     else{
       this.compareSelectedStateId = event.value.id;
       this.getCompareState();
+      this.getCompareData();
     }
+  }
+  getCompareData(){
+    this.mapService.getData(this.selectedStateId, "state")
+    .subscribe(stateData => {
+      this.compareData = stateData;
+    })   
   }
   getCompareUnitedStates() {
     this.mapService.getUnitedStates()
@@ -164,10 +179,21 @@ export class CdgComponent implements OnInit {
   getState(){
     this.mapService.getMap(this.selectedStateId, this.selectedMapType)
     .subscribe(stateData =>{
-      console.log(stateData);
         this.mapObject = stateData;
         this.mapReset()
     });
+  }
+  getStateData(){
+    this.mapService.getData(this.selectedStateId, "state")
+    .subscribe(stateData => {
+      this.stateData = stateData;
+    })
+  }
+  getCongressionalDistrictData(){
+    this.mapService.getData(this.selectedStateId, "congressional")
+    .subscribe(conData => {
+      this.conDistData = conData;
+    })
   }
   updateRacialFairness(weight:number){
     this.genConfig.setRacialFairWeight(weight);
@@ -236,6 +262,11 @@ export class CdgComponent implements OnInit {
       this.mapObject = finishedMap;
     })
   }
+
+  changeMap(theNewMap){
+    this.mapService.changeMap(theNewMap)
+    .map(newMap => this.map.mapObject)
+  }
   mapTypeChanged(type:string){
     this.selectedMapType = type;
     this.getState();
@@ -246,7 +277,7 @@ export class CdgComponent implements OnInit {
   }
   getCompareState(){
     this.mapService.getMap(this.compareSelectedStateId, this.compareSelectedMapType)
-    .subscribe(stateData =>{
+    .map(stateData =>{
       console.log(stateData);
         this.compareMapObject = stateData;
     });
@@ -336,16 +367,15 @@ export class CdgComponent implements OnInit {
             break;
           }
         }
-        newMap.features = features;
-        this.mapObject = null;
-        this.mapObject = newMap;
-        console.log("YASS: " + JSON.stringify({data:this.mapObject.features[i].properties}, null, 4))
+        this.changeMap(newMap);
+        //console.log("YASS: " + JSON.stringify({data:this.map.mapObject.features[i].properties}, null, 4))
       }
-      console.log("PRECINCT LOCK: " + updates.precinctID)
-      console.log("DISTRICT LOCK: " + updates.districtID)
-      console.log("NEW DISTRICT LOCKED: " + this.genConfig.getPermConDist())
-      console.log("NEW PRECINCT LOCKED: " + this.genConfig.getPermPreceint())
+      // console.log("PRECINCT LOCK: " + updates.precinctID)
+      // console.log("DISTRICT LOCK: " + updates.districtID)
+      // console.log("NEW DISTRICT LOCKED: " + this.genConfig.getPermConDist())
+      // console.log("NEW PRECINCT LOCKED: " + this.genConfig.getPermPreceint())
   }
+  
   backToFront(){
     this.flipped = false;
   }

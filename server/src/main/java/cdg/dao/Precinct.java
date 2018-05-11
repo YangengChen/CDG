@@ -102,7 +102,6 @@ public class Precinct extends Region {
 		Precinct neighborPrec;
 		CongressionalDistrict neighborDistrict;
 		for (Region neighbor : this.getNeighborRegions().values()) {
-			System.out.println("REGION: " + neighbor.getName());
 			neighborPrec = (Precinct) neighbor;
 			neighborDistrict = neighborPrec.getConDistrict();
 			if (neighborDistrict == null) {

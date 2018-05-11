@@ -13,7 +13,6 @@ import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
 import {MatDialogModule, MatDialog} from '@angular/material/dialog';
 import { CdgPermPickerComponent } from "../../cdg-ui/cdg-perm-picker/cdg-perm-picker.component";
 import { GenerationConfiguration } from "../generation.service";
-
 @Component({
   selector: 'map',
   templateUrl: './map.component.html',
@@ -32,15 +31,17 @@ export class MapComponent implements OnInit{
   numberOfDistricts:number = 8;
   lockedOpacityStops: Array<any>;
   lockedRegions:Object= {}
-  _mapObject:mapboxgl.GeoJSONSource;
+  _mapObject:any;
   @Input() mapTypeListLabel: string;
   @Input() savedMapListLabel:string;
   @Input() 
-  set mapObject(map:mapboxgl.GeoJSONSource){
-    this.resetAndReloadStyle()
+  set mapObject(map:any){
+    console.log("MAP CHANGED");
     this._mapObject = map;
+    this.resetAndReloadStyle()
   }
-  get mapObject():mapboxgl.GeoJSONSource{return this._mapObject}
+  get mapObject():any{
+    return this._mapObject}
   @Input() congressionalDistricts: Object[]
   @Input() savedMapList:DropdownValue<any>[];
   @Input() mapTypeList:DropdownValue<String>[];
@@ -111,8 +112,14 @@ export class MapComponent implements OnInit{
     data.numberOfDistricts = 8;
     let precinctIsPerm;
     let districtIsPerm;
-    console.log("PRECINCT: " + data.precinctID)
-    console.log("DISTRICT: " + data.districtID)
+    // console.log("PRECINCT: " + data.precinctID)
+    // console.log("DISTRICT: " + data.districtID)
+    // let i;
+    // for(i = 0; i < this._mapObject.features.length; i++){
+    //   if(this._mapObject.features[i].properties.precinctID == data.precinctID){
+    //     console.log("CHECKERINO DISTRICT: " + this._mapObject.features[i].properties.districtID)
+    //   }
+    // }
     if(permPrecinct.includes(data.precinctID)){
       precinctIsPerm = true;
     }
@@ -174,6 +181,17 @@ export class MapComponent implements OnInit{
       this.lockedStylePattern = {
         'line-color': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], "red", ["has", ["get", "districtID"], ["literal", (distStops)]], "red", "black"],// ['has', ['get', 'districtID'], {'01':'red'}], ['get', ['get', 'districtID'], {'01':'red'}], 'black'],
         'line-width': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], 1, ["has", ["get", "districtID"], ["literal", (distStops)]], 1, .05],
+      };
+          let properties = this.appProperties.getProperties();
+
+      this.stylePattern =  {
+        'fill-color': {
+          type:'categorical',
+          property: Constants.COLOR_PROPERTY,
+          stops: properties.mapColorPattern,
+          default: properties.defaultMapColor
+        },
+        'fill-opacity': properties.mapOpacity,
       };
  
   }

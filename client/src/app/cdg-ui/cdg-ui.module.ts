@@ -17,7 +17,10 @@ import { CdgPermPickerComponent } from './cdg-perm-picker/cdg-perm-picker.compon
 import { PermPickerDialogComponent } from './cdg-perm-picker/perm-picker-dialog/perm-picker-dialog.component';
 import {MatRadioModule} from '@angular/material/radio';
 import { CdgStepComponent } from "./cdg-step/cdg-step.component";  
-import { NbCardModule } from "@nebular/theme"
+import { NbCardModule } from "@nebular/theme";
+import { CdgDataDisplayComponent } from './cdg-data-display/cdg-data-display.component';
+import { CdgCompareDataComponent } from './cdg-compare-data/cdg-compare-data.component';
+import { CdgCompareDialogComponent } from './cdg-compare-data/cdg-compare-dialog/cdg-compare-dialog.component'
 
 @NgModule({
   imports: [
@@ -40,7 +43,10 @@ import { NbCardModule } from "@nebular/theme"
     WeightFailureComponent,
     GenerationFinishedComponent,
     CdgPermPickerComponent,
-    PermPickerDialogComponent
+    PermPickerDialogComponent,
+    CdgDataDisplayComponent,
+    CdgCompareDataComponent,
+    CdgCompareDialogComponent
   ],
   exports: [
     CdgStepComponent,
@@ -48,15 +54,18 @@ import { NbCardModule } from "@nebular/theme"
     CdgButtonComponent,
     CdgSliderComponent,
     CdgSnackbarComponent,
-    CdgPermPickerComponent
+    CdgPermPickerComponent,
+    CdgDataDisplayComponent,
+    CdgCompareDialogComponent
   ],
   entryComponents:[
     StartGenerationFailedComponent,
     StartGenerationSuccessComponent,
     WeightFailureComponent,
     GenerationFinishedComponent,
-    PermPickerDialogComponent
+    PermPickerDialogComponent,
+    CdgCompareDialogComponent
   ],
-  providers : [CdgSnackbarComponent, CdgPermPickerComponent]
+  providers : [CdgSnackbarComponent, CdgPermPickerComponent, CdgCompareDataComponent]
 })
 export class CdgUiModule { }
