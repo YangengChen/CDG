@@ -47,14 +47,8 @@
                 Compare Map:
                 <cdg-dropdown [values]="stateList" (change)="changeCompareState($event)" name="States"></cdg-dropdown>
               </div>
-              <div id="tab-data-block">
-              <br><br>
-              <br><p>Name: Wisconson</p>
-              <br><p>Socioeconomic Status: </p>
-              <br><p>Population: 5,795,000 </p>
-              <br><p>Partisan Fairness:  </p>
-              <br><p>Racial Fairness:  </p>
-              <br><p>Political Communities Preservation:  </p>
+            <div *ngIf="stateData">
+              <cdg-data-display [compareDisable]="!compare" [compareData]="compareData" [stateData]="stateData"></cdg-data-display>
               </div>
             </div>
            </nb-tab>
@@ -101,7 +95,7 @@
         </nb-sidebar>
 
       <nb-layout-column>
-        <map 
+        <map #map
           (clicked)="precinctSelected($event)" 
           (mapTypeChanged)="mapTypeChanged($event)"
           (savedMapChanged)="savedMapChanged"

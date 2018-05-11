@@ -28,7 +28,6 @@ export class PermPickerDialogComponent {
       this.startingDistrict = info.districtData.districtID;
       this.districtDropdownValues = new Array<DropdownValue<CongressionalDistrict>>();
       for(var i = 1; i <= 8; i++){
-        console.log("MAKING DISTRICT DROPDOWN " + i.toString())
         let label = "District " + i.toString()
         this.districtDropdownValues.push(new DropdownValue<CongressionalDistrict>(new CongressionalDistrict(label, "0" + i.toString()), label));
       }

@@ -26,6 +26,7 @@
    <mgl-geojson-source
      id="states"
      [(data)]="mapObject"
+     (load)="map = $event"
    ></mgl-geojson-source>
    <mgl-layer
       id="state-fills"
