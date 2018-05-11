@@ -79,8 +79,7 @@ public class ImportService {
 			setPopulation(state);
 			setElectionData(state);
 			setGeometries(state);
-			//setMaps(state);
-			
+
 			//store to database and use returned state value - will generate all mappings
 			state = stateRepo.saveAndFlush(state);
 		} catch (Exception e) {
@@ -335,20 +334,6 @@ public class ImportService {
 		}
 		return valid;
 	}
-	
-	/*private void setMaps(State state) {
-		if (state == null || state.getConDistricts() == null) {
-			throw new IllegalArgumentException();
-		}
-		
-		String precinctMap = MapService.generatePrecinctMap(state);
-		state.setMapGeoJSON(precinctMap, MapType.PRECINCT);
-		
-		String congressionalDistrictMap = MapService.generateCongressionalDistrictMap(state, true);
-		state.setMapGeoJSON(congressionalDistrictMap, MapType.CONGRESSIONAL);
-		String stateMap = MapService.generateStateMap(state);
-		state.setMapGeoJSON(stateMap, MapType.STATE);
-	}*/
 	
 	private void setGeometries(State state) {
 		if (state == null || state.getConDistricts() == null) {

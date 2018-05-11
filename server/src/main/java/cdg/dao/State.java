@@ -13,15 +13,9 @@ import cdg.dto.MapDataDTO;
 import cdg.services.MapService;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Lob;
 import javax.persistence.Table;
-
-//import org.hibernate.annotations.LazyGroup;
-
 import javax.persistence.MapKey;
 import javax.persistence.OneToMany;
-import javax.persistence.Basic;
 import javax.persistence.CascadeType;
 
 @Entity
@@ -33,15 +27,6 @@ public class State extends Region {
 	@OneToMany(mappedBy="state", cascade= {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval=true)
 	@MapKey(name = "id")
 	private Map<Integer,Precinct> precincts;
-	/*@Lob
-	@Basic(fetch = FetchType.LAZY)
-	private byte[] stateMapGeoJson;
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	private byte[] conDistrictMapGeoJSON;
-	@Lob
-	@Basic(fetch = FetchType.LAZY)
-	private byte[] precinctMapGeoJSON;*/
 	
 	public State()
 	{
@@ -81,103 +66,30 @@ public class State extends Region {
 		return precincts.size();
 	}
 	
-	/*public byte[] getStateMapGeoJson()
-	{
-		return stateMapGeoJson;
-	}
-	
-	public void setStateMapGeoJson(byte[] geoJSON) {
-		stateMapGeoJson = geoJSON;
-	}
-	
-	public byte[] getConDistrictMapGeoJSON()
-	{
-		return conDistrictMapGeoJSON;
-	}
-	
-	public void setConDistrictMapGeoJSON(byte[] geoJSON) {
-		conDistrictMapGeoJSON = geoJSON;
-	}
-	
-	public byte[] getPrecinctMapGeoJSON()
-	{
-		return precinctMapGeoJSON;
-	}
-	
-	public void setPrecinctMapGeoJSON(byte[] geoJSON) {
-		precinctMapGeoJSON = geoJSON;
-	}*/
-	
 	public String getMapGeoJSON(MapType type) {
 		if (type == null)
 			throw new IllegalArgumentException();
 
-		byte[] geoJSON = getMapFile(type);
-		if (geoJSON == null) {
+		String map;
+		try {
+			map = MapService.generateMap(this, type);
+		} catch (IllegalStateException ise) {
 			return null;
 		}
-		String map = convertGeoToString(geoJSON);
 		return map;
 	}
-	
-	/*public void setMapGeoJSON(String geoJSON, MapType type) {
-		if (type == null || geoJSON == null)
-			throw new IllegalArgumentException();
-
-		byte[] map = convertStringToGeo(geoJSON);
-		setMapFile(map, type);
-	}*/
 	
 	public byte[] getMapFile(MapType type)
 	{
 		if (type == null)
 			throw new IllegalArgumentException();
-
-		/*byte[] geoJSON = null;
-		switch (type)
-		{
-			case STATE:
-				geoJSON = getStateMapGeoJson();
-				break;
-			case CONGRESSIONAL:
-				geoJSON = getConDistrictMapGeoJSON();
-				break;
-			case PRECINCT:
-				geoJSON = getPrecinctMapGeoJSON();
-				break;
-			default:
-				geoJSON = null;
-				break;
-		}*/
-		String geoJSONStr;
-		try {
-			geoJSONStr = MapService.generateMap(this, type);
-		} catch (IllegalStateException ise) {
+		String geoJSONStr = getMapGeoJSON(type);
+		if (geoJSONStr == null) {
 			return null;
 		}
 		byte[] geoJSON = MapService.getMapAsBytes(geoJSONStr);
 		return geoJSON;
 	}
-	
-	/*public void setMapFile(byte[] geoJSON, MapType type) {
-		if (type == null || geoJSON == null)
-			throw new IllegalArgumentException();
-
-		switch (type)
-		{
-			case STATE:
-				setStateMapGeoJson(geoJSON);
-				break;
-			case CONGRESSIONAL:
-				setConDistrictMapGeoJSON(geoJSON);
-				break;
-			case PRECINCT:
-				setPrecinctMapGeoJSON(geoJSON);
-				break;
-			default:
-				throw new IllegalArgumentException();
-		}
-	}*/
 	
 	public MapDTO getMap(MapType type)
 	{
