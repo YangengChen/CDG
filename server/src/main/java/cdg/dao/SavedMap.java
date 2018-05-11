@@ -16,6 +16,12 @@ import javax.persistence.Table;
 public class SavedMap {	
 	@Id
 	private String id;
+	private double schwarzbergWeight;
+	private double hullRatioWeight;
+	private double reockWeight;
+	private double contiguityWeight;
+	private double equalPopWeight;
+	private double partisanFairWeight;
 	@ManyToOne
 	private State state;
 	@OneToMany(cascade= {CascadeType.ALL}, orphanRemoval=true)
@@ -50,5 +56,53 @@ public class SavedMap {
 	}
 	public void setDistricts(Set<SavedMapping> districts) {
 		this.districts = districts;
+	}
+
+	public double getSchwarzbergWeight() {
+		return schwarzbergWeight;
+	}
+
+	public void setSchwarzbergWeight(double schwarzbergWeight) {
+		this.schwarzbergWeight = schwarzbergWeight;
+	}
+
+	public double getHullRatioWeight() {
+		return hullRatioWeight;
+	}
+
+	public void setHullRatioWeight(double hullRatioWeight) {
+		this.hullRatioWeight = hullRatioWeight;
+	}
+
+	public double getReockWeight() {
+		return reockWeight;
+	}
+
+	public void setReockWeight(double reockWeight) {
+		this.reockWeight = reockWeight;
+	}
+
+	public double getContiguityWeight() {
+		return contiguityWeight;
+	}
+
+	public void setContiguityWeight(double contiguityWeight) {
+		this.contiguityWeight = contiguityWeight;
+	}
+
+	public double getEqualPopWeight() {
+		return equalPopWeight;
+	}
+
+	public void setEqualPopWeight(double equalPopWeight) {
+		this.equalPopWeight = equalPopWeight;
+	}
+
+	public double getPartisanFairWeight() {
+		return partisanFairWeight;
+	}
+
+	public void setPartisanFairWeight(double partisanFairWeight) {
+		this.partisanFairWeight = partisanFairWeight;
 	}
 }

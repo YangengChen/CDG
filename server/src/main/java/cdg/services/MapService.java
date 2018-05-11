@@ -21,10 +21,13 @@ import com.vividsolutions.jts.geom.Polygonal;
 import com.vividsolutions.jts.geom.TopologyException;
 
 import cdg.dao.CongressionalDistrict;
+import cdg.dao.ElectionResult;
 import cdg.dao.Precinct;
 import cdg.dao.Region;
 import cdg.dao.State;
+import cdg.domain.generation.CdgGoodnessEvaluator;
 import cdg.domain.map.MapType;
+import cdg.domain.region.Party;
 import cdg.properties.CdgConstants;
 import cdg.properties.CdgPropertiesManager;
 
@@ -75,6 +78,15 @@ public class MapService {
 				properties.put(CdgConstants.STATE_ID, state.getPublicID());
 				properties.put(CdgConstants.STATE_NAME, state.getName());
 				properties.put(CdgConstants.POPULATION, state.getPopulation());
+				ElectionResult election = state.getPresidentialVoteTotals();
+				if (election != null) {
+					properties.put(CdgConstants.VOTING_AGE_POPULATION, election.getVotingAgePopulation());
+					properties.put(CdgConstants.ELECTION_YEAR, election.getYear());
+					properties.put(CdgConstants.TOTAL_VOTE, election.getTotalVotes());
+					properties.put(CdgConstants.DEM_VOTE, election.getTotal(Party.DEMOCRATIC));
+					properties.put(CdgConstants.REP_VOTE, election.getTotal(Party.REPUBLICAN));
+					properties.put(CdgConstants.OTH_VOTE, election.getTotal(Party.OTHER));
+				}
 				currFeature = new Feature(currGeoJson, properties);
 				features.add(currFeature);
 			}
@@ -129,6 +141,15 @@ public class MapService {
 			properties.put(CdgConstants.STATE_ID, state.getPublicID());
 			properties.put(CdgConstants.STATE_NAME, state.getName());
 			properties.put(CdgConstants.POPULATION, state.getPopulation());	
+			ElectionResult election = state.getPresidentialVoteTotals();
+			if (election != null) {
+				properties.put(CdgConstants.VOTING_AGE_POPULATION, election.getVotingAgePopulation());
+				properties.put(CdgConstants.ELECTION_YEAR, election.getYear());
+				properties.put(CdgConstants.TOTAL_VOTE, election.getTotalVotes());
+				properties.put(CdgConstants.DEM_VOTE, election.getTotal(Party.DEMOCRATIC));
+				properties.put(CdgConstants.REP_VOTE, election.getTotal(Party.REPUBLICAN));
+				properties.put(CdgConstants.OTH_VOTE, election.getTotal(Party.OTHER));
+			}
 			Feature feature = new Feature(geoJson, properties);
 			stateMap = feature.toString();
 		} catch (Exception e) {
@@ -192,6 +213,20 @@ public class MapService {
 				properties.put(CdgConstants.DISTRICT_ID, district.getPublicID());
 				properties.put(CdgConstants.DISTRICT_NAME, district.getName());
 				properties.put(CdgConstants.POPULATION, district.getPopulation());
+				ElectionResult election = district.getPresidentialVoteTotals();
+				if (election != null) {
+					properties.put(CdgConstants.VOTING_AGE_POPULATION, election.getVotingAgePopulation());
+					properties.put(CdgConstants.ELECTION_YEAR, election.getYear());
+					properties.put(CdgConstants.TOTAL_VOTE, election.getTotalVotes());
+					properties.put(CdgConstants.DEM_VOTE, election.getTotal(Party.DEMOCRATIC));
+					properties.put(CdgConstants.REP_VOTE, election.getTotal(Party.REPUBLICAN));
+					properties.put(CdgConstants.OTH_VOTE, election.getTotal(Party.OTHER));
+					properties.put(CdgConstants.WASTED_VOTE_RATIO, CdgGoodnessEvaluator.getEfficiencyGap(district));
+				}
+				properties.put(CdgConstants.SCHWARTZBERG_COMPACTNESS, CdgGoodnessEvaluator.getSchwartzbergCompactness(district) * 100);
+				properties.put(CdgConstants.HULL_RATIO_COMPACTNESS, CdgGoodnessEvaluator.getHullRatioCompactness(district) * 100);
+				properties.put(CdgConstants.REOCK_COMPACTNESS, CdgGoodnessEvaluator.getReockCompactness(district) * 100);
+				properties.put(CdgConstants.GOODNESS, district.getGoodnessValue());
 				currFeature = new Feature(currGeoJson, properties);
 				features.add(currFeature);
 			}
@@ -317,6 +352,15 @@ public class MapService {
 				properties.put(CdgConstants.COUNTY, precinct.getCounty());
 				properties.put(CdgConstants.POPULATION, precinct.getPopulation());
 				properties.put(CdgConstants.DISTRICT_ID, precinct.getConDistrict().getPublicID());
+				ElectionResult election = precinct.getPresidentialVoteTotals();
+				if (election != null) {
+					properties.put(CdgConstants.VOTING_AGE_POPULATION, election.getVotingAgePopulation());
+					properties.put(CdgConstants.ELECTION_YEAR, election.getYear());
+					properties.put(CdgConstants.TOTAL_VOTE, election.getTotalVotes());
+					properties.put(CdgConstants.DEM_VOTE, election.getTotal(Party.DEMOCRATIC));
+					properties.put(CdgConstants.REP_VOTE, election.getTotal(Party.REPUBLICAN));
+					properties.put(CdgConstants.OTH_VOTE, election.getTotal(Party.OTHER));
+				}
 				currFeature = new Feature(currGeoJson, properties);
 				features.add(currFeature);
 			}

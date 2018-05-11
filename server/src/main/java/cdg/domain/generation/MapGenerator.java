@@ -117,11 +117,18 @@ public class MapGenerator {
 		repo.detach(genState);
 		SavedMap savedMap = new SavedMap(currAlgorithmRun.getGenerationID().toString());
 		savedMap.setState(genState);
+		savedMap.setContiguityWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.CONTIGUITY));
+		savedMap.setEqualPopWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.EQUALPOPULATION));
+		savedMap.setPartisanFairWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.PARTISANFAIRNESS));
+		savedMap.setHullRatioWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.HULLRATIOWEIGHT));
+		savedMap.setReockWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.REOCKWEIGHT));
+		savedMap.setSchwarzbergWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.SCHWARZBERGWEIGHT));
 		savedMap.setDistricts(new HashSet<>());
 		SavedMapping currDistrictMapping;
 		Set<Precinct> currPrecinctSet;
 		for (CongressionalDistrict district : genState.getConDistricts().values()) {
 			currDistrictMapping = new SavedMapping();
+			currDistrictMapping.setGoodness(district.getGoodnessValue());
 			currDistrictMapping.setDistrict(district);
 			currPrecinctSet = new HashSet<>(district.getPrecincts().values());
 			currDistrictMapping.setPrecincts(currPrecinctSet);

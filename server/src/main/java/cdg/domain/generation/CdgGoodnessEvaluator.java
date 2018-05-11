@@ -64,7 +64,7 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		return compactnessValue;
 	}
 	
-	private double getSchwartzbergCompactness(CongressionalDistrict district) {
+	public static double getSchwartzbergCompactness(CongressionalDistrict district) {
 		if (district == null) {
 			throw new IllegalArgumentException();
 		}
@@ -86,7 +86,7 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		return schwarzbergScore;
 	}
 	
-	private double getHullRatioCompactness(CongressionalDistrict district) {
+	public static double getHullRatioCompactness(CongressionalDistrict district) {
 		if (district == null) {
 			throw new IllegalArgumentException();
 		}
@@ -111,7 +111,7 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		return hullRatioScore;
 	}
 	
-	private double getReockCompactness(CongressionalDistrict district) {
+	public static double getReockCompactness(CongressionalDistrict district) {
 		if (district == null) {
 			throw new IllegalArgumentException();
 		}
