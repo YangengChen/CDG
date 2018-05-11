@@ -332,7 +332,7 @@ public class CongressionalDistrict extends Region {
 		data.setGoodness(this.goodnessValue);
 		data.setPresidentialElection(this.getPresidentialVoteTotals());
 		if (this.getPresidentialVoteTotals() != null) {
-			data.setEfficiencyGap(CdgGoodnessEvaluator.getEfficiencyGap(this));
+			data.setWastedVoteRatio(CdgGoodnessEvaluator.getEfficiencyGap(this));
 		}
 		return data;
 	}

@@ -31,6 +31,8 @@ public class User {
     private String email;
     
     private String password;
+    
+    private Role role;
 
     @Transient
     private MapGenerator generator;
@@ -49,6 +51,7 @@ public class User {
     		lastName = user.getLastName();
     		email = user.getEmail();
     		password = user.getPassword();
+    		role = Role.GENERAL;
     }
     
 	public Long getId() {
@@ -122,5 +125,13 @@ public class User {
 
 	public void setSavedMaps(Map<String, SavedMap> savedMaps) {
 		this.savedMaps = savedMaps;
+	}
+
+	public Role getRole() {
+		return role;
+	}
+
+	public void setRole(Role role) {
+		this.role = role;
 	}
 }

@@ -3,7 +3,7 @@ package cdg.dto;
 public class CongressionalDistrictDTO extends DistrictDTO {
 	private int numPrecincts;
 	private double goodness;
-	private double efficiencyGap;
+	private double wastedVoteRatio;
 
 	public int getNumPrecincts() {
 		return numPrecincts;
@@ -21,11 +21,11 @@ public class CongressionalDistrictDTO extends DistrictDTO {
 		this.goodness = goodness;
 	}
 
-	public double getEfficiencyGap() {
-		return efficiencyGap;
+	public double getWastedVoteRatio() {
+		return wastedVoteRatio;
 	}
 
-	public void setEfficiencyGap(double efficiencyGap) {
-		this.efficiencyGap = efficiencyGap;
+	public void setWastedVoteRatio(double wastedVoteRatio) {
+		this.wastedVoteRatio = wastedVoteRatio;
 	}
 }
