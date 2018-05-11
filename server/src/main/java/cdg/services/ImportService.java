@@ -79,7 +79,7 @@ public class ImportService {
 			setPopulation(state);
 			setElectionData(state);
 			setGeometries(state);
-			setMaps(state);
+			//setMaps(state);
 			
 			//store to database and use returned state value - will generate all mappings
 			state = stateRepo.saveAndFlush(state);
@@ -158,6 +158,7 @@ public class ImportService {
 		ElectionResult currPrecinctElection;
 		CongressionalDistrict currDistrict;
 		String currDistPubID;
+		String currDistRep;
 		for (int i = 0; i < features.length; i++) {
 			currProp = features[i].getProperties();
 			currGeom = features[i].getGeometry();
@@ -191,9 +192,10 @@ public class ImportService {
 			precincts.put(currPrecinct.getId(), currPrecinct);
 			
 			currDistPubID = (String)currProp.get(propertiesManager.getProperty(CdgConstants.DISTRICT_IDENTIFIER_FIELD));
+			currDistRep = (String)currProp.get(propertiesManager.getProperty(CdgConstants.DISTRICT_REPRESENTATIVE_FIELD));
 			currDistrict = districtsPubID.get(currDistPubID);
 			if (currDistrict == null) {
-				currDistrict = generateDistrict(currDistPubID);
+				currDistrict = generateDistrict(currDistPubID, currDistRep);
 				districtsPubID.put(currDistrict.getPublicID(), currDistrict);
 				districts.put(currDistrict.getId(), currDistrict);
 			}
@@ -248,10 +250,11 @@ public class ImportService {
 		return precinct;
 	}
 	
-	private CongressionalDistrict generateDistrict(String publicID) {
+	private CongressionalDistrict generateDistrict(String publicID, String currDistrictRep) {
 		CongressionalDistrict district = new CongressionalDistrict();
 		district.setName(CdgConstants.DISTRICT_NAME_PREFIX + publicID);
 		district.setPublicID(publicID);
+		district.setRepresentative(currDistrictRep);
 		//store to database and use returned district value
 		district = districtRepo.saveAndFlush(district);
 		return district;
@@ -333,7 +336,7 @@ public class ImportService {
 		return valid;
 	}
 	
-	private void setMaps(State state) {
+	/*private void setMaps(State state) {
 		if (state == null || state.getConDistricts() == null) {
 			throw new IllegalArgumentException();
 		}
@@ -345,7 +348,7 @@ public class ImportService {
 		state.setMapGeoJSON(congressionalDistrictMap, MapType.CONGRESSIONAL);
 		String stateMap = MapService.generateStateMap(state);
 		state.setMapGeoJSON(stateMap, MapType.STATE);
-	}
+	}*/
 	
 	private void setGeometries(State state) {
 		if (state == null || state.getConDistricts() == null) {

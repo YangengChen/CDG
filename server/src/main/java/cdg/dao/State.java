@@ -10,6 +10,7 @@ import cdg.domain.map.MapType;
 import cdg.dto.DistrictDTO;
 import cdg.dto.MapDTO;
 import cdg.dto.MapDataDTO;
+import cdg.services.MapService;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -32,18 +33,15 @@ public class State extends Region {
 	@OneToMany(mappedBy="state", cascade= {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval=true)
 	@MapKey(name = "id")
 	private Map<Integer,Precinct> precincts;
-	@Lob
+	/*@Lob
 	@Basic(fetch = FetchType.LAZY)
-	//@LazyGroup("stateMap")
 	private byte[] stateMapGeoJson;
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
-	//@LazyGroup("stateMap")
 	private byte[] conDistrictMapGeoJSON;
 	@Lob
 	@Basic(fetch = FetchType.LAZY)
-	//@LazyGroup("stateMap")
-	private byte[] precinctMapGeoJSON;
+	private byte[] precinctMapGeoJSON;*/
 	
 	public State()
 	{
@@ -83,7 +81,7 @@ public class State extends Region {
 		return precincts.size();
 	}
 	
-	public byte[] getStateMapGeoJson()
+	/*public byte[] getStateMapGeoJson()
 	{
 		return stateMapGeoJson;
 	}
@@ -108,7 +106,7 @@ public class State extends Region {
 	
 	public void setPrecinctMapGeoJSON(byte[] geoJSON) {
 		precinctMapGeoJSON = geoJSON;
-	}
+	}*/
 	
 	public String getMapGeoJSON(MapType type) {
 		if (type == null)
@@ -122,20 +120,20 @@ public class State extends Region {
 		return map;
 	}
 	
-	public void setMapGeoJSON(String geoJSON, MapType type) {
+	/*public void setMapGeoJSON(String geoJSON, MapType type) {
 		if (type == null || geoJSON == null)
 			throw new IllegalArgumentException();
 
 		byte[] map = convertStringToGeo(geoJSON);
 		setMapFile(map, type);
-	}
+	}*/
 	
 	public byte[] getMapFile(MapType type)
 	{
 		if (type == null)
 			throw new IllegalArgumentException();
 
-		byte[] geoJSON = null;
+		/*byte[] geoJSON = null;
 		switch (type)
 		{
 			case STATE:
@@ -150,11 +148,18 @@ public class State extends Region {
 			default:
 				geoJSON = null;
 				break;
+		}*/
+		String geoJSONStr;
+		try {
+			geoJSONStr = MapService.generateMap(this, type);
+		} catch (IllegalStateException ise) {
+			return null;
 		}
+		byte[] geoJSON = MapService.getMapAsBytes(geoJSONStr);
 		return geoJSON;
 	}
 	
-	public void setMapFile(byte[] geoJSON, MapType type) {
+	/*public void setMapFile(byte[] geoJSON, MapType type) {
 		if (type == null || geoJSON == null)
 			throw new IllegalArgumentException();
 
@@ -172,7 +177,7 @@ public class State extends Region {
 			default:
 				throw new IllegalArgumentException();
 		}
-	}
+	}*/
 	
 	public MapDTO getMap(MapType type)
 	{

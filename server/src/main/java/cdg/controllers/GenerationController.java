@@ -180,7 +180,7 @@ public class GenerationController {
 			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 		State generatedState = generator.getGeneratedState();
-		String generatedMap;
+		/*String generatedMap;
 		try {
 			generatedMap = MapService.generateMap(generatedState, type);
 		} catch (Exception e) {
@@ -189,8 +189,12 @@ public class GenerationController {
 		if (generatedMap == null) {
 			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
-		generatedState.setMapGeoJSON(generatedMap, type);
+		generatedState.setMapGeoJSON(generatedMap, type);*/
+		
 		byte[] mapFile = generatedState.getMapFile(type);
+		if (mapFile == null) {
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 
 		return new ResponseEntity<byte[]>(mapFile, HttpStatus.OK);
 	}

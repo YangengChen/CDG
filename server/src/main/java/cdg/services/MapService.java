@@ -213,6 +213,7 @@ public class MapService {
 				properties.put(CdgConstants.DISTRICT_ID, district.getPublicID());
 				properties.put(CdgConstants.DISTRICT_NAME, district.getName());
 				properties.put(CdgConstants.POPULATION, district.getPopulation());
+				properties.put(CdgConstants.DISTRICT_REP, district.getRepresentative());
 				ElectionResult election = district.getPresidentialVoteTotals();
 				if (election != null) {
 					properties.put(CdgConstants.VOTING_AGE_POPULATION, election.getVotingAgePopulation());

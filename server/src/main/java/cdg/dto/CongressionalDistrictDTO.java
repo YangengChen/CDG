@@ -2,6 +2,7 @@ package cdg.dto;
 
 public class CongressionalDistrictDTO extends DistrictDTO {
 	private int numPrecincts;
+	private String representative;
 	private double goodness;
 	private double wastedVoteRatio;
 
@@ -27,5 +28,13 @@ public class CongressionalDistrictDTO extends DistrictDTO {
 
 	public void setWastedVoteRatio(double wastedVoteRatio) {
 		this.wastedVoteRatio = wastedVoteRatio;
+	}
+
+	public String getRepresentative() {
+		return representative;
+	}
+
+	public void setRepresentative(String representative) {
+		this.representative = representative;
 	}
 }

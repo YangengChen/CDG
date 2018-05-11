@@ -30,6 +30,7 @@ public class CongressionalDistrict extends Region {
 	@OneToMany(mappedBy="conDistrict", cascade= {CascadeType.REFRESH, CascadeType.REMOVE, CascadeType.DETACH}, orphanRemoval=true)
 	@MapKey(name = "id")
 	private Map<Integer,Precinct> precincts;
+	private String representative;
 	@Transient
 	private Map<Integer,Precinct> borderPrecincts;
 	@Transient
@@ -69,6 +70,13 @@ public class CongressionalDistrict extends Region {
 
 	public void setPrecincts(Map<Integer, Precinct> precincts) {
 		this.precincts = precincts;
+	}
+	
+	public String getRepresentative() {
+		return representative;
+	}
+	public void setRepresentative(String representative) {
+		this.representative = representative;
 	}
 
 	public Map<Integer, Precinct> getBorderPrecincts() {
@@ -329,6 +337,7 @@ public class CongressionalDistrict extends Region {
 		if (precincts != null) {
 			data.setNumPrecincts(precincts.size());
 		}
+		data.setRepresentative(this.getRepresentative());
 		data.setGoodness(this.goodnessValue);
 		data.setPresidentialElection(this.getPresidentialVoteTotals());
 		if (this.getPresidentialVoteTotals() != null) {
@@ -336,5 +345,4 @@ public class CongressionalDistrict extends Region {
 		}
 		return data;
 	}
-
 }

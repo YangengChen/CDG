@@ -61,6 +61,7 @@ public class CdgConstants {
 	public static final String DEM_VOTE = "prsDFL";
 	public static final String REP_VOTE = "prsR";
 	public static final String OTH_VOTE = "prsOTH";
+	public static final String DISTRICT_REP = "districtRep";
 	public static final String WASTED_VOTE_RATIO = "wastedVoteRatio";
 	public static final String SCHWARTZBERG_COMPACTNESS = "schwarzbergCompactness";
 	public static final String HULL_RATIO_COMPACTNESS = "hullRatioCompactness";
@@ -82,6 +83,7 @@ public class CdgConstants {
 	public static final String PRECINCT_PRESIDENTIAL_TOTAL_VOTE_FIELD = "geojson_precinctPresidentialTotalVote";
 	public static final String PRECINCT_PRESIDENTIAL_DEM_VOTE_FIELD = "geojson_precinctPresidentialDemVote";
 	public static final String PRECINCT_PRESIDENTIAL_REP_VOTE_FIELD = "geojson_precinctPresidentialRepVote";
+	public static final String DISTRICT_REPRESENTATIVE_FIELD = "geojson_districtRepresentative";
 	public static final String THRESHOLD_PERCENT = "generation_thresholdPercent";
 	public static final String MAX_DISTRICT_ITERATIONS = "generation_maxDistrictIterations";
 	public static final String MAX_GENERATION_ITERATIONS = "generation_maxGenIterations";
