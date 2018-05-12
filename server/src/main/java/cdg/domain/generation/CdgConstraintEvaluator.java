@@ -143,7 +143,21 @@ public class CdgConstraintEvaluator extends ConstraintEvaluator {
 		if (!constraintsMet) {
 			return constraintsMet;
 		}
-
+		
+		//if precinct removed from district, is district geom broken?
+		//constraintsMet = resultGeom.getNumGeometries() == districtGeom.getNumGeometries();
+		constraintsMet = resultGeom.getNumGeometries() <= districtGeom.getNumGeometries();
+		if (!constraintsMet) {
+			return constraintsMet;
+		}
+		
+		constraintsMet = !precinct.isLonePrecinct();
+		if (!constraintsMet) {
+			return constraintsMet;
+		}
+		
+		
 		return true;
 	}
+	
 }
