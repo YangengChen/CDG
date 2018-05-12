@@ -36,33 +36,59 @@ export class CdgComponent implements OnInit {
 
 
   interval = null;
-  startingGeneration = false;
   spinnerValue:number;
   spinnerMode = "indeterminate";
-  flipped=false;
+  generatedConDistData:any;
   conDistData:any;
   steps: Array<Object>;
   @ViewChild("map") map:MapComponent;
   mapObject: any;  
   originalMapObject:any;
+
+  //MAIN COMPARE MAP DATA
   compareMapObject:Object;
   compareConDistData:Object;
   compareData:any;
   compareSelectedStateId: string;
   compareSelectedMapType:string;
-  stateList: DropdownValue<State>[];
-  savedMapList:DropdownValue<any>[];
-  mapTypeList:DropdownValue<String>[];
-  compare:boolean;
-  pauseImage:string; 
-  stopImage:string; 
-  genConfig:GenerationConfiguration;
-  algoRunning: boolean;
-  algoPaused: boolean;
+
+  //GENERATED COMPARE MAP DATA
+  generatedCompareMapObject:Object;
+  generatedCompareConDistData:Object;
+  generatedCompareData:any;
+  generatedCompareSelectedStateId: string;
+  generatedCompareSelectedMapType:string;
+
+
+  //MAIN MAP DATA
+  stateData:any;
   selectedMapType:string;
   selectedStateName:string;
   selectedStateId:string;
   selectedPrecinct: Precinct;
+
+
+
+  //LISTS
+  stateList: DropdownValue<State>[];
+  savedMapList:DropdownValue<any>[];
+  mapTypeList:DropdownValue<String>[];
+
+  //CONFIG
+  genConfig:GenerationConfiguration;
+
+
+  // BOLEAN FLAGS
+  algoRunning: boolean;
+  algoPaused: boolean;
+  startingGeneration:boolean = false;
+  flipped:boolean=false;
+  compare:boolean;
+  generatedCompare:boolean;
+
+
+
+  //LABELS 
   mapTypeListLabel:string;
   savedMapListLabel:string;
   stateListLabel:string;
@@ -76,10 +102,9 @@ export class CdgComponent implements OnInit {
   generateTabLabel:string;
   informationTabLabel:string;
   fileTabLabel:string;
-  compactness:Number;
-  stateData:any;
+  pauseImage:string; 
+  stopImage:string; 
 
-  
   constructor(
     private router        :Router, 
     private loginService  : LoginService, 
@@ -102,12 +127,15 @@ export class CdgComponent implements OnInit {
   ngOnInit() {
     this.flipped = false;
     this.compare = false;
+    this.generatedCompare = false;
     this.algoPaused = false;
     this.algoRunning = false;
     this.selectedMapType = Constants.INIT_MAP_TYPE;
     this.selectedStateId = Constants.FULLMAP_ID;
     this.compareSelectedMapType = Constants.INIT_MAP_TYPE;
     this.compareSelectedStateId = Constants.FULLMAP_ID;
+    this.generatedCompareSelectedMapType = Constants.INIT_MAP_TYPE;
+    this.generatedCompareSelectedStateId = Constants.FULLMAP_ID;
     this.pauseImage = this.appProperties.getProperties().pauseImage;
     this.stopImage = this.appProperties.getProperties().stopImage;
     this.setUpLabels(this.appProperties.getProperties());
@@ -128,10 +156,14 @@ export class CdgComponent implements OnInit {
     this.getCompareUnitedStates();
     this.genConfig = new GenerationConfiguration();
   }
+
+
+
   precinctSelected(precinct){
     this.selectedPrecinct = precinct.f ;
     console.log(this.selectedPrecinct.districtID);
   }
+
   changeState(event){
     if(event.value.id == Constants.FULLMAP_ID){
       this.genConfig = null;
@@ -159,6 +191,26 @@ export class CdgComponent implements OnInit {
       this.getCompareCongressionalDistrictData();
     }
   }
+
+  changedGeneratedCompareState(event){
+    if(event.value.id == Constants.FULLMAP_ID){
+      this.genConfig = null;
+      this.getGeneratedCompareUnitedStates();
+    }
+    else{
+      this.genConfig = new GenerationConfiguration()
+      this.generatedCompareSelectedStateId = event.value.id;
+      this.getGeneratedCompareState();
+      this.getGeneratedCompareData();
+      this.getGeneratedCompareCongressionalDistrictData();
+    }
+  }
+
+  /* COMPARE FUNCTIONS
+
+    Used for manipulating all the data for the main compare map
+
+  */
   getCompareCongressionalDistrictData(){
     this.mapService.getData(this.compareSelectedStateId, "congressional")
     .subscribe(stateData => {
@@ -177,14 +229,34 @@ export class CdgComponent implements OnInit {
      	this.compareMapObject = usData;
      });
   }
+  compareMapTypeChanged(type:string){
+    this.compareSelectedMapType = type;
+    this.getCompareState();
+  }
+  getCompareState(){
+    this.mapService.getMap(this.compareSelectedStateId, this.compareSelectedMapType)
+    .map(stateData =>{
+      console.log(stateData);
+        this.compareMapObject = stateData;
+    });
+  }
+  compareToggle(event){
+    this.compare = event.checked;
+  }
 
+
+
+  /* MAIN MAP GETTER FUNCTIONS
+
+    Used for getting all the data on the main map
+
+  */
   getUnitedStates() {
     this.mapService.getUnitedStates()
      .subscribe(usData =>{
      	this.mapObject = usData;
      });
   }
-
   getState(){
     this.mapService.getMap(this.selectedStateId, this.selectedMapType)
     .subscribe(stateData =>{
@@ -205,6 +277,62 @@ export class CdgComponent implements OnInit {
       this.conDistData = conData;
     })
   }
+
+
+  /* GENERTATED MAP FUNCTINOS
+
+    Functions used for manipulating generated maps
+
+  */
+  getFinishedMap(){
+    this.mapService.getFinishedMap("congressional")
+    .subscribe( finishedMap => {
+      this.mapObject = finishedMap;
+    })
+  }
+  getFinishedData(){
+    this.mapService.getFinishedData("congressional")
+    .subscribe( finishedData => {
+      this.generatedConDistData = finishedData;
+    })  
+  }
+
+
+  //GENERATED COMPARE STUFF
+  compareGeneratedToggle(event){
+    this.generatedCompare  = event.checked;
+  }
+  getGeneratedCompareState(){
+    this.mapService.getMap(this.generatedCompareSelectedStateId, this.generatedCompareSelectedMapType)
+    .subscribe(stateData =>{
+        this.generatedCompareMapObject = stateData;
+    });
+  }
+  generatedCompareMapTypeChanged(type:string){
+    this.generatedCompareSelectedMapType = type;
+    this.getGeneratedCompareState();
+  }
+  getGeneratedCompareCongressionalDistrictData(){
+    this.mapService.getData(this.generatedCompareSelectedStateId, "congressional")
+    .subscribe(stateData => {
+      this.generatedCompareConDistData = stateData;
+    })   
+  }
+  getGeneratedCompareData(){
+    this.mapService.getData(this.generatedCompareSelectedStateId, "state")
+    .subscribe(stateData => {
+      this.generatedCompareData = stateData;
+    })   
+  }
+  getGeneratedCompareUnitedStates() {
+    this.mapService.getUnitedStates()
+     .subscribe(usData =>{
+     	this.generatedCompareMapObject = usData;
+     });
+  }
+
+
+  // GEN CONFIG UPDATE FUNCTINOS
   updateContiguity(weight:number){
     this.genConfig.setContiguityWeight(weight);
   }
@@ -223,6 +351,14 @@ export class CdgComponent implements OnInit {
   updateReock(weight:number){
     this.genConfig.setReock(weight);
   }
+
+
+
+  /* GENERATION FUNCTIONS
+
+    Functions used in generating the map
+
+  */
   startGeneration(){
     let configCheck = this.startGenerationCheck();
     if(configCheck == null){
@@ -259,31 +395,21 @@ export class CdgComponent implements OnInit {
         let check:any = data;
         if(check.status == "COMPLETE"){
           this.getFinishedMap()
+          this.getFinishedData();
           clearInterval(this.interval)
           this.snackBar.generateSnackbar(SnackbarEnum.GENERATION_FINISHED);
           this.algoRunning = false;
         }
         else{
           this.steps.push(check);
-          this.updateDistricts(check.precinctToDistrict);
         }
       })
     }, 3000);
   }
-  updateDistricts(moved:any){
 
-  }
-  getFinishedMap(){
-    this.mapService.getFinishedMap("congressional")
-    .subscribe( finishedMap => {
-      this.mapObject = finishedMap;
-    })
-  }
-  getFinishedData(){
-    this.mapService.getFinishedData("congressional")
-    .subscribe( finishedData => {
-      this.conDistData = finishedData;
-    })  }
+
+
+
   changeMap(theNewMap){
     this.map.setData(theNewMap);
     this.map.resetAndReloadStyle();
@@ -292,28 +418,8 @@ export class CdgComponent implements OnInit {
     this.selectedMapType = type;
     this.getState();
   }
-  compareMapTypeChanged(type:string){
-    this.compareSelectedMapType = type;
-    this.getCompareState();
-  }
-  getCompareState(){
-    this.mapService.getMap(this.compareSelectedStateId, this.compareSelectedMapType)
-    .map(stateData =>{
-      console.log(stateData);
-        this.compareMapObject = stateData;
-    });
-  }
   savedMapChanged(savedMap:string){
     
-  }
-  compareSavedMapChanged(compareSavedMap:string){
-
-  }
-  compareChangeStates(event){
-
-  }
-  compareToggle(event){
-    this.compare = event.checked;
   }
   pauseGenerationClicked(){
     this.genService.pauseGeneration();
@@ -343,21 +449,6 @@ export class CdgComponent implements OnInit {
     this.changeMap(newMap);
     this.map.reloadStyle();
     this.genConfig.restartConfig();
-  }
-  setUpLabels(properties:any){
-    this.mapTypeListLabel = properties.mapTypeListLabel;
-    this.savedMapListLabel = properties.savedMapListLabel;
-    this.stateListLabel = properties.stateListLabel;
-    this.compactnessSliderLabel = properties.compactnessSliderLabel;
-    this.contiguitySliderLabel = properties.contiguitySliderLabel;
-    this.equalPopulationSliderLabel = properties.equalPopulationSliderLabel;
-    this.partisanFairnessSliderLabel = properties.partisanFairnessSliderLabel;
-    this.raicalFairnessSliderLabel = properties.raicalFairnessSliderLabel;
-    this.generateDistrictsButtonLabel = properties.generateDistrictsButtonLabel;
-    this.replayGenerationButtonLabel = properties.replayGenerationButtonLabel;
-    this.generateTabLabel = properties.generateTabLabel;
-    this.informationTabLabel = properties.informationTabLabel;
-    this.fileTabLabel = properties.fileTabLabel;
   }
   toggleFlip(){
     this.flipped = !this.flipped;
@@ -405,5 +496,27 @@ export class CdgComponent implements OnInit {
   exitGeneration(){
     this.backToFront();
     this.steps = new Array<Object>();
+  }
+
+
+
+
+
+
+
+  setUpLabels(properties:any){
+    this.mapTypeListLabel = properties.mapTypeListLabel;
+    this.savedMapListLabel = properties.savedMapListLabel;
+    this.stateListLabel = properties.stateListLabel;
+    this.compactnessSliderLabel = properties.compactnessSliderLabel;
+    this.contiguitySliderLabel = properties.contiguitySliderLabel;
+    this.equalPopulationSliderLabel = properties.equalPopulationSliderLabel;
+    this.partisanFairnessSliderLabel = properties.partisanFairnessSliderLabel;
+    this.raicalFairnessSliderLabel = properties.raicalFairnessSliderLabel;
+    this.generateDistrictsButtonLabel = properties.generateDistrictsButtonLabel;
+    this.replayGenerationButtonLabel = properties.replayGenerationButtonLabel;
+    this.generateTabLabel = properties.generateTabLabel;
+    this.informationTabLabel = properties.informationTabLabel;
+    this.fileTabLabel = properties.fileTabLabel;
   }
 }
