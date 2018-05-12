@@ -206,9 +206,7 @@ export class CdgComponent implements OnInit {
   updateRacialFairness(weight:number){
     this.genConfig.setRacialFairWeight(weight);
   }
-  updateCompactness(weight:number){
-    this.genConfig.setCompactnessWeight(weight);
-  }
+
   updateContiguity(weight:number){
     this.genConfig.setContiguityWeight(weight);
   }
@@ -217,6 +215,15 @@ export class CdgComponent implements OnInit {
   }
   updatePartisanFairness(weight:number){
     this.genConfig.setPartisanFairness(weight);
+  }
+  updateSchwartz(weight:number){
+    this.genConfig.setSchwartz(weight);
+  }
+  updateHull(weight:number){
+    this.genConfig.setHull(weight);
+  }
+  updateReock(weight:number){
+    this.genConfig.setReock(weight);
   }
   startGeneration(){
     let configCheck = this.startGenerationCheck();
@@ -239,11 +246,12 @@ export class CdgComponent implements OnInit {
     }
   }
   startGenerationCheck(){
-    if( (this.genConfig.getCompactnessWeight().valueOf() + this.genConfig.getContiguityWeight().valueOf()
-    		+ this.genConfig.getEqualPopWeight().valueOf()
-        + this.genConfig.getPartisanFairnessWeight().valueOf()) != 1){
-            return SnackbarEnum.WEIGHT_FAILURE;
-         }
+    // if( ( this.genConfig.getContiguityWeight().valueOf()
+    // 		+ this.genConfig.getEqualPopWeight().valueOf()
+    //     + this.genConfig.getPartisanFairnessWeight().valueOf()) != 1){
+    //         return SnackbarEnum.WEIGHT_FAILURE;
+    //      }
+    return null;
   }
   beginGenerationStatusCheck(){
     this.interval = setInterval( () => {
@@ -331,8 +339,6 @@ export class CdgComponent implements OnInit {
   }
   mapReset(){
     this.genConfig.restartConfig();
-    this.compactness = this.genConfig.getCompactnessWeight();
-    console.log(this.compactness);
   }
   setUpLabels(properties:any){
     this.mapTypeListLabel = properties.mapTypeListLabel;

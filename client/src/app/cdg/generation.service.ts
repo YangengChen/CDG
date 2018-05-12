@@ -27,7 +27,10 @@ export class GenerationConfiguration {
     private stateId: string;
     private permConDist: Array<string>;
     private permPrecinct: Array<string>;
-    compactnessWeight:Number;
+
+    schwartzbergWeight:Number;
+    hullRationWeight:Number;
+    reockWeight:Number;
     contiguityWeight:Number;
     equalPopWeight: Number;
     racialFairWeight: Number;
@@ -36,11 +39,13 @@ export class GenerationConfiguration {
     lockedDistricts:Array<string>;
     precinctToDistrict:Map<String, String>;
     constructor(){
-        this.compactnessWeight = .4;
         this.contiguityWeight = .4;
         this.equalPopWeight = .2;
         this.racialFairWeight = 0.0;
         this.partisanFairWeight = 0.0;
+        this.reockWeight = 0.0;
+        this.schwartzbergWeight = 0.0;
+        this.hullRationWeight = 0.0;
         this.permConDist = new Array<string>();
         this.permPrecinct = new Array<string>();
         this.precinctToDistrict = new Map<String, String>()
@@ -77,10 +82,7 @@ export class GenerationConfiguration {
     setPartisanFairness(weight:Number){
         this.partisanFairWeight = weight;
     }
-    setCompactnessWeight(weight: Number){
-        this.compactnessWeight = weight;
-        console.log(this.compactnessWeight);
-    }
+
     setContiguityWeight(weight:Number){
         this.contiguityWeight = weight;
     }
@@ -93,9 +95,6 @@ export class GenerationConfiguration {
     getPartisanFairnessWeight(){
         return this.partisanFairWeight;
     }
-    getCompactnessWeight(){
-        return this.compactnessWeight;
-    }
     getContiguityWeight(){
         return this.contiguityWeight;
     }
@@ -105,11 +104,31 @@ export class GenerationConfiguration {
     getRacialFairWeight(){
         return this.racialFairWeight;
     }
+    getSchwartz(){
+        return this.schwartzbergWeight;
+    }
+    setSchwartz(weight){
+        this.schwartzbergWeight = weight;
+    }
+    getHull(){
+        return this.hullRationWeight;
+    }
+    setHull(weight){
+        this.hullRationWeight = weight;
+    }
+    getReock(){
+        return this.reockWeight;
+    }
+    setReock(weight){
+        this.reockWeight = weight;
+    }
     restartConfig(){
-        this.compactnessWeight = .4;
         this.contiguityWeight = .4;
         this.equalPopWeight = .2;
         this.partisanFairWeight = 0.0;
+        this.reockWeight = 0.0;
+        this.schwartzbergWeight = 0.0;
+        this.hullRationWeight = 0.0;
         this.permConDist = new Array<string>();
         this.permPrecinct = new Array<string>();
     }
