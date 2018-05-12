@@ -43,7 +43,8 @@ export class CdgComponent implements OnInit {
   conDistData:any;
   steps: Array<Object>;
   @ViewChild("map") map:MapComponent;
-  mapObject: any;
+  mapObject: any;  
+  originalMapObject:any;
   compareMapObject:Object;
   compareConDistData:Object;
   compareData:any;
@@ -188,6 +189,7 @@ export class CdgComponent implements OnInit {
     this.mapService.getMap(this.selectedStateId, this.selectedMapType)
     .subscribe(stateData =>{
         this.mapObject = stateData;
+        this.originalMapObject = stateData;
         this.mapReset()
     });
   }
@@ -203,10 +205,6 @@ export class CdgComponent implements OnInit {
       this.conDistData = conData;
     })
   }
-  updateRacialFairness(weight:number){
-    this.genConfig.setRacialFairWeight(weight);
-  }
-
   updateContiguity(weight:number){
     this.genConfig.setContiguityWeight(weight);
   }
@@ -267,9 +265,12 @@ export class CdgComponent implements OnInit {
         }
         else{
           this.steps.push(check);
+          this.updateDistricts(check.precinctToDistrict);
         }
       })
     }, 3000);
+  }
+  updateDistricts(moved:any){
 
   }
   getFinishedMap(){
@@ -284,8 +285,8 @@ export class CdgComponent implements OnInit {
       this.conDistData = finishedData;
     })  }
   changeMap(theNewMap){
-    this.mapService.changeMap(theNewMap)
-    .map(newMap => this.map.mapObject)
+    this.map.setData(theNewMap);
+    this.map.resetAndReloadStyle();
   }
   mapTypeChanged(type:string){
     this.selectedMapType = type;
@@ -338,6 +339,9 @@ export class CdgComponent implements OnInit {
 
   }
   mapReset(){
+    let newMap:string = this.originalMapObject;
+    this.changeMap(newMap);
+    this.map.reloadStyle();
     this.genConfig.restartConfig();
   }
   setUpLabels(properties:any){

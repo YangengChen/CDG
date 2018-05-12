@@ -2,7 +2,8 @@ import {  Component,
           OnInit, 
           Input, 
           Output, 
-          EventEmitter }  from '@angular/core';
+          EventEmitter,
+          ViewChild }  from '@angular/core';
 import { CdgMapService }     from './map.service';
 import { CdgModule }      from '../cdg.module';
 import { DropdownValue }  from "../../cdg-objects/dropdownvalue";
@@ -20,7 +21,8 @@ import { GenerationConfiguration } from "../generation.service";
 })
 export class MapComponent implements OnInit{
   test = 0;
-  map: mapboxgl.Map;
+  map:mapboxgl.Map;
+  mapSource:mapboxgl.GeoJSONSource;
   stateName:string;
   stylePattern:any;
   lockedStylePattern:any;
@@ -31,17 +33,19 @@ export class MapComponent implements OnInit{
   numberOfDistricts:number = 8;
   lockedOpacityStops: Array<any>;
   lockedRegions:Object= {}
-  _mapObject:any;
+  movedRegions:Object = {}
+  _mapObject:mapboxgl.GeoJSONSource;
   @Input() mapTypeListLabel: string;
   @Input() savedMapListLabel:string;
   @Input() 
-  set mapObject(map:any){
+  set mapObject(map:mapboxgl.GeoJSONSource){
     console.log("MAP CHANGED");
     this._mapObject = map;
     this.resetAndReloadStyle()
   }
-  get mapObject():any{
-    return this._mapObject}
+  get mapObject():mapboxgl.GeoJSONSource{
+    return this._mapObject
+  }
   @Input() congressionalDistricts: Object[]
   @Input() savedMapList:DropdownValue<any>[];
   @Input() mapTypeList:DropdownValue<String>[];
@@ -103,6 +107,11 @@ export class MapComponent implements OnInit{
   }
   onSavedMapChanged(event){
     this.savedMapChanged.emit(event.value);
+  }
+  setData(map:mapboxgl.GeoJSONGeometry){
+    let source:any = this.map.getSource('states');
+    source.setData(map);
+    
   }
   onMapClick(event){
     console.log("HELLO")
@@ -172,6 +181,7 @@ export class MapComponent implements OnInit{
   }
   resetAndReloadStyle(){
     this.lockedRegions =  {}
+    this.movedRegions = {};
     this.reloadStyle();
   }
   reloadStyle() {
@@ -180,7 +190,7 @@ export class MapComponent implements OnInit{
     console.log("DISt STOPS: " +   JSON.stringify({ data: distStops}, null, 4))
       this.lockedStylePattern = {
         'line-color': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], "red", ["has", ["get", "districtID"], ["literal", (distStops)]], "red", "black"],// ['has', ['get', 'districtID'], {'01':'red'}], ['get', ['get', 'districtID'], {'01':'red'}], 'black'],
-        'line-width': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], 1, ["has", ["get", "districtID"], ["literal", (distStops)]], 1, .05],
+        'line-width': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], 2, ["has", ["get", "districtID"], ["literal", (distStops)]], 1, .8],
       };
           let properties = this.appProperties.getProperties();
 
@@ -195,7 +205,6 @@ export class MapComponent implements OnInit{
       };
  
   }
-
   resetMap(){
     this.mapReset.emit();
   }

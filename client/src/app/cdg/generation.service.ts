@@ -33,7 +33,6 @@ export class GenerationConfiguration {
     reockWeight:Number;
     contiguityWeight:Number;
     equalPopWeight: Number;
-    racialFairWeight: Number;
     partisanFairWeight:Number;
     lockedPrecincts:any;
     lockedDistricts:Array<string>;
@@ -41,8 +40,7 @@ export class GenerationConfiguration {
     constructor(){
         this.contiguityWeight = .4;
         this.equalPopWeight = .2;
-        this.racialFairWeight = 0.0;
-        this.partisanFairWeight = 0.0;
+        this.partisanFairWeight = 0.4;
         this.reockWeight = 0.0;
         this.schwartzbergWeight = 0.0;
         this.hullRatioWeight = 0.0;
@@ -89,9 +87,6 @@ export class GenerationConfiguration {
     setEqualPopWeight(weight:Number){
         this.equalPopWeight = weight;
     }
-    setRacialFairWeight(weight:Number){
-        this.racialFairWeight = weight;
-    }
     getPartisanFairnessWeight(){
         return this.partisanFairWeight;
     }
@@ -100,9 +95,6 @@ export class GenerationConfiguration {
     }
     getEqualPopWeight(){
         return this.equalPopWeight;
-    }
-    getRacialFairWeight(){
-        return this.racialFairWeight;
     }
     getSchwartz(){
         return this.schwartzbergWeight;
@@ -123,9 +115,9 @@ export class GenerationConfiguration {
         this.reockWeight = weight;
     }
     restartConfig(){
-        this.contiguityWeight = .4;
-        this.equalPopWeight = .2;
-        this.partisanFairWeight = 0.0;
+        this.contiguityWeight = 0.4;
+        this.equalPopWeight = 0.2;
+        this.partisanFairWeight = 0.4;
         this.reockWeight = 0.0;
         this.schwartzbergWeight = 0.0;
         this.hullRatioWeight = 0.0;
