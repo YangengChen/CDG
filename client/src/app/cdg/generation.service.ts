@@ -29,7 +29,7 @@ export class GenerationConfiguration {
     private permPrecinct: Array<string>;
 
     schwartzbergWeight:Number;
-    hullRationWeight:Number;
+    hullRatioWeight:Number;
     reockWeight:Number;
     contiguityWeight:Number;
     equalPopWeight: Number;
@@ -43,7 +43,7 @@ export class GenerationConfiguration {
         this.partisanFairWeight = 0.4;
         this.reockWeight = 0.0;
         this.schwartzbergWeight = 0.0;
-        this.hullRationWeight = 0.0;
+        this.hullRatioWeight = 0.0;
         this.permConDist = new Array<string>();
         this.permPrecinct = new Array<string>();
         this.precinctToDistrict = new Map<String, String>()
@@ -103,10 +103,10 @@ export class GenerationConfiguration {
         this.schwartzbergWeight = weight;
     }
     getHull(){
-        return this.hullRationWeight;
+        return this.hullRatioWeight;
     }
     setHull(weight){
-        this.hullRationWeight = weight;
+        this.hullRatioWeight = weight;
     }
     getReock(){
         return this.reockWeight;
@@ -120,7 +120,7 @@ export class GenerationConfiguration {
         this.partisanFairWeight = 0.4;
         this.reockWeight = 0.0;
         this.schwartzbergWeight = 0.0;
-        this.hullRationWeight = 0.0;
+        this.hullRatioWeight = 0.0;
         this.permConDist = new Array<string>();
         this.permPrecinct = new Array<string>();
     }

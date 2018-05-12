@@ -143,7 +143,19 @@ public class CdgConstraintEvaluator extends ConstraintEvaluator {
 		if (!constraintsMet) {
 			return constraintsMet;
 		}
-
+		
+		constraintsMet = resultGeom.getNumGeometries() <= districtGeom.getNumGeometries();
+		if (!constraintsMet) {
+			return constraintsMet;
+		}
+		
+		constraintsMet = !precinct.isLonePrecinct();
+		if (!constraintsMet) {
+			return constraintsMet;
+		}
+		
+		
 		return true;
 	}
+	
 }

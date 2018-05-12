@@ -114,6 +114,30 @@ public class Precinct extends Region {
 		System.out.println("through with no errors, returning false");
 		return false;
 	}
+	
+	public boolean isLonePrecinct() {
+		if (this.getNeighborRegions() == null) {
+			return true;
+		}
+		if (this.getConDistrict() == null) {
+			throw new IllegalStateException();
+		}
+		
+		int distID = this.getConDistrict().getId();
+		Precinct neighborPrec;
+		CongressionalDistrict neighborDistrict;
+		for (Region neighbor : this.getNeighborRegions().values()) {
+			neighborPrec = (Precinct) neighbor;
+			neighborDistrict = neighborPrec.getConDistrict();
+			if (neighborDistrict == null) {
+				throw new IllegalStateException();
+			}
+			if (neighborDistrict.getId() == distID) {
+				return false;
+			}
+		}
+		return true;
+	}
 
 	@Override
 	public DistrictDTO getDataDTO() {
