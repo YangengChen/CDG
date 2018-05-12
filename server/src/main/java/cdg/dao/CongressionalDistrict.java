@@ -298,12 +298,7 @@ public class CongressionalDistrict extends Region {
 			return false;
 		}
 		boolean isBorder = borderPrecincts.get(precinctID) == null ? false : true;
-		
-		if (isBorder && !onBorder(borderPrecincts.get(precinctID))) {
-			System.err.println("BORDER DISCREPENCY " + precincts.get(precinctID).getPublicID());
-			throw new IllegalStateException();
-		}
-		
+
 		return isBorder;
 	}
 	

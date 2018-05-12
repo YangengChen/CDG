@@ -265,11 +265,11 @@ public class GenerateMapAlgorithm {
 	
 	private boolean continueWithDistrict()
 	{
-		int iteration = STATE.getCurrDistrictIteration();
+		/*int iteration = STATE.getCurrDistrictIteration();
 		if (iteration >= MAX_DISTRICT_ITERATIONS) {
 			System.err.println("District reached max iterations");
 			return false;
-		}
+		}*/
 		double startDistGoodness = STATE.getCurrDistrictStartGoodness();
 		int distID = STATE.getCurrDistrictID();
 		double currDistGoodness = CONDISTRICTMAP.getGoodness(distID);
@@ -291,7 +291,7 @@ public class GenerateMapAlgorithm {
 			System.err.println("Reached max iterations");
 			return false;
 		}
-		/*double lastTotalGoodness = STATE.getLastTotalGoodness();
+		double lastTotalGoodness = STATE.getLastTotalGoodness();
 		double currTotalGoodness = CONDISTRICTMAP.getTotalGoodness();
 		if (lastTotalGoodness == 0) {
 			return true;
@@ -305,7 +305,7 @@ public class GenerateMapAlgorithm {
 			}
 			return false;
 		}
-		STATE.setTimesBelowGenThreshold(0);*/
+		STATE.setTimesBelowGenThreshold(0);
 		return true;
 	}
 }
