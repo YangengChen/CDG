@@ -28,6 +28,9 @@ export class CdgMapService {
   }
   getFinishedMap(type:string){
     return this.http.get(Constants.GET_FINISHED_URL(type), {withCredentials:true});
+  }  
+  getFinishedData(type:string){
+    return this.http.get(Constants.GET_FINISHED_DATA_URL(type), {withCredentials:true});
   }
   changeMap(map:any): Observable<Object>{
     return new Observable<Object>(map);

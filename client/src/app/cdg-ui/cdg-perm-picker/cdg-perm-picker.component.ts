@@ -16,8 +16,8 @@ export class CdgPermPickerComponent implements OnInit {
   generatePermPicker(precinctIsPerm, condistIsPerm, chosenDistrictData) : MatDialogRef<PermPickerDialogComponent>{
     let dialogData = { permPrecinct: precinctIsPerm, permConDist:condistIsPerm, districtData: chosenDistrictData };
     return this.dialog.open(PermPickerDialogComponent, {
-      width: '700px',
-      height:"700px",
+      width: '500px',
+      height:"500px",
       data: { permPrecinct: precinctIsPerm, permConDist:condistIsPerm, districtData: chosenDistrictData}
     });
   }

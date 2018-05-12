@@ -45,6 +45,7 @@ export class CdgComponent implements OnInit {
   @ViewChild("map") map:MapComponent;
   mapObject: any;
   compareMapObject:Object;
+  compareConDistData:Object;
   compareData:any;
   compareSelectedStateId: string;
   compareSelectedMapType:string;
@@ -154,10 +155,17 @@ export class CdgComponent implements OnInit {
       this.compareSelectedStateId = event.value.id;
       this.getCompareState();
       this.getCompareData();
+      this.getCompareCongressionalDistrictData();
     }
   }
+  getCompareCongressionalDistrictData(){
+    this.mapService.getData(this.compareSelectedStateId, "congressional")
+    .subscribe(stateData => {
+      this.compareConDistData = stateData;
+    })   
+  }
   getCompareData(){
-    this.mapService.getData(this.selectedStateId, "state")
+    this.mapService.getData(this.compareSelectedStateId, "state")
     .subscribe(stateData => {
       this.compareData = stateData;
     })   
@@ -198,9 +206,7 @@ export class CdgComponent implements OnInit {
   updateRacialFairness(weight:number){
     this.genConfig.setRacialFairWeight(weight);
   }
-  updateCompactness(weight:number){
-    this.genConfig.setCompactnessWeight(weight);
-  }
+
   updateContiguity(weight:number){
     this.genConfig.setContiguityWeight(weight);
   }
@@ -209,6 +215,15 @@ export class CdgComponent implements OnInit {
   }
   updatePartisanFairness(weight:number){
     this.genConfig.setPartisanFairness(weight);
+  }
+  updateSchwartz(weight:number){
+    this.genConfig.setSchwartz(weight);
+  }
+  updateHull(weight:number){
+    this.genConfig.setHull(weight);
+  }
+  updateReock(weight:number){
+    this.genConfig.setReock(weight);
   }
   startGeneration(){
     let configCheck = this.startGenerationCheck();
@@ -231,11 +246,12 @@ export class CdgComponent implements OnInit {
     }
   }
   startGenerationCheck(){
-    if( (this.genConfig.getCompactnessWeight().valueOf() + this.genConfig.getContiguityWeight().valueOf()
-    		+ this.genConfig.getEqualPopWeight().valueOf()
-        + this.genConfig.getPartisanFairnessWeight().valueOf()) != 1){
-            return SnackbarEnum.WEIGHT_FAILURE;
-         }
+    // if( ( this.genConfig.getContiguityWeight().valueOf()
+    // 		+ this.genConfig.getEqualPopWeight().valueOf()
+    //     + this.genConfig.getPartisanFairnessWeight().valueOf()) != 1){
+    //         return SnackbarEnum.WEIGHT_FAILURE;
+    //      }
+    return null;
   }
   beginGenerationStatusCheck(){
     this.interval = setInterval( () => {
@@ -262,7 +278,11 @@ export class CdgComponent implements OnInit {
       this.mapObject = finishedMap;
     })
   }
-
+  getFinishedData(){
+    this.mapService.getFinishedData("congressional")
+    .subscribe( finishedData => {
+      this.conDistData = finishedData;
+    })  }
   changeMap(theNewMap){
     this.mapService.changeMap(theNewMap)
     .map(newMap => this.map.mapObject)
@@ -319,8 +339,6 @@ export class CdgComponent implements OnInit {
   }
   mapReset(){
     this.genConfig.restartConfig();
-    this.compactness = this.genConfig.getCompactnessWeight();
-    console.log(this.compactness);
   }
   setUpLabels(properties:any){
     this.mapTypeListLabel = properties.mapTypeListLabel;

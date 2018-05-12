@@ -20,7 +20,7 @@ export class CdgCompareDataComponent implements OnInit {
     let dialogData = { stateData: stateData, compareData:compareData};
     return this.dialog.open(CdgCompareDialogComponent, {
       width: '700px',
-      height:"700px",
+      height:"350px",
       data: dialogData
     });
   }
