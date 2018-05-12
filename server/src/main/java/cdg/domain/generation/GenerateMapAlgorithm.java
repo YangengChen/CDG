@@ -78,8 +78,9 @@ public class GenerateMapAlgorithm {
 	}
 	
 	public void stop() {
-		if (generation != null) {
-			generation.cancel(true);
+		if (!isComplete()) {
+			boolean canceled = generation.cancel(true);
+			System.err.println(canceled);
 		}
 	}
 	
@@ -294,10 +295,12 @@ public class GenerateMapAlgorithm {
 		}
 		double lastTotalGoodness = STATE.getLastTotalGoodness();
 		double currTotalGoodness = CONDISTRICTMAP.getTotalGoodness();
-		if (lastTotalGoodness == 0) {
-			return true;
+		double percentageChange;
+		if (lastTotalGoodness == 0 && currTotalGoodness == 0) {
+			percentageChange = 0;
+		} else {
+			percentageChange = (currTotalGoodness - lastTotalGoodness)/lastTotalGoodness;
 		}
-		double percentageChange = (currTotalGoodness - lastTotalGoodness)/lastTotalGoodness;
 		if (percentageChange < END_THRESHOLD_PERCENT) {
 			System.err.println("Below threshold- " + percentageChange);
 			STATE.incrementTimesBelowGenThreshold();

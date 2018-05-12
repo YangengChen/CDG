@@ -40,12 +40,30 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		if (district == null) {
 			throw new IllegalArgumentException();
 		}
-		double schwarzbergValue = evaluateCompactness(district, GoodnessMeasure.SCHWARTZBERG);
-		double hullRatioValue = evaluateCompactness(district, GoodnessMeasure.HULLRATIO);
-		double reockValue = evaluateCompactness(district, GoodnessMeasure.REOCK);
-		double contiguityValue = evaluateContiguity(district);
-		double populationEqualityValue = evaluatePopulationEquality(district);
-		double partisanFairnessValue = evaluatePartisanFairness(district);
+		double schwarzbergValue = 0;
+		double hullRatioValue = 0;
+		double reockValue = 0;
+		double contiguityValue = 0;
+		double populationEqualityValue = 0;
+		double partisanFairnessValue = 0;
+		if (this.getGoodnessMeasure(GoodnessMeasure.SCHWARTZBERG) > 0) {
+			schwarzbergValue = evaluateCompactness(district, GoodnessMeasure.SCHWARTZBERG);
+		}
+		if (this.getGoodnessMeasure(GoodnessMeasure.HULLRATIO) > 0) {
+			hullRatioValue = evaluateCompactness(district, GoodnessMeasure.HULLRATIO);
+		}
+		if (this.getGoodnessMeasure(GoodnessMeasure.REOCK) > 0) {
+			reockValue = evaluateCompactness(district, GoodnessMeasure.REOCK);
+		}
+		if (this.getGoodnessMeasure(GoodnessMeasure.CONTIGUITY) > 0) {
+			contiguityValue = evaluateContiguity(district);
+		}
+		if (this.getGoodnessMeasure(GoodnessMeasure.EQUALPOPULATION) > 0) {
+			populationEqualityValue = evaluatePopulationEquality(district);
+		}
+		if (this.getGoodnessMeasure(GoodnessMeasure.PARTISANFAIRNESS) > 0) {
+			partisanFairnessValue = evaluatePartisanFairness(district);
+		}
 		double goodness = runObjectiveFunction(schwarzbergValue, hullRatioValue, reockValue, contiguityValue, populationEqualityValue, partisanFairnessValue);
 		return goodness;
 	}
@@ -175,6 +193,9 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		if (state == null || state.numConDistricts() == 0) {
 			throw new IllegalArgumentException();
 		}
+		if (state.getPopulation() == 0) {
+			return 0;
+		}
 		long popAvg = state.getPopulation() / state.numConDistricts();
 		long population = district.getPopulation();
 		double percentage = (double)population / (double)popAvg;
@@ -207,9 +228,12 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		}
 		long demVotes = election.getTotal(Party.DEMOCRATIC);
 		long repVotes = election.getTotal(Party.REPUBLICAN);
+		if ((demVotes + repVotes) == 0) {
+			return 1;
+		}
 		long wastedDemVotes;
 		long wastedRepVotes;
-		if (repVotes == demVotes) {
+		if (repVotes == demVotes) { //bug??
 			return 0;
 		} else if (repVotes < demVotes) {
 			wastedDemVotes = demVotes - (repVotes+demVotes)/2;
