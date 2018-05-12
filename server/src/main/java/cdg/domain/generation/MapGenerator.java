@@ -120,9 +120,9 @@ public class MapGenerator {
 		savedMap.setContiguityWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.CONTIGUITY));
 		savedMap.setEqualPopWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.EQUALPOPULATION));
 		savedMap.setPartisanFairWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.PARTISANFAIRNESS));
-		savedMap.setHullRatioWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.HULLRATIOWEIGHT));
-		savedMap.setReockWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.REOCKWEIGHT));
-		savedMap.setSchwarzbergWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.SCHWARZBERGWEIGHT));
+		savedMap.setHullRatioWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.HULLRATIO));
+		savedMap.setReockWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.REOCK));
+		savedMap.setSchwarzbergWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.SCHWARTZBERG));
 		savedMap.setDistricts(new HashSet<>());
 		SavedMapping currDistrictMapping;
 		Set<Precinct> currPrecinctSet;

@@ -22,11 +22,14 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 			throw new IllegalArgumentException();
 		}
 		GoodnessEvaluator evaluator = new CdgGoodnessEvaluator(maxGoodness);
-		if ((configuration.getCompactnessWeight() + configuration.getContiguityWeight() + configuration.getEqualPopWeight() +
+		if ((configuration.getSchwartzbergWeight() + configuration.getHullRatioWeight() + configuration.getReockWeight() +
+				configuration.getContiguityWeight() + configuration.getEqualPopWeight() +
 				configuration.getPartisanFairWeight()) != 1) {
 			throw new IllegalArgumentException();
 		}
-		evaluator.setGoodnessMeasure(GoodnessMeasure.COMPACTNESS, configuration.getCompactnessWeight());
+		evaluator.setGoodnessMeasure(GoodnessMeasure.SCHWARTZBERG, configuration.getSchwartzbergWeight());
+		evaluator.setGoodnessMeasure(GoodnessMeasure.HULLRATIO, configuration.getHullRatioWeight());
+		evaluator.setGoodnessMeasure(GoodnessMeasure.REOCK, configuration.getReockWeight());
 		evaluator.setGoodnessMeasure(GoodnessMeasure.CONTIGUITY, configuration.getContiguityWeight());
 		evaluator.setGoodnessMeasure(GoodnessMeasure.EQUALPOPULATION, configuration.getEqualPopWeight());
 		evaluator.setGoodnessMeasure(GoodnessMeasure.PARTISANFAIRNESS, configuration.getPartisanFairWeight());
@@ -37,11 +40,13 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		if (district == null) {
 			throw new IllegalArgumentException();
 		}
-		double compactnessValue = evaluateCompactness(district);
+		double schwarzbergValue = evaluateCompactness(district, GoodnessMeasure.SCHWARTZBERG);
+		double hullRatioValue = evaluateCompactness(district, GoodnessMeasure.HULLRATIO);
+		double reockValue = evaluateCompactness(district, GoodnessMeasure.REOCK);
 		double contiguityValue = evaluateContiguity(district);
 		double populationEqualityValue = evaluatePopulationEquality(district);
 		double partisanFairnessValue = evaluatePartisanFairness(district);
-		double goodness = runObjectiveFunction(compactnessValue, contiguityValue, populationEqualityValue, partisanFairnessValue, 0);
+		double goodness = runObjectiveFunction(schwarzbergValue, hullRatioValue, reockValue, contiguityValue, populationEqualityValue, partisanFairnessValue);
 		return goodness;
 	}
 	
@@ -50,17 +55,26 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 	 * @param district Congressional district
 	 * @return compactness value normalized between 0 and MAXGOODNESS
 	 */
-	public double evaluateCompactness(CongressionalDistrict district) {
+	public double evaluateCompactness(CongressionalDistrict district, GoodnessMeasure compactnessMeasure) {
 		if (district == null) {
 			throw new IllegalArgumentException();
 		}
 		
-		double schwarzbergScore = getSchwartzbergCompactness(district);
-		double hullRatioScore = getHullRatioCompactness(district);
-		double reockScore = getReockCompactness(district);
-		double compactnessValue = MAXGOODNESS * schwarzbergScore * CdgConstants.SCHWARZBERG_WEIGHT +
-						MAXGOODNESS * hullRatioScore * CdgConstants.HULL_RATIO_WEIGHT +
-						MAXGOODNESS * reockScore * CdgConstants.REOCK_WEIGHT;
+		double compactnessScore;
+		switch(compactnessMeasure) {
+			case SCHWARTZBERG:
+				compactnessScore = getSchwartzbergCompactness(district);
+				break;
+			case HULLRATIO:
+				compactnessScore = getHullRatioCompactness(district);
+				break;
+			case REOCK:
+				compactnessScore = getReockCompactness(district);
+				break;
+			default:
+				throw new IllegalArgumentException();
+		}
+		double compactnessValue = MAXGOODNESS * compactnessScore;
 		return compactnessValue;
 	}
 	
@@ -224,15 +238,27 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		return 0;
 	}
 	
-	private double runObjectiveFunction(double compactness, double contiguity, double populationEqual, double partisanFair, double racialFair) 
+	private double runObjectiveFunction(double schwartzberg, double hullRatio, double reock, double contiguity, double populationEqual, double partisanFair) 
 	{
 		double totalGoodness = 0;
 		double weight = 0;
 		int totalMeasures = 0;
 		
-		weight = this.getGoodnessMeasure(GoodnessMeasure.COMPACTNESS);
+		weight = this.getGoodnessMeasure(GoodnessMeasure.SCHWARTZBERG);
 		if (weight > 0) {
-			totalGoodness += (weight * compactness);
+			totalGoodness += (weight * schwartzberg);
+			totalMeasures++;
+		}
+		
+		weight = this.getGoodnessMeasure(GoodnessMeasure.HULLRATIO);
+		if (weight > 0) {
+			totalGoodness += (weight * hullRatio);
+			totalMeasures++;
+		}
+		
+		weight = this.getGoodnessMeasure(GoodnessMeasure.REOCK);
+		if (weight > 0) {
+			totalGoodness += (weight * reock);
 			totalMeasures++;
 		}
 		
@@ -251,12 +277,6 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		weight = this.getGoodnessMeasure(GoodnessMeasure.PARTISANFAIRNESS);
 		if (weight > 0) {
 			totalGoodness += (weight * partisanFair);
-			totalMeasures++;
-		}
-		
-		weight = this.getGoodnessMeasure(GoodnessMeasure.RACIALFAIRNESS);
-		if (weight > 0) {
-			totalGoodness += (weight * racialFair);
 			totalMeasures++;
 		}
 

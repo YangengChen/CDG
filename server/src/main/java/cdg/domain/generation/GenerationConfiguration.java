@@ -7,11 +7,12 @@ public class GenerationConfiguration {
 	private String stateId;
 	private List<String> permConDist;
 	private List<String> permPrecinct;
-	private double compactnessWeight;
+	private double schwartzbergWeight;
+	private double hullRatioWeight;
+	private double reockWeight;
 	private double contiguityWeight;
 	private double equalPopWeight;
 	private double partisanFairWeight;
-	private double racialFairWeight;
 	private Map<String,String> precinctToDistrict;
 	
 	public List<String> getPermConDist() {
@@ -28,14 +29,6 @@ public class GenerationConfiguration {
 
 	public void setPermPrecinct(List<String> permPrecinct) {
 		this.permPrecinct = permPrecinct;
-	}
-
-	public double getCompactnessWeight() {
-		return compactnessWeight;
-	}
-
-	public void setCompactnessWeight(double compactnessWeight) {
-		this.compactnessWeight = compactnessWeight;
 	}
 
 	public double getContiguityWeight() {
@@ -62,14 +55,6 @@ public class GenerationConfiguration {
 		this.partisanFairWeight = partisanFairWeight;
 	}
 
-	public double getRacialFairWeight() {
-		return racialFairWeight;
-	}
-
-	public void setRacialFairWeight(double racialFairWeight) {
-		this.racialFairWeight = racialFairWeight;
-	}
-
 	public String getStateId() {
 		return stateId;
 	}
@@ -84,5 +69,29 @@ public class GenerationConfiguration {
 
 	public void setPrecinctToDistrict(Map<String, String> precinctToDistrict) {
 		this.precinctToDistrict = precinctToDistrict;
+	}
+
+	public double getSchwartzbergWeight() {
+		return schwartzbergWeight;
+	}
+
+	public void setSchwartzbergWeight(double schwarzbergWeight) {
+		this.schwartzbergWeight = schwarzbergWeight;
+	}
+
+	public double getHullRatioWeight() {
+		return hullRatioWeight;
+	}
+
+	public void setHullRatioWeight(double hullRatioWeight) {
+		this.hullRatioWeight = hullRatioWeight;
+	}
+
+	public double getReockWeight() {
+		return reockWeight;
+	}
+
+	public void setReockWeight(double reockWeight) {
+		this.reockWeight = reockWeight;
 	}
 }
