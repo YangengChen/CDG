@@ -229,8 +229,10 @@ public class GenerateMapAlgorithm {
 		int distID = STATE.getCurrDistrictID();
 		int neighborID = STATE.getCurrNeighborID();
 		int precinctID = STATE.getCandidatePrecinctUID();
-		if (CONDISTRICTMAP.movePrecinct(neighborID, distID, precinctID) != distID) {
-			throw new IllegalStateException();
+		if (CONDISTRICTMAP.movePrecinct(neighborID, distID, precinctID) < 0) {
+			//move was not undone
+			System.err.println("move was not undone");
+			STATE.getPrecinctToDistrict().put(CONDISTRICTMAP.getPrecinctPublicID(precinctID), CONDISTRICTMAP.getDistrictPublicID(neighborID));
 		}
 	}
 	
