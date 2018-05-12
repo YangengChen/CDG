@@ -1,8 +1,7 @@
 package cdg.domain.generation;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class GenerationState implements Cloneable {
 	private int currDistrictID;
@@ -16,12 +15,12 @@ public class GenerationState implements Cloneable {
 	private long genStartTime;
 	private long genStopTime;
 	private int timesBelowGenThreshold;
-	private Map<String,String> precinctToDistrict;
+	private ConcurrentHashMap<String,String> precinctToDistrict;
 	private List<GoodnessResult> districtsGoodness;
 	private boolean paused;
 
 	public GenerationState() {
-		precinctToDistrict = new HashMap<String,String>();
+		precinctToDistrict = new ConcurrentHashMap<String,String>();
 	}
 	
 	public int getCurrDistrictID() {
@@ -136,11 +135,11 @@ public class GenerationState implements Cloneable {
 		this.paused = paused;
 	}
 
-	public Map<String, String> getPrecinctToDistrict() {
+	public ConcurrentHashMap<String, String> getPrecinctToDistrict() {
 		return precinctToDistrict;
 	}
 
-	public void setPrecinctToDistrict(Map<String, String> precinctToDistrict) {
+	public void setPrecinctToDistrict(ConcurrentHashMap<String, String> precinctToDistrict) {
 		this.precinctToDistrict = precinctToDistrict;
 	}
 

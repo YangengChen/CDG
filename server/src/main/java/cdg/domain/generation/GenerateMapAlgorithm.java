@@ -1,10 +1,10 @@
 package cdg.domain.generation;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -111,7 +111,7 @@ public class GenerateMapAlgorithm {
 	public GenerationState getState() {
 		try {
 			GenerationState genState = (GenerationState)STATE.clone();
-			genState.setPrecinctToDistrict((Map)(((HashMap)STATE.getPrecinctToDistrict()).clone()));
+			genState.setPrecinctToDistrict(new ConcurrentHashMap<String,String>(STATE.getPrecinctToDistrict()));
 			return genState;
 		} catch (CloneNotSupportedException ce) {
 			return null;

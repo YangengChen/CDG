@@ -1,7 +1,9 @@
 package cdg.domain.generation;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -79,7 +81,13 @@ public class MapGenerator {
 			response.setStartTotalGoodness(currGenState.getStartTotalGoodness());
 			response.setCurrTotalGoodness(currGenState.getLastTotalGoodness());
 			response.setCurrIteration(currGenState.getCurrGenIteration());
-			response.setPrecinctToDistrict(currGenState.getPrecinctToDistrict());
+			List<PrecinctDistrictMap> precinctToDistrict = new ArrayList<>();
+			PrecinctDistrictMap mapping;
+			for (Map.Entry<String, String> map : currGenState.getPrecinctToDistrict().entrySet()) {
+				mapping = new PrecinctDistrictMap(map.getKey(),map.getValue());
+				precinctToDistrict.add(mapping);
+			}
+			response.setPrecinctToDistrict(precinctToDistrict);
 			response.setDistrictsGoodness(currGenState.getDistrictsGoodness());
 			
 			Calendar calendar = Calendar.getInstance();

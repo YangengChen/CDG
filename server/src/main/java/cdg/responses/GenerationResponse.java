@@ -3,10 +3,10 @@ package cdg.responses;
 
 
 import java.util.List;
-import java.util.Map;
 
 import cdg.domain.generation.GenerationStatus;
 import cdg.domain.generation.GoodnessResult;
+import cdg.domain.generation.PrecinctDistrictMap;
 
 public class GenerationResponse {
 	private GenerationStatus status;
@@ -16,7 +16,7 @@ public class GenerationResponse {
 	private double startTotalGoodness;
 	private double currTotalGoodness;
 	private int currIteration;
-	private Map<String,String> precinctToDistrict;
+	private List<PrecinctDistrictMap> precinctToDistrict;
 	private List<GoodnessResult> districtsGoodness;
 
 	public GenerationResponse() {}
@@ -86,11 +86,11 @@ public class GenerationResponse {
 		return currIteration;
 	}
 
-	public Map<String, String> getPrecinctToDistrict() {
+	public List<PrecinctDistrictMap> getPrecinctToDistrict() {
 		return precinctToDistrict;
 	}
 
-	public void setPrecinctToDistrict(Map<String, String> precinctToDistrict) {
+	public void setPrecinctToDistrict(List<PrecinctDistrictMap> precinctToDistrict) {
 		this.precinctToDistrict = precinctToDistrict;
 	}
 
