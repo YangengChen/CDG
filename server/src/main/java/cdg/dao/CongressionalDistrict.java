@@ -273,6 +273,7 @@ public class CongressionalDistrict extends Region {
 			return false;
 		}
 		boolean isBorder = borderPrecincts.get(precinctID) == null ? false : true;
+		
 		return isBorder;
 	}
 	
