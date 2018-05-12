@@ -93,10 +93,10 @@
                 <nb-tab tabTitle="Compare">
                   <mat-slide-toggle (change)="compareToggle($event)"></mat-slide-toggle>
                     <div *ngIf="compare" id="pick-state-button">
-                    Compare Map:
+                      Compare Map:
                     <cdg-dropdown [values]="stateList" (change)="changeCompareState($event)" name="States"></cdg-dropdown>
                   </div>
-                  <cdg-data-display [compareDisable]="!compare" [compareData]="compareConDistData" [stateData]="conDistData"></cdg-data-display>
+                  <cdg-data-display *ngIf="compareConDistData != null && conDistData != null"[compareDisable]="!compare" [compareData]="compareConDistData" [stateData]="conDistData"></cdg-data-display>
                 </nb-tab>
               </nb-tabset>
               </nb-card-body></nb-card>

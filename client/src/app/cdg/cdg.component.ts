@@ -270,7 +270,11 @@ export class CdgComponent implements OnInit {
       this.mapObject = finishedMap;
     })
   }
-
+  getFinishedData(){
+    this.mapService.getFinishedData("congressional")
+    .subscribe( finishedData => {
+      this.conDistData = finishedData;
+    })  }
   changeMap(theNewMap){
     this.mapService.changeMap(theNewMap)
     .map(newMap => this.map.mapObject)

@@ -18,6 +18,7 @@ export class Constants{
     public static get INIT_MAP_TYPE(): string {return "state"};
     public static get STATELIST_KEY(): string {return "states"};
     public static GET_FINISHED_URL(type:string): string {return "http://localhost:8080/api/generation/file/".concat(type)};
+    public static GET_FINISHED_DATA_URL(type:string): string {return "http://localhost:8080/api/generation/data/".concat(type)};
     public static get COLOR_PROPERTY(): string {return "districtID"}
     public static get EXPORT_HEADERS(): string {return "application/json"}
     public static get EXPORT_FILE_NAME(): string {return "CDG_Map.json"}
