@@ -1,7 +1,5 @@
 package cdg.responses;
 
-
-
 import java.util.List;
 
 import cdg.domain.generation.GenerationStatus;
@@ -17,6 +15,7 @@ public class GenerationResponse {
 	private double currTotalGoodness;
 	private int currIteration;
 	private List<PrecinctDistrictMap> precinctToDistrict;
+	private List<GoodnessResult> startDistrictsGoodness;
 	private List<GoodnessResult> districtsGoodness;
 
 	public GenerationResponse() {}
@@ -100,5 +99,13 @@ public class GenerationResponse {
 
 	public void setDistrictsGoodness(List<GoodnessResult> districtsGoodness) {
 		this.districtsGoodness = districtsGoodness;
+	}
+
+	public List<GoodnessResult> getStartDistrictsGoodness() {
+		return startDistrictsGoodness;
+	}
+
+	public void setStartDistrictsGoodness(List<GoodnessResult> startDistrictsGoodness) {
+		this.startDistrictsGoodness = startDistrictsGoodness;
 	}
 }

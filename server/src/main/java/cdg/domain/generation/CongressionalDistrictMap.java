@@ -47,6 +47,9 @@ public class CongressionalDistrictMap {
 		initMap(manualMappings);
 		evaluateAllGoodness(goodnessEval);
 		initHelpers(constraintEval);
+		System.err.println(manualMappings.toString());
+		System.err.println(constraintEval.getConstraints(UserConstraint.PERMCONDIST).toString());
+		System.err.println(constraintEval.getConstraints(UserConstraint.PERMPRECINCT).toString());
 	}
 	
 	private int generateCustomMap(Iterable<CongressionalDistrict> districts) {

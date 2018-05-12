@@ -88,6 +88,7 @@ public class MapGenerator {
 				precinctToDistrict.add(mapping);
 			}
 			response.setPrecinctToDistrict(precinctToDistrict);
+			response.setStartDistrictsGoodness(currGenState.getStartDistrictsGoodness());
 			response.setDistrictsGoodness(currGenState.getDistrictsGoodness());
 			
 			Calendar calendar = Calendar.getInstance();

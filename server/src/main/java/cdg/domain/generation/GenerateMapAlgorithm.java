@@ -147,6 +147,7 @@ public class GenerateMapAlgorithm {
 		try {
 			double startStateGoodness = CONDISTRICTMAP.getTotalGoodness();
 			STATE.setStartTotalGoodness(startStateGoodness);
+			STATE.setStartDistrictsGoodness(CONDISTRICTMAP.getAllDistrictGoodness());
 			while (continueWithGeneration()) {
 				double currStateGoodness = CONDISTRICTMAP.getTotalGoodness();
 				STATE.setLastTotalGoodness(currStateGoodness);

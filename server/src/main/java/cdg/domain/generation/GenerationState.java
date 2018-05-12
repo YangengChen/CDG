@@ -16,6 +16,7 @@ public class GenerationState implements Cloneable {
 	private long genStopTime;
 	private int timesBelowGenThreshold;
 	private ConcurrentHashMap<String,String> precinctToDistrict;
+	private List<GoodnessResult> startDistrictsGoodness;
 	private List<GoodnessResult> districtsGoodness;
 	private boolean paused;
 
@@ -149,5 +150,13 @@ public class GenerationState implements Cloneable {
 
 	public void setDistrictsGoodness(List<GoodnessResult> districtsGoodness) {
 		this.districtsGoodness = districtsGoodness;
+	}
+
+	public List<GoodnessResult> getStartDistrictsGoodness() {
+		return startDistrictsGoodness;
+	}
+
+	public void setStartDistrictsGoodness(List<GoodnessResult> startDistrictsGoodness) {
+		this.startDistrictsGoodness = startDistrictsGoodness;
 	}
 }
