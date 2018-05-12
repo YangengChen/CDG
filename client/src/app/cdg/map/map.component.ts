@@ -108,8 +108,10 @@ export class MapComponent implements OnInit{
   onSavedMapChanged(event){
     this.savedMapChanged.emit(event.value);
   }
-  setData(map:mapboxgl.GeoJSONSource){
-    this.map.getSource('states').setData(map);
+  setData(map:mapboxgl.GeoJSONGeometry){
+    let source:any = this.map.getSource('states');
+    source.setData(map);
+    
   }
   onMapClick(event){
     console.log("HELLO")

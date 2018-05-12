@@ -87,9 +87,6 @@ export class GenerationConfiguration {
     setEqualPopWeight(weight:Number){
         this.equalPopWeight = weight;
     }
-    setRacialFairWeight(weight:Number){
-        this.racialFairWeight = weight;
-    }
     getPartisanFairnessWeight(){
         return this.partisanFairWeight;
     }
@@ -98,9 +95,6 @@ export class GenerationConfiguration {
     }
     getEqualPopWeight(){
         return this.equalPopWeight;
-    }
-    getRacialFairWeight(){
-        return this.racialFairWeight;
     }
     getSchwartz(){
         return this.schwartzbergWeight;

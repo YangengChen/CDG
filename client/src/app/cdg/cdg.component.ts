@@ -205,10 +205,6 @@ export class CdgComponent implements OnInit {
       this.conDistData = conData;
     })
   }
-  updateRacialFairness(weight:number){
-    this.genConfig.setRacialFairWeight(weight);
-  }
-
   updateContiguity(weight:number){
     this.genConfig.setContiguityWeight(weight);
   }
@@ -291,7 +287,6 @@ export class CdgComponent implements OnInit {
   changeMap(theNewMap){
     this.map.setData(theNewMap);
     this.map.resetAndReloadStyle();
-    this.map.reloadStyle();
   }
   mapTypeChanged(type:string){
     this.selectedMapType = type;
