@@ -35,6 +35,7 @@ export class MapComponent implements OnInit{
   lockedRegions:Object= {}
   movedRegions:Object = {}
   _mapObject:mapboxgl.GeoJSONSource;
+  @ViewChild("mapVariable") mapVariable:mapboxgl.Map;
   @Input() mapTypeListLabel: string;
   @Input() savedMapListLabel:string;
   @Input() 
@@ -109,7 +110,10 @@ export class MapComponent implements OnInit{
     this.savedMapChanged.emit(event.value);
   }
   setData(map:mapboxgl.GeoJSONGeometry){
+    
+    while(!this.map){return new Promise(resolve => setTimeout(resolve, 1000));}
     let source:any = this.map.getSource('states');
+    console.log("SOURCE TYPE " + source.type)
     source.setData(map);
     
   }

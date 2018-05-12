@@ -154,19 +154,19 @@
 
       <nb-layout-column *ngIf="flipped">
         <map 
-          (clicked)="precinctSelected($event)" 
+        #generatedMap
           (mapTypeChanged)="mapTypeChanged($event)"
           (savedMapChanged)="savedMapChanged"
           (updateGenConfig)="updateGenConfig($event)"
           (mapReset)="mapReset()"
           [genConfig]="genConfig"
-          [mapObject]="mapObject"
+          [mapObject]="generateMapObject"
           [mapTypeList]="mapTypeList" 
           [savedMapList]="savedMapList"
           [savedMapListLabel]="savedMapListLabel"
           [mapTypeListLabel]="mapTypeListLabel"
-          [disableMapTypeList]="!genConfig"
-          [disableResetButton]="!genConfig"
+          [disableMapTypeList]="true"
+          [disableResetButton]="true"
           [flipped]="flipped"
           > 
           </map>

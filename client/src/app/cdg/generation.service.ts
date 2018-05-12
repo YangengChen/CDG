@@ -36,7 +36,7 @@ export class GenerationConfiguration {
     partisanFairWeight:Number;
     lockedPrecincts:any;
     lockedDistricts:Array<string>;
-    precinctToDistrict:Map<String, String>;
+    precinctToDistrict:Object;
     constructor(){
         this.contiguityWeight = .4;
         this.equalPopWeight = .2;
@@ -46,11 +46,16 @@ export class GenerationConfiguration {
         this.hullRatioWeight = 0.0;
         this.permConDist = new Array<string>();
         this.permPrecinct = new Array<string>();
-        this.precinctToDistrict = new Map<String, String>()
+        this.precinctToDistrict = new Object
     }
 
-    addMovedPrecinct(starting, movedTo){
-        this.precinctToDistrict.set(starting, movedTo);
+    setPrecinctToDistrict(starting, movedTo){
+        console.log("ADDING MOVED DISTRICTS")
+        this.precinctToDistrict[starting] = movedTo;
+        console.log("PRECINCTS TO DISTRICTS " + JSON.stringify(this.precinctToDistrict))
+    }
+    getPrecinctToDistrict(){
+        return this.precinctToDistrict;
     }
     setState(state:string){
         this.stateId = state;
@@ -123,5 +128,6 @@ export class GenerationConfiguration {
         this.hullRatioWeight = 0.0;
         this.permConDist = new Array<string>();
         this.permPrecinct = new Array<string>();
+        this.precinctToDistrict = new Object;
     }
 }

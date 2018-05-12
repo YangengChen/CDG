@@ -19,10 +19,12 @@
   </nb-card-header>
   <nb-card-body>
   <mgl-map
+    #mapVariable
     [style]="'mapbox://styles/mapbox/streets-v10'"
     [zoom]="[3]"
     [center]="[-87.6500523,41.850033]"
-    (load)="map = $event">
+    (load)="map = $event"
+    >
    <mgl-geojson-source
      id="states"
      [(data)]="mapObject"

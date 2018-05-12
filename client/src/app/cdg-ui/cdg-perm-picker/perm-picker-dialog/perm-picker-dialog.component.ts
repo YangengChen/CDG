@@ -15,7 +15,7 @@ export class PermPickerDialogComponent {
   permConDist:boolean;
   precinctSelection:string;
   districtSelection:string;
-  startingDistrict:String;
+  precinct:String;
   movedTo:String = null;
   districtDropdownValues: Array<DropdownValue<CongressionalDistrict>>;
   constructor(
@@ -25,7 +25,7 @@ export class PermPickerDialogComponent {
       this.districtData = info.districtData;
       this.permPrecinct = info.permPrecinct;
       this.permConDist = info.permConDist;
-      this.startingDistrict = info.districtData.districtID;
+      this.precinct = info.districtData.precinctID;
       this.districtDropdownValues = new Array<DropdownValue<CongressionalDistrict>>();
       for(var i = 1; i <= 8; i++){
         let label = "District " + i.toString()
@@ -36,7 +36,7 @@ export class PermPickerDialogComponent {
     }
 
   applyChanges():void{
-    let starting = this.startingDistrict;
+    let starting = this.precinct;
     let moved = this.movedTo;
     this.dialogRef.close({
       precinctIsLocked:this.precinctSelection, 
