@@ -193,6 +193,9 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		if (state == null || state.numConDistricts() == 0) {
 			throw new IllegalArgumentException();
 		}
+		if (state.getPopulation() == 0) {
+			return 0;
+		}
 		long popAvg = state.getPopulation() / state.numConDistricts();
 		long population = district.getPopulation();
 		double percentage = (double)population / (double)popAvg;
@@ -225,9 +228,12 @@ public class CdgGoodnessEvaluator extends GoodnessEvaluator {
 		}
 		long demVotes = election.getTotal(Party.DEMOCRATIC);
 		long repVotes = election.getTotal(Party.REPUBLICAN);
+		if ((demVotes + repVotes) == 0) {
+			return 1;
+		}
 		long wastedDemVotes;
 		long wastedRepVotes;
-		if (repVotes == demVotes) {
+		if (repVotes == demVotes) { //bug??
 			return 0;
 		} else if (repVotes < demVotes) {
 			wastedDemVotes = demVotes - (repVotes+demVotes)/2;
