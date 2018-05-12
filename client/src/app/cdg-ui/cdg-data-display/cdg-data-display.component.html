@@ -1,5 +1,4 @@
-<div class="dist-container">
-  <div class="dist-data" *ngFor="let district of stateData.districts">
+<nb-card class="dist-container" *ngFor="let district of stateData.districts">
     <h6>{{district.name}}</h6>
     Population: {{district.population}}
     <br>
@@ -21,5 +20,4 @@
     <br>
       Efficiency Gap: {{district.efficiencyGap}}
     <cdg-button [disabled]="compareDisable" (click)="openCompare()" name="Compare"></cdg-button>
-  </div>
-</div>
+</nb-card>

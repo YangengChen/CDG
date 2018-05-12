@@ -39,7 +39,7 @@
             </div>
           </nb-tab>
           <nb-tab tabTitle="{{informationTabLabel}}">
-            <div style="height:100%" id="information-container" class="container">
+            <div style="height:100%; width:100%;" id="information-container" class="container">
               Compare Toggle:
               <mat-slide-toggle *ngIf="!algoRunning" (change)="compareToggle($event)"></mat-slide-toggle>
               <br>
@@ -48,6 +48,8 @@
                 <cdg-dropdown [values]="stateList" (change)="changeCompareState($event)" name="States"></cdg-dropdown>
               </div>
             <div *ngIf="stateData">
+              <br>
+              <br>
               <cdg-data-display [compareDisable]="!compare" [compareData]="compareData" [stateData]="stateData"></cdg-data-display>
               </div>
             </div>
@@ -67,9 +69,9 @@
         </nb-card-front>
           <nb-card-back class="inner-card">
             <nb-card class="inner-card"><nb-card-body class="inner-card">
-              <nb-tabset class="full-width">   
+              <nb-tabset style="width:100%;" class="full-width">   
                 <nb-tab tabTitle="Generation" style="width:100%">
-                  <div class="container" style="margin: 20px 20px 20px 20px" id="generation-started-controls"> 
+                  <div class="container" id="generation-started-controls"> 
                     <div class="generating-button" style="display:flex;">
                       <cdg-button [disabled]="!algoRunning || !algoPaused" [img]="pauseImage"></cdg-button>
                       <cdg-button style="margin-left:20%" [disabled]="!algoRunning" (click)="stopGenerationClicked()" [img]="stopImage"></cdg-button>
@@ -87,6 +89,14 @@
                   <div id="step-container" style="max-height:0px; width:100%">
                     <cdg-step *ngFor="let step of steps" [step]="step"></cdg-step>
                   </div>
+                </nb-tab>
+                <nb-tab tabTitle="Compare">
+                  <mat-slide-toggle (change)="compareToggle($event)"></mat-slide-toggle>
+                    <div *ngIf="compare" id="pick-state-button">
+                    Compare Map:
+                    <cdg-dropdown [values]="stateList" (change)="changeCompareState($event)" name="States"></cdg-dropdown>
+                  </div>
+                  <cdg-data-display [compareDisable]="!compare" [compareData]="compareConDistData" [stateData]="conDistData"></cdg-data-display>
                 </nb-tab>
               </nb-tabset>
               </nb-card-body></nb-card>

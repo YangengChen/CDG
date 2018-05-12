@@ -1,5 +1,5 @@
 <div class="dist-container">
-  <div class="dist-data" *ngFor="let district of stateData.districts">
+  <nb-card class="dist-data" *ngFor="let district of stateData.districts">
     <h6>{{district.name}}</h6>
     Population: {{district.population}}
     <br>
@@ -16,12 +16,8 @@
         Other: {{district.presidentialElection.partyTotals.OTHER}}
     <br>
       Precincts: {{district.numPrecincts}}
-    <br>
-      Goodness: {{district.goodness}}
-    <br>
-      Efficiency Gap: {{district.efficiencyGap}}
-  </div>
-    <div class="dist-data" *ngFor="let district of compareData.districts">
+  </nb-card>
+    <nb-card class="dist-data" *ngFor="let district of compareData.districts">
     <h6>{{district.name}}</h6>
     Population: {{district.population}}
     <br>
@@ -38,9 +34,5 @@
         Other: {{district.presidentialElection.partyTotals.OTHER}}
     <br>
       Precincts: {{district.numPrecincts}}
-    <br>
-      Goodness: {{district.goodness}}
-    <br>
-      Efficiency Gap: {{district.efficiencyGap}}
-  </div>
+  </nb-card>
 </div>

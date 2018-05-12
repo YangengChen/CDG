@@ -45,6 +45,7 @@ export class CdgComponent implements OnInit {
   @ViewChild("map") map:MapComponent;
   mapObject: any;
   compareMapObject:Object;
+  compareConDistData:Object;
   compareData:any;
   compareSelectedStateId: string;
   compareSelectedMapType:string;
@@ -154,10 +155,17 @@ export class CdgComponent implements OnInit {
       this.compareSelectedStateId = event.value.id;
       this.getCompareState();
       this.getCompareData();
+      this.getCompareCongressionalDistrictData();
     }
   }
+  getCompareCongressionalDistrictData(){
+    this.mapService.getData(this.compareSelectedStateId, "congressional")
+    .subscribe(stateData => {
+      this.compareConDistData = stateData;
+    })   
+  }
   getCompareData(){
-    this.mapService.getData(this.selectedStateId, "state")
+    this.mapService.getData(this.compareSelectedStateId, "state")
     .subscribe(stateData => {
       this.compareData = stateData;
     })   
