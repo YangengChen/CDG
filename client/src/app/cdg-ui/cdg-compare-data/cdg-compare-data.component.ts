@@ -16,11 +16,16 @@ export class CdgCompareDataComponent implements OnInit {
   ngOnInit() {
   }
 
-  generateCompareData(stateData, compareData) : MatDialogRef<CdgCompareDialogComponent>{
-    let dialogData = { stateData: stateData, compareData:compareData};
+  generateCompareData(stateData, compareData, originalDataLabel, compareDataLabel) : MatDialogRef<CdgCompareDialogComponent>{
+    let dialogData = { 
+      stateData: stateData, 
+      compareData:compareData,
+      originalDataLabel: originalDataLabel,
+      compareDataLabel: compareDataLabel
+    };
     return this.dialog.open(CdgCompareDialogComponent, {
       width: '700px',
-      height:"350px",
+      height:"375px",
       data: dialogData
     });
   }

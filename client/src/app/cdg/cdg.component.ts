@@ -59,6 +59,7 @@ export class CdgComponent implements OnInit {
   generatedCompareData:any;
   generatedCompareSelectedStateId: string;
   generatedCompareSelectedMapType:string;
+  selectedGenerationStateId:string;
 
 
   //MAIN MAP DATA
@@ -238,7 +239,7 @@ export class CdgComponent implements OnInit {
   }
   getCompareState(){
     this.mapService.getMap(this.compareSelectedStateId, this.compareSelectedMapType)
-    .map(stateData =>{
+    .subscribe(stateData =>{
       console.log(stateData);
         this.compareMapObject = stateData;
     });
@@ -365,6 +366,8 @@ export class CdgComponent implements OnInit {
   startGeneration(){
     let configCheck = this.startGenerationCheck();
     if(configCheck == null){
+      this.selectedGenerationStateId = this.selectedStateId;
+      this.startingGeneration = true;
       this.generateMapObject = this.mapObject;
       this.genService.startGeneration(this.genConfig)
       .subscribe(data =>{

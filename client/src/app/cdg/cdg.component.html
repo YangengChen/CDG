@@ -53,7 +53,14 @@
             <div *ngIf="stateData">
               <br>
               <br>
-              <cdg-data-display [compareDisable]="!compare" [compareData]="compareData" [stateData]="stateData"></cdg-data-display>
+              <cdg-data-display 
+              [compareDisable]="!compare" 
+              [compareData]="compareData" 
+              [stateData]="stateData"
+              [originalDataLabel]="'Main'"
+              [compareDataLabel]="'Compare'"
+              >
+              </cdg-data-display>
               </div>
             </div>
            </nb-tab>
@@ -104,8 +111,18 @@
                     Compare Map:
                     <cdg-dropdown [values]="stateList" (change)="changedGeneratedCompareState($event)" name="States"></cdg-dropdown>
                   </div>
+                  <br>
+                  <br>
                   <div id="compare-container" style="max-height:0px; width:100%">
-                    <cdg-data-display *ngIf="generatedCompareConDistData != null && generatedConDistData != null" [compareDisable]="!generatedCompare" [compareData]="generatedCompareConDistData" [stateData]="generatedConDistData"></cdg-data-display>
+                    <cdg-data-display 
+                        *ngIf="generatedCompareConDistData != null && generatedConDistData != null" 
+                        [compareDisable]="!generatedCompare" 
+                        [compareData]="generatedCompareConDistData" 
+                        [stateData]="generatedConDistData"
+                        [originalDataLabel]="'Generated'"
+                        [compareDataLabel]="'Original'"
+                        >
+                        </cdg-data-display>
                   </div>
                 </nb-tab>
 

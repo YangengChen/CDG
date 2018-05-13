@@ -1,38 +1,44 @@
 <div class="dist-container">
-  <nb-card class="dist-data" *ngFor="let district of stateData.districts">
-    <h6>{{district.name}}</h6>
-    Population: {{district.population}}
+  <nb-card class="dist-data">
+    <h6>{{originalDataLabel}}</h6>
+    {{originalData.name}}
+    Population: {{originalData.population}}
     <br>
     Election Data:
       <br>
-      Year: {{district.presidentialElection.year}}
+      Year: {{originalData.presidentialElection.year}}
       <br>
       Voting Totals:
         <br>
-        Democratic: {{district.presidentialElection.partyTotals.DEMOCRATIC}}
+        Democratic: {{originalData.presidentialElection.partyTotals.DEMOCRATIC}}
           <br>
-        Republican: {{district.presidentialElection.partyTotals.REPUBLICAN}}
+        Republican: {{originalData.presidentialElection.partyTotals.REPUBLICAN}}
           <br>
-        Other: {{district.presidentialElection.partyTotals.OTHER}}
+        Other: {{originalData.presidentialElection.partyTotals.OTHER}}
     <br>
-      Precincts: {{district.numPrecincts}}
+      Precincts: {{originalData.numPrecincts}}
   </nb-card>
-  <nb-card class="dist-data" *ngFor="let district of compareData.districts">
-    <h6>{{district.name}}</h6>
-    Population: {{district.population}}
+  <nb-card class="dist-data" *ngIf="compareData != null" >
+    <h6>{{compareDataLabel}}</h6>
+    {{compareData.name}}
+    Population: {{compareData.population}}
     <br>
     Election Data:
       <br>
-      Year: {{district.presidentialElection.year}}
+      Year: {{compareData.presidentialElection.year}}
       <br>
       Voting Totals:
         <br>
-        Democratic: {{district.presidentialElection.partyTotals.DEMOCRATIC}}
+        Democratic: {{compareData.presidentialElection.partyTotals.DEMOCRATIC}}
           <br>
-        Republican: {{district.presidentialElection.partyTotals.REPUBLICAN}}
+        Republican: {{compareData.presidentialElection.partyTotals.REPUBLICAN}}
           <br>
-        Other: {{district.presidentialElection.partyTotals.OTHER}}
+        Other: {{compareData.presidentialElection.partyTotals.OTHER}}
     <br>
-      Precincts: {{district.numPrecincts}}
+      Precincts: {{compareData.numPrecincts}}
   </nb-card>
+<div *ngIf="compareData == null">
+  <br><br><br>
+  No data to compare to ...
+</div>
 </div>
