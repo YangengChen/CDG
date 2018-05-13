@@ -43,8 +43,9 @@ export class GenerationConfiguration {
     lockedPrecincts:any;
     lockedDistricts:Array<string>;
     precinctToDistrict:Object;
+    sameCounty:boolean;
     constructor(){
-        this.contiguityWeight = .4;
+        this.contiguityWeight = 0;
         this.equalPopWeight = .2;
         this.partisanFairWeight = 0.4;
         this.reockWeight = 0.0;
@@ -53,8 +54,11 @@ export class GenerationConfiguration {
         this.permConDist = new Array<string>();
         this.permPrecinct = new Array<string>();
         this.precinctToDistrict = new Object
+        this.sameCounty = false;
     }
-
+    setSameCounty(value){
+        this.sameCounty = value;
+    }
     setPrecinctToDistrict(starting, movedTo){
         console.log("ADDING MOVED DISTRICTS")
         this.precinctToDistrict[starting] = movedTo;
@@ -126,7 +130,7 @@ export class GenerationConfiguration {
         this.reockWeight = weight;
     }
     restartConfig(){
-        this.contiguityWeight = 0.4;
+        this.contiguityWeight = 0.0;
         this.equalPopWeight = 0.2;
         this.partisanFairWeight = 0.4;
         this.reockWeight = 0.0;
@@ -135,5 +139,6 @@ export class GenerationConfiguration {
         this.permConDist = new Array<string>();
         this.permPrecinct = new Array<string>();
         this.precinctToDistrict = new Object;
+        this.sameCounty = false;
     }
 }

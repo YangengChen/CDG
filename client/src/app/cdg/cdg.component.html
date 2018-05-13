@@ -18,23 +18,23 @@
             <h1> Starting Generation ... </h1>
             <mat-spinner mode="spinnerMode"></mat-spinner>
           </div>
-         <nb-tabset *ngIf="!startingGeneration"  class="full-width">
-          <nb-tab tabTitle="Generate">
+         <nb-tabset *ngIf="!startingGeneration"  class="full-width" style="width:100%;">
+          <nb-tab tabTitle="Generate" style="width:100%;">
             <div id="generate-tool-container">
-              <br>
               <div id="pick-state-button">
                 {{stateListLabel}}:
                 <cdg-dropdown [values]="stateList" (change)="changeState($event)" name="States"></cdg-dropdown>
               </div>
               <br>
               <div *ngIf="!flipped" id="slider-container">
-                <cdg-slider  [disabled]="!genConfig || compare" (change)="updateContiguity($event)" name="{{contiguitySliderLabel}}" [slider]="!genConfig ? 0 : genConfig.getContiguityWeight()"></cdg-slider>
+                County Contiguity: <mat-slide-toggle *ngIf="!algoRunning" (change)="countyToggle($event)"></mat-slide-toggle>
+                <br>
+                <br>
                 <cdg-slider  [disabled]="!genConfig || compare" (change)="updateEqualPopulation($event)" name="{{equalPopulationSliderLabel}}" [slider]="!genConfig ? 0 : genConfig.getEqualPopWeight()"></cdg-slider>
                 <cdg-slider  [disabled]="!genConfig || compare" (change)="updatePartisanFairness($event)" name="{{partisanFairnessSliderLabel}}" [slider]="!genConfig ? 0 : genConfig.getPartisanFairnessWeight()"></cdg-slider>
                 <cdg-slider  [disabled]="!genConfig || compare" (change)="updateSchwartz($event)" name="Schwartzberg Weight" [slider]="!genConfig ? 0 : genConfig.getSchwartz()"></cdg-slider>
                 <cdg-slider  [disabled]="!genConfig || compare" (change)="updateHull($event)" name="Hull Ratio Weight" [slider]="!genConfig ? 0 : genConfig.getHull()"></cdg-slider>
                 <cdg-slider  [disabled]="!genConfig || compare" (change)="updateReock($event)" name="Reock Weight" [slider]="!genConfig ? 0 : genConfig.getReock()"></cdg-slider>
-
               </div>
               <div id="generate-button">
                 <cdg-button [disabled]="!canGenerate || compare || algoRunning" (click)="startGeneration()" name="{{generateDistrictsButtonLabel}}"></cdg-button>

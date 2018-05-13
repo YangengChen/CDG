@@ -533,7 +533,9 @@ export class CdgComponent implements OnInit {
   }
 
 
-
+  countyToggle(event){
+    this.genConfig.setSameCounty(event.checked);
+  }
 
 
 
