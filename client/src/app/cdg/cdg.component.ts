@@ -450,8 +450,8 @@ export class CdgComponent implements OnInit {
   stopGenerationClicked(){
     this.genService.stopGeneration()
     .subscribe(data =>{
-      this.algoRunning = false;
-      clearInterval(this.interval);
+      // this.algoRunning = false;
+      // clearInterval(this.interval);
     });
   }
   playGenerationClicked(){
