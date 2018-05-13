@@ -3,6 +3,9 @@ package cdg.dao;
 import cdg.dto.DistrictDTO;
 import cdg.dto.PrecinctDTO;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Table;
@@ -77,6 +80,34 @@ public class Precinct extends Region {
 			}
 		}
 		return null;
+	}
+	
+	/*
+	 * Return all neighborboring precincts in certain congressional district
+	 */
+	public List<Precinct> getNeighborsFromConDistrict(CongressionalDistrict district) {
+		if (district == null) {
+			throw new IllegalArgumentException();
+		}
+		List<Precinct> neighbors = new ArrayList<>();
+		if (this.getNeighborRegions() == null) {
+			return neighbors;
+		}
+		
+		int districtID = district.getId();
+		Precinct neighborPrec;
+		CongressionalDistrict neighborDistrict;
+		for (Region neighbor : this.getNeighborRegions().values()) {
+			neighborPrec = (Precinct) neighbor;
+			neighborDistrict = neighborPrec.getConDistrict();
+			if (neighborDistrict == null) {
+				throw new IllegalStateException();
+			}
+			if (neighborDistrict.getId() == districtID) {
+				neighbors.add(neighborPrec);
+			}
+		}
+		return neighbors;
 	}
 	
 	public boolean hasNeighborDistrict(CongressionalDistrict district) {

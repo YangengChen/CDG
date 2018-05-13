@@ -18,6 +18,8 @@ public class CdgConstraintEvaluator extends ConstraintEvaluator {
 			throw new IllegalArgumentException();
 		}
 		ConstraintEvaluator evaluator = new CdgConstraintEvaluator();
+		Boolean sameCounty = new Boolean(configuration.isSameCounty());
+		evaluator.setConstraint(UserConstraint.SAMECOUNTY, sameCounty);
 		List<String> permConDistIDs = configuration.getPermConDist();
 		List<String> permPrecinctIDs = configuration.getPermPrecinct();
 		Map<String,String> precinctToDistrict = configuration.getPrecinctToDistrict();
@@ -125,6 +127,38 @@ public class CdgConstraintEvaluator extends ConstraintEvaluator {
 		constraintsMet = permConDistricts.get(neighborDist.getPublicID()) == null;
 		if (!constraintsMet) {
 			return constraintsMet;
+		}
+		
+		boolean sameCounty;
+		try {
+			Object constraintValue = this.getConstraints(UserConstraint.SAMECOUNTY);
+			sameCounty = (Boolean)constraintValue; 
+		} catch (Exception e) {
+			throw new IllegalStateException();
+		}
+
+		// if sameCounty configuration is true, is one of it's neighbor precincts in the neighboring district in same county?
+		if(sameCounty && (precinct.getCounty() != null)) {
+			List<Precinct> neighbors = precinct.getNeighborsFromConDistrict(neighborDist);
+			if (neighbors.isEmpty()) {
+				throw new IllegalStateException();
+			}
+			constraintsMet = false;
+			String precinctCounty = precinct.getCounty();
+			String neighborCounty;
+			for (Precinct neighborPre : neighbors) {
+				if (constraintsMet) {
+					break;
+				}
+				neighborCounty = neighborPre.getCounty();
+				if (neighborCounty == null) {
+					continue;
+				}
+				constraintsMet = (precinctCounty.equals(neighborCounty));
+			}
+			if(!constraintsMet) {
+				return constraintsMet;
+			}
 		}
 		
 		Geometry precinctGeom = precinct.getGeometry();
