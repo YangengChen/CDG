@@ -366,13 +366,6 @@ export class CdgComponent implements OnInit {
     let configCheck = this.startGenerationCheck();
     if(configCheck == null){
       this.generateMapObject = this.mapObject;
-      let newMap:any = this.generateMapObject;
-      let features:Array<any> = newMap.features;
-      this.startingGeneration = true;
-      this.precinctToNum = {};
-      for(var i = 0; i < features.length; i++){
-        this.precinctToNum[features[i].precinctID] = i;
-      }
       this.genService.startGeneration(this.genConfig)
       .subscribe(data =>{
         let status:any = data;
@@ -412,7 +405,7 @@ export class CdgComponent implements OnInit {
         }
         else{
           this.steps.push(check);
-          this.showSteps(check.precinctToDistrict)
+          //this.showSteps(check.precinctToDistrict)
         }
       })
     }, 3000);
