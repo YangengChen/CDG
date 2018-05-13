@@ -49,6 +49,7 @@ export class MapComponent implements OnInit{
   get mapObject():mapboxgl.GeoJSONSource{
     return this._mapObject
   }
+  @Input() compare:boolean;
   @Input() congressionalDistricts: Object[]
   @Input() savedMapList:DropdownValue<any>[];
   @Input() mapTypeList:DropdownValue<String>[];

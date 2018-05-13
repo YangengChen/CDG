@@ -1,6 +1,6 @@
 <nb-card>
   <nb-card-header>
-    <div *ngIf="!flipped"  style="position:relative" id="header-container">
+    <div *ngIf="!flipped && !compare"  style="position:relative" id="header-container">
       <div *ngIf="mapTypeList" class="map-dropdown">
         {{mapTypeListLabel}}:<br>
         <cdg-dropdown (change)="onMapTypeChange($event)" [values]="mapTypeList" name="MapType" [disabled]="disableMapTypeList"></cdg-dropdown>
@@ -13,8 +13,14 @@
         <cdg-button [disabled]="disableResetButton" [img]="restartImage" (click)="resetMap()"></cdg-button>
       </div>
     </div>
-    <div *ngIf="flipped"  style="position:relative" id="header-container">
+    <div *ngIf="flipped && !compare"  style="position:relative" id="header-container">
       <h2> Generated Map </h2>
+    </div>
+    <div *ngIf="compare"  style="display:inline-block" id="header-container">
+      <div *ngIf="mapTypeList" class="map-dropdown">
+        {{mapTypeListLabel}}:<br>
+        <cdg-dropdown (change)="onMapTypeChange($event)" [values]="mapTypeList" name="MapType" ></cdg-dropdown>
+      </div>
     </div>
   </nb-card-header>
   <nb-card-body>

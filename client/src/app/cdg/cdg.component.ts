@@ -310,7 +310,7 @@ export class CdgComponent implements OnInit {
     this.generatedCompare  = event.checked;
   }
   getGeneratedCompareState(){
-    this.mapService.getMap(this.generatedCompareSelectedStateId, this.generatedCompareSelectedMapType)
+    this.mapService.getMap(this.selectedGenerationStateId, this.generatedCompareSelectedMapType)
     .subscribe(stateData =>{
         this.generatedCompareMapObject = stateData;
     });
@@ -320,13 +320,13 @@ export class CdgComponent implements OnInit {
     this.getGeneratedCompareState();
   }
   getGeneratedCompareCongressionalDistrictData(){
-    this.mapService.getData(this.generatedCompareSelectedStateId, "congressional")
+    this.mapService.getData(this.selectedGenerationStateId, "congressional")
     .subscribe(stateData => {
       this.generatedCompareConDistData = stateData;
     })   
   }
   getGeneratedCompareData(){
-    this.mapService.getData(this.generatedCompareSelectedStateId, "state")
+    this.mapService.getData(this.selectedGenerationStateId, "state")
     .subscribe(stateData => {
       this.generatedCompareData = stateData;
     })   
@@ -381,6 +381,9 @@ export class CdgComponent implements OnInit {
           this.algoRunning = true;
           this.startingGeneration = false;
           this.flipped = true;
+          this.getGeneratedCompareState();
+          this.getGeneratedCompareCongressionalDistrictData();
+          this.getGeneratedCompareData();
         }
       });
     }
