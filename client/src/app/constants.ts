@@ -10,6 +10,7 @@ export class Constants{
     public static get UNITED_STATES_URL(): string {return " http://localhost:8080/api/map/file/unitedstates"}
     public static get SAVE_URL(): string{return "http://localhost:8080/api/map/save"} 
     public static get SAVE_GEN_URL(): string{return "http://localhost:8080/api/generation/save/map"} 
+    public static get DELETE_GEN_URL(): string{return "http://localhost:8080/api/generation/delete_user_map"} 
     public static get LOGOUT_URL(): string {return "http://localhost:8080/api/user/logout"}
     public static get LOGIN_URL(): string {return "http://localhost:8080/api/user/login"}
     public static get UNITED_STATES_DROPDOWNVALUE(): DropdownValue<State> {return  new DropdownValue<State>(new State("All", "0"), "All")}

@@ -149,6 +149,10 @@ public class User {
 		}
 	    return (Iterable<SavedMapDTO>) list;
 	}
+	
+	public void deleteSavedMap(String id) {
+		savedMaps.remove(id);
+	}
 
 	public Role getRole() {
 		return role;

@@ -26,13 +26,14 @@
               <table id="cart" class="table table-condensed">
               <thead>
                 <tr>
-                  <th style="width:40%"><h4>State</h4></th>
+                  <th style="width:25%"><h4>State</h4></th>
                   <th style="width:10%"><h4>Schwarzberg Weight</h4></th>
                   <th style="width:10%"><h4>Hull Ratio Weight</h4></th>
                   <th style="width:10%"><h4>Reock Weight</h4></th>
                   <th style="width:10%"><h4>Contiguity Weight</h4></th>
                   <th style="width:10%"><h4>Equal Pop Weight</h4></th>
                   <th style="width:10%"><h4>Partisan Fair Weight</h4></th>
+                  <th style="width:15%"><h4>Delete</h4></th>
                 </tr>
               </thead>
               <tbody>
@@ -86,7 +87,12 @@
                 </div>
                 </div>
                 </td> 
+                <!-- <td class="actions" style="text-align:center;"> -->
+                <td class="actions">
+                  <button class="btn btn-danger btn-sm" (click)="deleteMap(map)" style="width: 50%;">DELETE</button>		
+                  </td>
               </tr>
+              
               </tbody>
               </table>
             </div>

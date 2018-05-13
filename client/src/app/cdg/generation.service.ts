@@ -25,6 +25,9 @@ export class GenerationService{
     saveGeneration(){
         return this.http.post(Constants.SAVE_GEN_URL, {}, {withCredentials:true});
     }
+    deleteGeneration(id: string){
+        return this.http.post(Constants.DELETE_GEN_URL,  id, {withCredentials:true});
+    }
 }
 export class GenerationConfiguration {
     private stateId: string;

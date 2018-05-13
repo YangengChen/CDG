@@ -250,9 +250,17 @@ public class GenerationController {
 	@RequestMapping( value = "/get_user_maps")
 	public Iterable<SavedMapDTO> getGeneratedMapData(HttpSession session) 
 	{
-		System.out.println("HEREERER");
 		User loggedUser = (User) session.getAttribute(CdgConstants.SESSION_USER);
 		return loggedUser.getSavedMapsDTO(); 
+	}
+	
+	@RequestMapping( value = "/delete_user_map", method=RequestMethod.POST)
+	public ResponseEntity<?> deleteGeneratedMap(@RequestBody String savedMapId, HttpSession session) 
+	{
+		User loggedUser = (User) session.getAttribute(CdgConstants.SESSION_USER);
+		loggedUser.deleteSavedMap(savedMapId);
+		userRepo.save(loggedUser);
+		return new ResponseEntity<>(HttpStatus.OK); 
 	}
 	
 }
