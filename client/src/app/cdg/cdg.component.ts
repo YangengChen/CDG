@@ -88,7 +88,7 @@ export class CdgComponent implements OnInit {
   flipped:boolean=false;
   compare:boolean;
   generatedCompare:boolean;
-
+  canGenerate: boolean;
 
 
   //LABELS 
@@ -133,6 +133,7 @@ export class CdgComponent implements OnInit {
     this.generatedCompare = false;
     this.algoPaused = false;
     this.algoRunning = false;
+    this.canGenerate = false;
     this.selectedMapType = Constants.INIT_MAP_TYPE;
     this.selectedStateId = Constants.FULLMAP_ID;
     this.compareSelectedMapType = Constants.INIT_MAP_TYPE;
@@ -178,6 +179,7 @@ export class CdgComponent implements OnInit {
       this.genConfig.setState(event.value.id);
       this.selectedStateName = event.label;
       this.selectedStateId = event.value.id;
+      this.canGenerate = true;
       this.getState();
       this.getStateData();
       this.getCongressionalDistrictData();
@@ -256,6 +258,7 @@ export class CdgComponent implements OnInit {
 
   */
   getUnitedStates() {
+    this.canGenerate = false;
     this.mapService.getUnitedStates()
      .subscribe(usData =>{
      	this.mapObject = usData;
@@ -521,6 +524,8 @@ export class CdgComponent implements OnInit {
 
   exitGeneration(){
     this.backToFront();
+    this.getUnitedStates();
+    this.mapReset();
     this.steps = new Array<Object>();
   }
 

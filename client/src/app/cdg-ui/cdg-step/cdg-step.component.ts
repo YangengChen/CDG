@@ -1,5 +1,5 @@
-import { Component, OnInit, Input, Output, EventEmitter} from '@angular/core';
-import { NbCardModule } from "@nebular/theme"
+import { Component, OnInit, Input, Output, EventEmitter, } from '@angular/core';
+import { DecimalPipe } from "@angular/common"
 @Component({
   selector: 'cdg-step',
   templateUrl: './cdg-step.component.html',
@@ -11,7 +11,8 @@ export class CdgStepComponent implements OnInit {
   constructor() {
 
   }
-  ngOnInit() {}
+  ngOnInit() {
+  }
 
   
 

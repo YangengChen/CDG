@@ -1,11 +1,11 @@
 <nb-card *ngIf="step.status" class="step-container">
-    Start Total Goodness: {{step.startTotalGoodness}}
+    Start Total Goodness: {{step.startTotalGoodness | number:'2.1-2'}}
+    <br>
+    Current Total Goodness: {{step.currTotalGoodness | number:'2.1-2'}}
     <br>
     Start Time: {{step.startTime}}
     <br>
     Current Time: {{step.timestamp}}
-    <br>
-    Current Total Goodness: {{step.currTotalGoodness}}
     <br>
     Iteration: {{step.currIteration}}
     <br>

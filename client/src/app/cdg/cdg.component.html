@@ -37,7 +37,7 @@
 
               </div>
               <div id="generate-button">
-                <cdg-button [disabled]="!genConfig || compare || algoRunning" (click)="startGeneration()" name="{{generateDistrictsButtonLabel}}"></cdg-button>
+                <cdg-button [disabled]="!canGenerate || compare || algoRunning" (click)="startGeneration()" name="{{generateDistrictsButtonLabel}}"></cdg-button>
               </div>
             </div>
           </nb-tab>
