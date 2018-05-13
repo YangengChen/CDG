@@ -120,7 +120,7 @@ public class CongressionalDistrict extends Region {
 		
 		try {
 			if (isNeighborPrecinct(precinct)) {
-				addBorderPrecinct(precinct);
+				addNeighborPrecinct(precinct);
 			} else {
 				return null;
 			}
@@ -167,12 +167,35 @@ public class CongressionalDistrict extends Region {
 		return false;
 	}
 	
-	private void addBorderPrecinct(Precinct precinct) {
+	private void addNeighborPrecinct(Precinct precinct) {
 		if (precinct == null) {
 			throw new IllegalArgumentException();
 		}
-		borderPrecincts.put(precinct.getId(), precinct);
+		//check if will be a border precinct
+		boolean onBorder = onBorder(precinct);
+		if (onBorder) {
+			borderPrecincts.put(precinct.getId(), precinct);
+		}
 		addToGeometry(precinct);
+	}
+	
+	/* check if will be a border precinct */
+	private boolean onBorder(Precinct precinct) {
+		int currID = this.getId();
+		Precinct neighborPrec;
+		CongressionalDistrict neighborDistrict;
+		for (Region neighbor : precinct.getNeighborRegions().values()) {
+			neighborPrec = (Precinct) neighbor;
+			neighborDistrict = neighborPrec.getConDistrict();
+			if (neighborDistrict == null) {
+				throw new IllegalStateException();
+			}
+			
+			if (neighborDistrict.getId() != currID) {
+				return true;
+			}
+		}
+		return false;
 	}
 	
 	private void addToGeometry(Precinct precinct) {
@@ -190,24 +213,26 @@ public class CongressionalDistrict extends Region {
 			throw new IllegalStateException();
 		}
 		this.setGeometry(currGeom);
-			
-		//check if adding precinct geometry removes any border precincts (possible from the precinct's neighbors)
-		if (precinct.getNeighborRegions() == null) {
-			throw new IllegalStateException();
-		}
-		int currID = this.getId();
-		Precinct neighborPrec;
-		CongressionalDistrict neighborDistrict;
-		for (Region neighbor : precinct.getNeighborRegions().values()) {
-			neighborPrec = (Precinct) neighbor;
-			neighborDistrict = neighborPrec.getConDistrict();
-			if (neighborDistrict == null) {
+		
+		if (borderPrecincts.get(precinct.getId()) != null) {
+			//check if adding precinct geometry removes any border precincts (possible from the precinct's neighbors)
+			if (precinct.getNeighborRegions() == null) {
 				throw new IllegalStateException();
 			}
-			//if neighbor's district is the current district and if none of the neighbor's neighbors belong to another district, remove from border precincts
-			if ((neighborDistrict.getId() == currID) && !onBorder(neighborPrec, precinct)) {
-				if (borderPrecincts.remove(neighborPrec.getId()) == null) {
+			int currID = this.getId();
+			Precinct neighborPrec;
+			CongressionalDistrict neighborDistrict;
+			for (Region neighbor : precinct.getNeighborRegions().values()) {
+				neighborPrec = (Precinct) neighbor;
+				neighborDistrict = neighborPrec.getConDistrict();
+				if (neighborDistrict == null) {
 					throw new IllegalStateException();
+				}
+				//if neighbor's district is the current district and if none of the neighbor's neighbors belong to another district, remove from border precincts
+				if ((neighborDistrict.getId() == currID) && !onBorder(neighborPrec, precinct)) {
+					if (borderPrecincts.remove(neighborPrec.getId()) == null) {
+						throw new IllegalStateException();
+					}
 				}
 			}
 		}
@@ -273,6 +298,7 @@ public class CongressionalDistrict extends Region {
 			return false;
 		}
 		boolean isBorder = borderPrecincts.get(precinctID) == null ? false : true;
+
 		return isBorder;
 	}
 	

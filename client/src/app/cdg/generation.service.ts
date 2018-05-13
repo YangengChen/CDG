@@ -30,27 +30,35 @@ export class GenerationConfiguration {
     private stateId: string;
     private permConDist: Array<string>;
     private permPrecinct: Array<string>;
-    compactnessWeight:Number;
+
+    schwartzbergWeight:Number;
+    hullRatioWeight:Number;
+    reockWeight:Number;
     contiguityWeight:Number;
     equalPopWeight: Number;
-    racialFairWeight: Number;
     partisanFairWeight:Number;
     lockedPrecincts:any;
     lockedDistricts:Array<string>;
-    precinctToDistrict:Map<String, String>;
+    precinctToDistrict:Object;
     constructor(){
-        this.compactnessWeight = .4;
         this.contiguityWeight = .4;
         this.equalPopWeight = .2;
-        this.racialFairWeight = 0.0;
-        this.partisanFairWeight = 0.0;
+        this.partisanFairWeight = 0.4;
+        this.reockWeight = 0.0;
+        this.schwartzbergWeight = 0.0;
+        this.hullRatioWeight = 0.0;
         this.permConDist = new Array<string>();
         this.permPrecinct = new Array<string>();
-        this.precinctToDistrict = new Map<String, String>()
+        this.precinctToDistrict = new Object
     }
 
-    addMovedPrecinct(starting, movedTo){
-        this.precinctToDistrict.set(starting, movedTo);
+    setPrecinctToDistrict(starting, movedTo){
+        console.log("ADDING MOVED DISTRICTS")
+        this.precinctToDistrict[starting] = movedTo;
+        console.log("PRECINCTS TO DISTRICTS " + JSON.stringify(this.precinctToDistrict))
+    }
+    getPrecinctToDistrict(){
+        return this.precinctToDistrict;
     }
     setState(state:string){
         this.stateId = state;
@@ -80,24 +88,15 @@ export class GenerationConfiguration {
     setPartisanFairness(weight:Number){
         this.partisanFairWeight = weight;
     }
-    setCompactnessWeight(weight: Number){
-        this.compactnessWeight = weight;
-        console.log(this.compactnessWeight);
-    }
+
     setContiguityWeight(weight:Number){
         this.contiguityWeight = weight;
     }
     setEqualPopWeight(weight:Number){
         this.equalPopWeight = weight;
     }
-    setRacialFairWeight(weight:Number){
-        this.racialFairWeight = weight;
-    }
     getPartisanFairnessWeight(){
         return this.partisanFairWeight;
-    }
-    getCompactnessWeight(){
-        return this.compactnessWeight;
     }
     getContiguityWeight(){
         return this.contiguityWeight;
@@ -105,15 +104,33 @@ export class GenerationConfiguration {
     getEqualPopWeight(){
         return this.equalPopWeight;
     }
-    getRacialFairWeight(){
-        return this.racialFairWeight;
+    getSchwartz(){
+        return this.schwartzbergWeight;
+    }
+    setSchwartz(weight){
+        this.schwartzbergWeight = weight;
+    }
+    getHull(){
+        return this.hullRatioWeight;
+    }
+    setHull(weight){
+        this.hullRatioWeight = weight;
+    }
+    getReock(){
+        return this.reockWeight;
+    }
+    setReock(weight){
+        this.reockWeight = weight;
     }
     restartConfig(){
-        this.compactnessWeight = .4;
-        this.contiguityWeight = .4;
-        this.equalPopWeight = .2;
-        this.partisanFairWeight = 0.0;
+        this.contiguityWeight = 0.4;
+        this.equalPopWeight = 0.2;
+        this.partisanFairWeight = 0.4;
+        this.reockWeight = 0.0;
+        this.schwartzbergWeight = 0.0;
+        this.hullRatioWeight = 0.0;
         this.permConDist = new Array<string>();
         this.permPrecinct = new Array<string>();
+        this.precinctToDistrict = new Object;
     }
 }

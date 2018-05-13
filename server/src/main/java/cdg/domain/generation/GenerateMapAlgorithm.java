@@ -1,10 +1,10 @@
 package cdg.domain.generation;
 
-import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CancellationException;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -78,8 +78,9 @@ public class GenerateMapAlgorithm {
 	}
 	
 	public void stop() {
-		if (generation != null) {
-			generation.cancel(true);
+		if (!isComplete()) {
+			boolean canceled = generation.cancel(true);
+			System.err.println(canceled);
 		}
 	}
 	
@@ -111,7 +112,7 @@ public class GenerateMapAlgorithm {
 	public GenerationState getState() {
 		try {
 			GenerationState genState = (GenerationState)STATE.clone();
-			genState.setPrecinctToDistrict((Map)(((HashMap)STATE.getPrecinctToDistrict()).clone()));
+			genState.setPrecinctToDistrict(new ConcurrentHashMap<String,String>(STATE.getPrecinctToDistrict()));
 			return genState;
 		} catch (CloneNotSupportedException ce) {
 			return null;
@@ -147,6 +148,7 @@ public class GenerateMapAlgorithm {
 		try {
 			double startStateGoodness = CONDISTRICTMAP.getTotalGoodness();
 			STATE.setStartTotalGoodness(startStateGoodness);
+			STATE.setStartDistrictsGoodness(CONDISTRICTMAP.getAllDistrictGoodness());
 			while (continueWithGeneration()) {
 				double currStateGoodness = CONDISTRICTMAP.getTotalGoodness();
 				STATE.setLastTotalGoodness(currStateGoodness);
@@ -229,8 +231,10 @@ public class GenerateMapAlgorithm {
 		int distID = STATE.getCurrDistrictID();
 		int neighborID = STATE.getCurrNeighborID();
 		int precinctID = STATE.getCandidatePrecinctUID();
-		if (CONDISTRICTMAP.movePrecinct(neighborID, distID, precinctID) != distID) {
-			throw new IllegalStateException();
+		if (CONDISTRICTMAP.movePrecinct(neighborID, distID, precinctID) < 0) {
+			//move was not undone
+			System.err.println("move was not undone");
+			STATE.getPrecinctToDistrict().put(CONDISTRICTMAP.getPrecinctPublicID(precinctID), CONDISTRICTMAP.getDistrictPublicID(neighborID));
 		}
 	}
 	
@@ -263,11 +267,11 @@ public class GenerateMapAlgorithm {
 	
 	private boolean continueWithDistrict()
 	{
-		int iteration = STATE.getCurrDistrictIteration();
+		/*int iteration = STATE.getCurrDistrictIteration();
 		if (iteration >= MAX_DISTRICT_ITERATIONS) {
 			System.err.println("District reached max iterations");
 			return false;
-		}
+		}*/
 		double startDistGoodness = STATE.getCurrDistrictStartGoodness();
 		int distID = STATE.getCurrDistrictID();
 		double currDistGoodness = CONDISTRICTMAP.getGoodness(distID);
@@ -289,12 +293,14 @@ public class GenerateMapAlgorithm {
 			System.err.println("Reached max iterations");
 			return false;
 		}
-		/*double lastTotalGoodness = STATE.getLastTotalGoodness();
+		double lastTotalGoodness = STATE.getLastTotalGoodness();
 		double currTotalGoodness = CONDISTRICTMAP.getTotalGoodness();
-		if (lastTotalGoodness == 0) {
-			return true;
+		double percentageChange;
+		if (lastTotalGoodness == 0 && currTotalGoodness == 0) {
+			percentageChange = 0;
+		} else {
+			percentageChange = (currTotalGoodness - lastTotalGoodness)/lastTotalGoodness;
 		}
-		double percentageChange = (currTotalGoodness - lastTotalGoodness)/lastTotalGoodness;
 		if (percentageChange < END_THRESHOLD_PERCENT) {
 			System.err.println("Below threshold- " + percentageChange);
 			STATE.incrementTimesBelowGenThreshold();
@@ -303,7 +309,7 @@ public class GenerateMapAlgorithm {
 			}
 			return false;
 		}
-		STATE.setTimesBelowGenThreshold(0);*/
+		STATE.setTimesBelowGenThreshold(0);
 		return true;
 	}
 }

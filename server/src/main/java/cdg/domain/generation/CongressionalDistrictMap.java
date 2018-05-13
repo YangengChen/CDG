@@ -47,6 +47,11 @@ public class CongressionalDistrictMap {
 		initMap(manualMappings);
 		evaluateAllGoodness(goodnessEval);
 		initHelpers(constraintEval);
+		System.err.println(manualMappings != null ? manualMappings.toString() : "{}");
+		System.err.println(constraintEval.getConstraints(UserConstraint.PERMCONDIST) != null ? 
+				constraintEval.getConstraints(UserConstraint.PERMCONDIST).toString() : "{}");
+		System.err.println(constraintEval.getConstraints(UserConstraint.PERMPRECINCT) != null ?
+				constraintEval.getConstraints(UserConstraint.PERMPRECINCT).toString() : "{}");
 	}
 	
 	private int generateCustomMap(Iterable<CongressionalDistrict> districts) {
@@ -381,13 +386,19 @@ public class CongressionalDistrictMap {
 		if (currDistrict == null || (neighborDistrict == null && districtIDTo >= 0)) {
 			throw new IllegalArgumentException();
 		}
+		
+		//check if this was called by unmove and if the precinct is not on the border anymore
+		if (neighborDistrict != null && currDistrict.getBorderPrecincts().get(precinctID) == null) { 
+			return -1; // keep the move
+		}
+		
 		Precinct currPrecinct;
 		currPrecinct = currDistrict.removePrecinct(precinctID);
 		if (currPrecinct == null) {
 			System.out.println("current precinct is null");
 			throw new IllegalStateException();
 		}
-		if (neighborDistrict == null) {
+		if (neighborDistrict == null) { // called by algorithm move
 			/* Should return the same neighboring precinct/congressional district determined through the ConstraintsEvaluator if the 
 			 * precinct object has not changed since this was last called */
 			Precinct neighborPrecinct = currPrecinct.getFromNeighborConDistrict();

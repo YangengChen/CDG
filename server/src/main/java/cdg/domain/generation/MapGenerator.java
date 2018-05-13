@@ -1,7 +1,9 @@
 package cdg.domain.generation;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -79,7 +81,14 @@ public class MapGenerator {
 			response.setStartTotalGoodness(currGenState.getStartTotalGoodness());
 			response.setCurrTotalGoodness(currGenState.getLastTotalGoodness());
 			response.setCurrIteration(currGenState.getCurrGenIteration());
-			response.setPrecinctToDistrict(currGenState.getPrecinctToDistrict());
+			List<PrecinctDistrictMap> precinctToDistrict = new ArrayList<>();
+			PrecinctDistrictMap mapping;
+			for (Map.Entry<String, String> map : currGenState.getPrecinctToDistrict().entrySet()) {
+				mapping = new PrecinctDistrictMap(map.getKey(),map.getValue());
+				precinctToDistrict.add(mapping);
+			}
+			response.setPrecinctToDistrict(precinctToDistrict);
+			response.setStartDistrictsGoodness(currGenState.getStartDistrictsGoodness());
 			response.setDistrictsGoodness(currGenState.getDistrictsGoodness());
 			
 			Calendar calendar = Calendar.getInstance();
@@ -120,9 +129,9 @@ public class MapGenerator {
 		savedMap.setContiguityWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.CONTIGUITY));
 		savedMap.setEqualPopWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.EQUALPOPULATION));
 		savedMap.setPartisanFairWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.PARTISANFAIRNESS));
-		savedMap.setHullRatioWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.HULLRATIOWEIGHT));
-		savedMap.setReockWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.REOCKWEIGHT));
-		savedMap.setSchwarzbergWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.SCHWARZBERGWEIGHT));
+		savedMap.setHullRatioWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.HULLRATIO));
+		savedMap.setReockWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.REOCK));
+		savedMap.setSchwarzbergWeight(goodnessEvaluator.getGoodnessMeasure(GoodnessMeasure.SCHWARTZBERG));
 		savedMap.setDistricts(new HashSet<>());
 		SavedMapping currDistrictMapping;
 		Set<Precinct> currPrecinctSet;
