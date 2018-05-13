@@ -53,11 +53,11 @@
       <a *ngIf="currPrecinct.prsR"> Republican Presidential Votes: {{currPrecinct.prsR}} <br></a>
       <a *ngIf="currPrecinct.prsOTH"> Other Presidential Votes: {{currPrecinct.prsOTH}}<br> </a>
       <a *ngIf="currPrecinct.districtRep"> District Representative: {{currPrecinct.districtRep}}<br> </a>
-      <a *ngIf="currPrecinct.wastedVoteRatio"> Wasted Vote Ratio: {{currPrecinct.wastedVoteRatio | '2.1-2'}}<br> </a>
-      <a *ngIf="currPrecinct.schwarzbergCompactness"> Schwarzberg Compactness: {{currPrecinct.schwarzbergCompactness | '2.1-2'}}<br> </a>
-      <a *ngIf="currPrecinct.hullRatioCompactness"> Hull Ratio Compactness: {{currPrecinct.hullRatioCompactness | '2.1-2'}}<br> </a>
-      <a *ngIf="currPrecinct.reockCompactness"> Reock Compactness: {{currPrecinct.reockCompactness | '2.1-2'}}<br> </a>
-      <a *ngIf="currPrecinct.goodness"> Goodness: {{currPrecinct.goodness | '2.1-2' }}<br> </a>
+      <a *ngIf="currPrecinct.wastedVoteRatio"> Wasted Vote Ratio: {{currPrecinct.wastedVoteRatio | number:'2.1-2'}}<br> </a>
+      <a *ngIf="currPrecinct.schwarzbergCompactness"> Schwarzberg Compactness: {{currPrecinct.schwarzbergCompactness | number:'2.1-2'}}<br> </a>
+      <a *ngIf="currPrecinct.hullRatioCompactness"> Hull Ratio Compactness: {{currPrecinct.hullRatioCompactness | number:'2.1-2'}}<br> </a>
+      <a *ngIf="currPrecinct.reockCompactness"> Reock Compactness: {{currPrecinct.reockCompactness | number:'2.1-2'}}<br> </a>
+      <a *ngIf="currPrecinct.goodness"> Goodness: {{currPrecinct.goodness | number:'2.1-2' }}<br> </a>
     </mgl-popup>
     </mgl-layer>
         <mgl-control

@@ -14,6 +14,8 @@ import { NgxMapboxGLModule } from 'ngx-mapbox-gl';
 import {MatDialogModule, MatDialog} from '@angular/material/dialog';
 import { CdgPermPickerComponent } from "../../cdg-ui/cdg-perm-picker/cdg-perm-picker.component";
 import { GenerationConfiguration } from "../generation.service";
+import { DecimalPipe } from "@angular/common"
+
 @Component({
   selector: 'map',
   templateUrl: './map.component.html',
@@ -111,7 +113,6 @@ export class MapComponent implements OnInit{
   }
   setData(map:mapboxgl.GeoJSONGeometry){
     
-    while(!this.map){return new Promise(resolve => setTimeout(resolve, 1000));}
     let source:any = this.map.getSource('states');
     console.log("SOURCE TYPE " + source.type)
     source.setData(map);
