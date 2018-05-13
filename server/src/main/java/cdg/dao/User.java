@@ -1,6 +1,11 @@
 package cdg.dao;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -15,6 +20,7 @@ import javax.persistence.Transient;
 import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import cdg.domain.generation.MapGenerator;
+import cdg.dto.SavedMapDTO;
 import cdg.dto.UserDTO;
 
 @Entity // This tells Hibernate to make a table out of this class
@@ -125,6 +131,23 @@ public class User {
 
 	public void setSavedMaps(Map<String, SavedMap> savedMaps) {
 		this.savedMaps = savedMaps;
+	}
+	
+	public Iterable<SavedMapDTO> getSavedMapsDTO() {
+		List<SavedMapDTO> list = new ArrayList<SavedMapDTO>();
+		for(SavedMap map: this.savedMaps.values()) {
+			SavedMapDTO newMap = new SavedMapDTO(
+					map.getId(), 
+					map.getContiguityWeight(), 
+					map.getEqualPopWeight(), 
+					map.getHullRatioWeight(),
+					map.getPartisanFairWeight(), 
+					map.getReockWeight(), 
+					map.getSchwarzbergWeight(), 
+					map.getState().getName());
+			list.add(newMap);
+		}
+	    return (Iterable<SavedMapDTO>) list;
 	}
 
 	public Role getRole() {

@@ -22,6 +22,9 @@ export class GenerationService{
     checkStatus(){
         return this.http.get(Constants.STATUS_URL, {withCredentials:true});
     }
+    saveGeneration(){
+        return this.http.post(Constants.SAVE_GEN_URL, {}, {withCredentials:true});
+    }
 }
 export class GenerationConfiguration {
     private stateId: string;

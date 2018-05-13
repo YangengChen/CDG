@@ -17,6 +17,9 @@ import cdg.properties.CdgConstants;
 import cdg.repository.UserRepository;
 import cdg.services.UserService;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
@@ -72,9 +75,14 @@ public class UserController {
 	}
 
 	@RequestMapping(path=CdgConstants.USER_ALL_USERS_PATH)
-	public Iterable<User> getAllUsers() {
+	public Iterable<UserDTO> getAllUsers() {
 		// This returns a JSON or XML with the users
-		return userRepository.findAll();
+		Iterable<User> users = userRepository.findAll();
+		List<UserDTO> usersDTO = new ArrayList<UserDTO>(); 
+		for(User user: users) {
+			usersDTO.add(user.getDTO());
+		}
+		return usersDTO;
 	}	
 
 	@RequestMapping(value="/delete_user", method=RequestMethod.POST) 
@@ -84,8 +92,10 @@ public class UserController {
 	}
 	
 	@RequestMapping(value="/edit_user", method=RequestMethod.POST) 
-	public ResponseEntity<User> edit_user(@RequestBody User user,HttpSession session) {
-		userService.editUser(user);
+	public ResponseEntity<UserDTO> edit_user(@RequestBody UserDTO user,HttpSession session) {
+		User edittedUser = userService.editUser(user);
+		session.removeAttribute(CdgConstants.SESSION_USER);
+		session.setAttribute(CdgConstants.SESSION_USER, edittedUser);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 	

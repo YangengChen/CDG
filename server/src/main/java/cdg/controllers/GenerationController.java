@@ -34,6 +34,7 @@ import cdg.domain.generation.MapGenerator;
 import cdg.domain.map.MapType;
 import cdg.domain.map.MapTypeEnumConverter;
 import cdg.dto.MapDataDTO;
+import cdg.dto.SavedMapDTO;
 import cdg.properties.CdgConstants;
 import cdg.repository.SavedMapRepository;
 import cdg.repository.StateRepository;
@@ -243,6 +244,15 @@ public class GenerationController {
 	@RequestMapping( value = CdgConstants.GENERATION_SAVE_MAP_DATA_PATH, method=RequestMethod.POST)
 	public void saveGeneratedData(@RequestBody MapDataDTO dataToSave) 
 	{
-
+		
 	}
+	
+	@RequestMapping( value = "/get_user_maps")
+	public Iterable<SavedMapDTO> getGeneratedMapData(HttpSession session) 
+	{
+		System.out.println("HEREERER");
+		User loggedUser = (User) session.getAttribute(CdgConstants.SESSION_USER);
+		return loggedUser.getSavedMapsDTO(); 
+	}
+	
 }

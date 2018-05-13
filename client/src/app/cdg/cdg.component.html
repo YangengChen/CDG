@@ -77,7 +77,7 @@
                       <cdg-button style="margin-left:20%" [disabled]="!algoRunning" (click)="stopGenerationClicked()" [img]="stopImage"></cdg-button>
                     </div>
                     <div class="generating-button">
-                      <cdg-button [disabled]="algoRunning"  name="Save Generated District"></cdg-button>
+                      <cdg-button [disabled]="algoRunning" (click)="saveGeneration()" name="Save Generated District"></cdg-button>
                     </div>
                     <br>
                     <div class="generating-button">

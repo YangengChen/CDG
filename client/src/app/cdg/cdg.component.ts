@@ -238,6 +238,9 @@ export class CdgComponent implements OnInit {
           this.snackBar.generateSnackbar(configCheck);
     }
   }
+  saveGeneration(){
+    this.genService.saveGeneration().subscribe( ) ;
+  }
   startGenerationCheck(){
     if( (this.genConfig.getCompactnessWeight().valueOf() + this.genConfig.getContiguityWeight().valueOf()
     		+ this.genConfig.getEqualPopWeight().valueOf()

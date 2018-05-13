@@ -32,6 +32,10 @@ export class LoginService {
   isUserLoggedIn(): any{    
     return this.http.get(endpoints.GET_LOGGED_IN_USER, {withCredentials: true});
   }
+  getUserMaps(): any{    
+    return this.http.get(endpoints.GET_ALL_USER_MAPS_ENDPOINT, {withCredentials: true});
+  }
+
   // private handleError (error: Response | any) {
   //   console.error(error.message || error);
   //   return Observable.throw(error.status);

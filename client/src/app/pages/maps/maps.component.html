@@ -1,0 +1,98 @@
+<head>
+  <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet" id="bootstrap-css">
+  <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
+  <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+</head>
+  
+  <!-- Navigation -->
+  <nav class="navbar navbar-expand-lg navbar-light fixed-top" [ngClass]="{'navbar-shrink':isScrolled}" id="mainNav">
+    <div class="container">
+      <a class="navbar-brand js-scroll-trigger" href="#page-top">Congressional District Generator</a>
+      <a class="nav-link js-scroll-trigger" href="" style="float: right;" (click)="logout()">Logout</a>
+    </div>
+  </nav>
+  
+  <body>
+    <br>
+    <div class="container">
+      <div class="row">
+        <div class="form-body">
+          <ul class="nav nav-tabs final-login">
+            <li id="usersTab" class="active"><a data-toggle="pill" href="#sectionA">Maps</a></li>
+          </ul>
+          <div class="tab-content">
+            <div id="sectionA" class="tab-pane fade in active">
+            <div class="innter-form">
+              <table id="cart" class="table table-condensed">
+              <thead>
+                <tr>
+                  <th style="width:40%"><h4>State</h4></th>
+                  <th style="width:10%"><h4>Schwarzberg Weight</h4></th>
+                  <th style="width:10%"><h4>Hull Ratio Weight</h4></th>
+                  <th style="width:10%"><h4>Reock Weight</h4></th>
+                  <th style="width:10%"><h4>Contiguity Weight</h4></th>
+                  <th style="width:10%"><h4>Equal Pop Weight</h4></th>
+                  <th style="width:10%"><h4>Partisan Fair Weight</h4></th>
+                </tr>
+              </thead>
+              <tbody>
+              <tr class="listItem" *ngFor="let map of SavedMaps">
+                <td data-th="State">
+                  <div class="row">
+                  <div class="col-sm-10">
+                  <h5 class="nomargin">{{map.state}}</h5>
+                  </div>
+                  </div>
+                </td>
+                <td>
+                <div class="row">
+                <div class="col-sm-10">
+                <h5 class="nomargin">{{map.schwarzbergWeight}}</h5>
+                </div>
+                </div>
+                </td>
+                <td>
+                <div class="row">
+                <div class="col-sm-10">
+                <h5 class="nomargin">{{map.hullRatioWeight}}</h5>
+                </div>
+                </div>
+                </td>
+                <td>
+                <div class="row">
+                <div class="col-sm-10">
+                <h5 class="nomargin">{{map.reockWeight}}</h5>
+                </div>
+                </div>
+                </td>
+                <td>
+                <div class="row">
+                <div class="col-sm-10">
+                <h5 class="nomargin">{{map.contiguityWeight}}</h5>
+                </div>
+                </div>
+                </td>
+                <td>
+                <div class="row">
+                <div class="col-sm-10">
+                <h5 class="nomargin">{{map.equalPopWeight}}</h5>
+                </div>
+                </div>
+                </td>
+                <td>
+                <div class="row">
+                <div class="col-sm-10">
+                <h5 class="nomargin">{{map.partisanFairWeight}}</h5>
+                </div>
+                </div>
+                </td> 
+              </tr>
+              </tbody>
+              </table>
+            </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>

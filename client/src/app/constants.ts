@@ -8,7 +8,8 @@ export class Constants{
     public static get PLAY_URL(): string {return "http://localhost:8080/api/generation/play"}
     public static get START_URL(): string { return "http://localhost:8080/api/generation/start"}
     public static get UNITED_STATES_URL(): string {return " http://localhost:8080/api/map/file/unitedstates"}
-    public static get SAVE_URL(): string{return "http://localhost:8080/api/map/save"}
+    public static get SAVE_URL(): string{return "http://localhost:8080/api/map/save"} 
+    public static get SAVE_GEN_URL(): string{return "http://localhost:8080/api/generation/save/map"} 
     public static get LOGOUT_URL(): string {return "http://localhost:8080/api/user/logout"}
     public static get LOGIN_URL(): string {return "http://localhost:8080/api/user/login"}
     public static get UNITED_STATES_DROPDOWNVALUE(): DropdownValue<State> {return  new DropdownValue<State>(new State("All", "0"), "All")}

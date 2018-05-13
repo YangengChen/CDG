@@ -7,4 +7,5 @@ export const endpoints = {
   GET_LOGGED_IN_USER            : "http://localhost:8080" + "/api/user/get_user",
   GET_ALL_USERS_ENDPOINT        : "http://localhost:8080" + "/api/user/all",
   GET_ALL_STATE_STATS_ENDPOINT  : "http://localhost:8080" + "/api/map/get_state_stats",
+  GET_ALL_USER_MAPS_ENDPOINT    : "http://localhost:8080" + "/api/generation/get_user_maps",
 }

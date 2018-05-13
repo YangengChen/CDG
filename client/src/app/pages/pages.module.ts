@@ -28,6 +28,7 @@ import {
 
 import {AgmCoreModule} from '@agm/core';
 import { ManageComponent } from './manage/manage.component';
+import { MapsComponent } from './maps/maps.component';
 @NgModule({
   imports: [
     NbSidebarModule,
@@ -49,6 +50,7 @@ import { ManageComponent } from './manage/manage.component';
   declarations: [
     LoginComponent,
     ManageComponent,
+    MapsComponent,
   ],
   providers:[NbSidebarService,LoginService]
 })

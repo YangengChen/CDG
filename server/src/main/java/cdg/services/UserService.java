@@ -4,8 +4,10 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import cdg.dao.User;
+import cdg.dto.UserDTO;
 import cdg.repository.UserRepository;
 
 @Service
@@ -43,14 +45,21 @@ public class UserService {
 		return deleteUser;
 	}
 	
-	public User editUser(User user) {
-		User oldUser = userRepository.findOneByEmail(user.getEmail());
-		user.setId(oldUser.getId());
-		String password = (user.getPassword().isEmpty()) ? oldUser.getPassword() : user.encryptPassword();
-		user.setPassword(password);
-		userRepository.save(user);
-		return user;
+	public User editUser(UserDTO user) {
+		User savedUser = userRepository.findOneByEmail(user.getEmail());
+		if(!user.getPassword().isEmpty()) {
+			String password = BCrypt.hashpw(user.getPassword(), BCrypt.gensalt());
+			savedUser.setPassword(password);
+		}
+		if(!user.getFirstName().isEmpty()) {
+			System.out.println(user.getFirstName());
+			savedUser.setFirstName(user.getFirstName());
+		}
+		if(!user.getLastName().isEmpty()) {
+			savedUser.setLastName(user.getLastName());
+		}
+		userRepository.save(savedUser);
+		return savedUser;
 	}
-	
 	
 }
