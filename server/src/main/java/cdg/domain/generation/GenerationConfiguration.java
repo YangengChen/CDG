@@ -7,6 +7,7 @@ public class GenerationConfiguration {
 	private String stateId;
 	private List<String> permConDist;
 	private List<String> permPrecinct;
+	private boolean sameCounty;
 	private double schwartzbergWeight;
 	private double hullRatioWeight;
 	private double reockWeight;
@@ -93,5 +94,13 @@ public class GenerationConfiguration {
 
 	public void setReockWeight(double reockWeight) {
 		this.reockWeight = reockWeight;
+	}
+
+	public boolean isSameCounty() {
+		return sameCounty;
+	}
+
+	public void setSameCounty(boolean sameCounty) {
+		this.sameCounty = sameCounty;
 	}
 }
