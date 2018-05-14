@@ -12,16 +12,16 @@
     <span class="voting" *ngIf="originalData.presidentialElection.partyTotals.OTHER != null">- Other: {{originalData.presidentialElection.partyTotals.OTHER}} </span>
     <span class="election" *ngIf="originalData.numPrecincts != null">- Precincts: {{originalData.numPrecincts}} </span>
     <span class="election" *ngIf="originalData.representative != null">- Representative: {{originalData.representative}} </span>
-    <span class="election" *ngIf="originalData.goodness != null">- Goodness: {{originalData.goodness}} </span>
-    <span class="election" *ngIf="originalData.wastedVoteRatio != null">- Efficiency Gap: {{originalData.wastedVoteRatio}} </span>    
+    <span class="election" *ngIf="originalData.goodness != null">- Goodness: {{originalData.goodness | number: '3.1-2'}} </span>
+    <span class="election" *ngIf="originalData.wastedVoteRatio != null">- Efficiency Gap: {{originalData.wastedVoteRatio | number: '3.1-2'}} </span>    
   </nb-card>
   </div>
   <div style="display:inline-block;">
   <h4 style="margin-left:1rem;">  {{compareDataLabel}}</h4>
   <nb-card class="dist-data" *ngIf="compareData != null" >
     <h5 class="base">{{compareData.name}}</h5>
-    <span class="base" *ngIf="compareData.presidentialElection != null">Election Data: </span>
     <span class="base" *ngIf="compareData.population">- Population: {{compareData.population}} </span>
+    <span class="base" *ngIf="compareData.presidentialElection != null">Election Data: </span>
     <span class="election" *ngIf="compareData.presidentialElection.year != null">- Year: {{compareData.presidentialElection.year}} </span>
     <span class="election" *ngIf="compareData.presidentialElection.partyTotals.DEMOCRATIC != null">Voting Totals: </span>
     <span class="voting" *ngIf="compareData.presidentialElection.partyTotals.DEMOCRATIC != null">- Democratic: {{compareData.presidentialElection.partyTotals.DEMOCRATIC}} </span>
@@ -29,8 +29,8 @@
     <span class="voting" *ngIf="compareData.presidentialElection.partyTotals.OTHER != null">- Other: {{compareData.presidentialElection.partyTotals.OTHER}} </span>
     <span class="election" *ngIf="compareData.numPrecincts != null">- Precincts: {{compareData.numPrecincts}} </span>
     <span class="election" *ngIf="compareData.representative != null">- Representative: {{compareData.representative}} </span>
-    <span class="election" *ngIf="compareData.goodness != null">- Goodness: {{compareData.goodness}} </span>
-    <span class="election" *ngIf="compareData.wastedVoteRatio != null">- Efficiency Gap: {{compareData.wastedVoteRatio}} </span>    
+    <span class="election" *ngIf="compareData.goodness != null">- Goodness: {{compareData.goodness | number: '3.1-2'}} </span>
+    <span class="election" *ngIf="compareData.wastedVoteRatio != null">- Efficiency Gap: {{compareData.wastedVoteRatio | number: '3.1-2'}} </span>    
   </nb-card>
   </div>
 <div *ngIf="compareData == null">

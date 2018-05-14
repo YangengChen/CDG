@@ -1,5 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { CdgCompareDataComponent } from '../cdg-compare-data/cdg-compare-data.component';
+import { DecimalPipe } from "@angular/common"
+
 @Component({
   selector: 'cdg-data-display',
   templateUrl: './cdg-data-display.component.html',

@@ -11,8 +11,8 @@
     <a *ngIf="district.presidentialElection.totalVotes" class="voting">- Total Votes: {{district.presidentialElection.totalVotes}}</a>
     <a *ngIf="district.presidentialElection.votingAgePopulation" class="voting">- Voting Age Population: {{district.presidentialElection.votingAgePopulation}}</a>
     <a class="voting" *ngIf="district.representative != null">- Representative: {{district.representative}}</a>
-    <a class="voting" *ngIf="district.goodness != null">- Goodness: {{district.goodness}}</a>
-    <a class="voting" *ngIf="district.wastedVoteRatio != null">- Efficiency Gap: {{district.wastedVoteRatio}}</a>
+    <a class="voting" *ngIf="district.goodness != null">- Goodness: {{district.goodness | number:'3.1-2'}}</a>
+    <a class="voting" *ngIf="district.wastedVoteRatio != null">- Efficiency Gap: {{district.wastedVoteRatio | number:'3.1-2'}}</a>
     <cdg-button class="compare-button" [disabled]="compareDisable" (click)="openCompare(district)" name="Compare"></cdg-button>
 </nb-card>
 </div>

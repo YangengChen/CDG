@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import {MatDialogModule, MatDialog, MatDialogRef} from '@angular/material/dialog';
 import { CdgCompareDialogComponent } from './cdg-compare-dialog/cdg-compare-dialog.component'
+import { DecimalPipe } from "@angular/common"
 
 @Component({
   selector: 'app-cdg-compare-data',

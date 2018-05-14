@@ -66,7 +66,7 @@ import 'hammerjs';
 @NgModule({
   declarations: [
     AppComponent,
-    HomeComponent
+    HomeComponent,
   //  CdgStepComponent,
   ],
   imports: [

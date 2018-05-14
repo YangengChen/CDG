@@ -14,12 +14,12 @@
 	"generateTabLabel":"Generate",
 	"fileTabLabel":"File",
 	"mapColorPattern":[
-		["01", "blue"],["02", "green"],["03", "purple"],["04", "yellow"],["05", "purple"],
-		["06", "orange"], ["07", "navy"], ["08", "white"], ["09", "Cyan"],
+		["01", "blue"],["02", "green"],["03", "purple"],["04", "yellow"],["05", "Cyan"],
+		["06", "orange"], ["07", "navy"], ["08", "white"], ["09", "Magenta"],
 		["10", "Chartreuse"],["11", "Cornsilk"],["12", "MediumAquaMarine"],["13", "DarkCyan"],["14", "DarkGoldenRod"],
 		["15", "DarkGrey"], ["16", "DarkKhaki"], ["17", "DarkOliveGreen"], ["18", "DarkOrange"], ["19", "DarkTurquoise"],
 		["20", "DeepPink"],["21", "Gold"],["22", "GreenYellow "],["23", "HotPink  "],["24", "LightCoral"],
-		["25", "LightSkyBlue"], ["26", "Magenta"]
+		["25", "LightSkyBlue"]
 	],
 	"mapTypeListValues":[["STATE","state"], ["CON DIST","congressional"], ["PRECINCT","precinct"]],
 	"pauseImage":"./assets/pause.png",

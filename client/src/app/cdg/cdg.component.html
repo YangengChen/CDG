@@ -86,7 +86,7 @@
                       <span style="margin-top:20px; font-size:20px;">Current Goodnesses</span>
                       <nb-card class="shadow-card">
                         <div *ngIf="currCheck != null" class="goodness-panel">
-                          <span *ngFor="let goodness of currCheck.districtsGoodness" class="goodness-value">Congressional District {{goodness.districtID}}: {{goodness.goodness | number: '3.1-2'}}</span>
+                          <span *ngFor="let goodness of currCheck.districtsGoodness | sort:id " class="goodness-value">Congressional District {{goodness.districtID}}: {{goodness.goodness | number: '3.1-2'}}</span>
                         </div>
                         <div *ngIf="currCheck == null">
                             <h1> Loading Goodness ... </h1>

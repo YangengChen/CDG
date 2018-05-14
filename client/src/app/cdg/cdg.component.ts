@@ -27,11 +27,12 @@ import { StartGenerationFailedComponent } from '../cdg-ui/cdg-snackbar/start-gen
 import * as mapboxgl      from 'mapbox-gl';
 import { MapComponent }                 from "./map/map.component";
 import { DecimalPipe } from "@angular/common"
+import { PipeSort } from '../pipe-sort/pipe-sort.pipe';
 
 @Component({
   selector: 'app-cdg',
   templateUrl: './cdg.component.html',
-  styleUrls: ['./cdg.component.scss']
+  styleUrls: ['./cdg.component.scss'],
 })
 export class CdgComponent implements OnInit {
 
@@ -72,7 +73,7 @@ export class CdgComponent implements OnInit {
   selectedPrecinct: Precinct;
 
   generateMapObject:Object;
-  precinctToNum:any;
+  precinctToNum:any = {};
 
   //LISTS
   stateList: DropdownValue<State>[];
@@ -362,7 +363,6 @@ export class CdgComponent implements OnInit {
   }
 
 
-
   /* GENERATION FUNCTIONS
 
     Functions used in generating the map
@@ -374,6 +374,9 @@ export class CdgComponent implements OnInit {
       this.selectedGenerationStateId = this.selectedStateId;
       this.startingGeneration = true;
       this.generateMapObject = this.mapObject;
+      for(var i = 0; i < this.mapObject.features.length; i++){
+        this.precinctToNum[this.mapObject.features[i].properties.precinctID] = i;
+      }      
       this.genService.startGeneration(this.genConfig)
       .subscribe(data =>{
         let status:any = data;
@@ -422,7 +425,7 @@ export class CdgComponent implements OnInit {
         else{
           this.currCheck = check;
           this.steps.push(check);
-          //this.showSteps(check.precinctToDistrict)
+          this.showSteps(check.precinctToDistrict)
         }
       })
     }, 3000);
@@ -430,13 +433,13 @@ export class CdgComponent implements OnInit {
 
 
   showSteps(moved){
-    let newMap:any = this.generatedMap._mapObject;
+    let newMap:any = this.mapObject;
     let features:Array<any> = newMap.features;
     let i;
     for(i = 0; i < moved.length; i++){
-      newMap.features[this.precinctToNum[moved[i].preinctID]].districtID = moved[i].districtID;
+      this.mapObject.features[this.precinctToNum[moved[i].precinctID]].properties.districtID = moved[i].districtID;
     }
-    this.changeGeneratedMap(newMap);
+    this.changeGeneratedMap(this.mapObject);
   }
   changeGeneratedMap(theNewMap:any){
     console.log("CHANING MAP: " + theNewMap.type);
@@ -533,6 +536,7 @@ export class CdgComponent implements OnInit {
   exitGeneration(){
     this.steps = new Array<Object>();
     this.genConfig.restartConfig();
+    this.selectedMapType = "state";
     this.getUnitedStates();
     this.backToFront();
   }

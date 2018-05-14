@@ -11,6 +11,8 @@ import { NgxMapboxGLModule, MapService } from 'ngx-mapbox-gl';
 import { LeafletModule } from '@asymmetrik/ngx-leaflet';
 import { BrowserModule } from '@angular/platform-browser';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { PipeSortModule } from '../pipe-sort/pipe-sort.pipe';
+
 import { 
   NbSidebarModule, 
   NbLayoutModule, 
@@ -42,14 +44,15 @@ import {AgmCoreModule} from '@agm/core';
     CdgUiModule,
     NbUserModule,
     NbMenuModule,
+    PipeSortModule.forRoot(),
     AgmCoreModule.forRoot({
       apiKey: 'AIzaSyDbo0ubVsgdziReD82-FBC9KCbuiZeFnuU' 
-    })
+    }),
   ],
   declarations: [
     CdgComponent,
     MapComponent,
   ],
-  providers:[NbSidebarService,CdgMapService,GenerationService, MapService]
+  providers:[ NbSidebarService,CdgMapService,GenerationService, MapService]
 })
 export class CdgModule { }

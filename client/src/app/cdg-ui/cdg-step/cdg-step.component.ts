@@ -7,7 +7,8 @@ import { DecimalPipe } from "@angular/common"
 })
 export class CdgStepComponent implements OnInit {
   @Input() step:any;
-
+  currGoodness:any;
+  startGoodness:any;
   constructor() {
 
   }
