@@ -83,8 +83,17 @@
               <nb-tabset style="width:100%;" class="full-width">   
                 <nb-tab tabTitle="Generation" style="width:100%">
                   <div class="container" id="generation-started-controls"> 
+                      <span style="margin-top:20px; font-size:20px;">Current Goodnesses</span>
+                      <nb-card class="shadow-card">
+                        <div *ngIf="currCheck != null" class="goodness-panel">
+                          <span *ngFor="let goodness of currCheck.districtsGoodness" class="goodness-value">Congressional District {{goodness.districtID}}: {{goodness.goodness | number: '3.1-2'}}</span>
+                        </div>
+                        <div *ngIf="currCheck == null">
+                            <h1> Loading Goodness ... </h1>
+                            <mat-spinner mode="spinnerMode"></mat-spinner>
+                        </div>
+                      </nb-card>
                     <div class="generating-button" style="display:flex;">
-                      <cdg-button [disabled]="!algoRunning || !algoPaused" [img]="pauseImage"></cdg-button>
                       <cdg-button style="margin-left:20%" [disabled]="!algoRunning" (click)="stopGenerationClicked()" [img]="stopImage"></cdg-button>
                     </div>
                     <div class="generating-button">

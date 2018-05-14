@@ -26,6 +26,7 @@ import { StartGenerationSuccessComponent } from '../cdg-ui/cdg-snackbar/start-ge
 import { StartGenerationFailedComponent } from '../cdg-ui/cdg-snackbar/start-generation-failed/start-generation-failed.component';
 import * as mapboxgl      from 'mapbox-gl';
 import { MapComponent }                 from "./map/map.component";
+import { DecimalPipe } from "@angular/common"
 
 @Component({
   selector: 'app-cdg',
@@ -45,6 +46,7 @@ export class CdgComponent implements OnInit {
   @ViewChild("generatedMap") generatedMap:MapComponent;
   mapObject: any;  
   originalMapObject:any;
+  currCheck:any;
 
   //MAIN COMPARE MAP DATA
   compareMapObject:Object;
@@ -418,6 +420,7 @@ export class CdgComponent implements OnInit {
           this.algoRunning = false;
         }
         else{
+          this.currCheck = check;
           this.steps.push(check);
           //this.showSteps(check.precinctToDistrict)
         }
@@ -529,9 +532,9 @@ export class CdgComponent implements OnInit {
 
   exitGeneration(){
     this.steps = new Array<Object>();
-    this.mapReset();
-    this.backToFront();
+    this.genConfig.restartConfig();
     this.getUnitedStates();
+    this.backToFront();
   }
 
 
