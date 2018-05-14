@@ -104,13 +104,9 @@
                 <nb-tab tabTitle="Compare">
 
                   <!-- USE GENERATED OBJECTS AND GENERATEDCOMPARE OBJECTS -->
-
+                  <br>
                   Compare Toggle:
                   <mat-slide-toggle (change)="compareGeneratedToggle($event)"></mat-slide-toggle>
-                  <div *ngIf="generatedCompare" id="pick-state-button">
-                    Compare Map:
-                    <cdg-dropdown [values]="stateList" (change)="changedGeneratedCompareState($event)" name="States"></cdg-dropdown>
-                  </div>
                   <br>
                   <br>
                   <div id="compare-container" style="max-height:0px; width:100%">

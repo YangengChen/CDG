@@ -46,8 +46,8 @@ export class GenerationConfiguration {
     sameCounty:boolean;
     constructor(){
         this.contiguityWeight = 0;
-        this.equalPopWeight = .2;
-        this.partisanFairWeight = 0.4;
+        this.equalPopWeight = 0.0;
+        this.partisanFairWeight = 0.0;
         this.reockWeight = 0.0;
         this.schwartzbergWeight = 0.0;
         this.hullRatioWeight = 0.0;
@@ -131,8 +131,8 @@ export class GenerationConfiguration {
     }
     restartConfig(){
         this.contiguityWeight = 0.0;
-        this.equalPopWeight = 0.2;
-        this.partisanFairWeight = 0.4;
+        this.equalPopWeight = 0.0;
+        this.partisanFairWeight = 0.0;
         this.reockWeight = 0.0;
         this.schwartzbergWeight = 0.0;
         this.hullRatioWeight = 0.0;

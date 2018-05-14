@@ -1,12 +1,23 @@
 .dist-data {
     margin:10px;
     padding:5%;
-    width:300px;
-    display: inline-block;
+    width:400px;
+    height:100%;
     box-shadow: 0 10px 20px rgba(0,0,0,0.19), 0 6px 6px rgba(0,0,0,0.23);
-
 }
-
 .dist-container{
     width:100%;
 }
+.voting{
+    margin-left: 1.5rem;
+    margin-top:1rem;
+}
+.election{
+    margin-left: 1rem;
+    margin-top: 1rem;
+}
+.base{
+    margin-left: .5rem;
+    margin-top: 1rem;
+}
+

@@ -1,25 +1,18 @@
 <div *ngIf="stateData != null">
 <nb-card class="dist-container" *ngFor="let district of stateData.districts">
-    <h6>{{district.name}}</h6>
-    Population: {{district.population}}
-    <br>
-    Election Data:
-      <br>
-      Year: {{district.presidentialElection.year}}
-      <br>
-      Voting Totals:
-        <br>
-        Democratic: {{district.presidentialElection.partyTotals.DEMOCRATIC}}
-          <br>
-        Republican: {{district.presidentialElection.partyTotals.REPUBLICAN}}
-          <br>
-        Other: {{district.presidentialElection.partyTotals.OTHER}}
-    <br>
-      Precincts: {{district.numPrecincts}}
-    <br>
-      Goodness: {{district.goodness}}
-    <br>
-      Efficiency Gap: {{district.efficiencyGap}}
-    <cdg-button [disabled]="compareDisable" (click)="openCompare(district)" name="Compare"></cdg-button>
+    <h3 class="base">{{district.name}}</h3>
+    <a *ngIf="district.population" class="base">- Population: {{district.population}}</a>
+    <a *ngIf="district.population" class="base">Election Data:</a>
+    <a *ngIf="district.presidentialElection.year" class="election">- Year: {{district.presidentialElection.year}}</a>
+    <a *ngIf="district.presidentialElection" class="election">Voting Totals:</a>
+    <a *ngIf="district.presidentialElection.partyTotals.DEMOCRATIC" class="voting">- Democratic: {{district.presidentialElection.partyTotals.DEMOCRATIC}}</a>
+    <a *ngIf="district.presidentialElection.partyTotals.REPUBLICAN" class="voting">- Republican: {{district.presidentialElection.partyTotals.REPUBLICAN}}</a>
+    <a *ngIf="district.presidentialElection.partyTotals.OTHER" class="voting">- Other: {{district.presidentialElection.partyTotals.OTHER}}</a>
+    <a *ngIf="district.presidentialElection.totalVotes" class="voting">- Total Votes: {{district.presidentialElection.totalVotes}}</a>
+    <a *ngIf="district.presidentialElection.votingAgePopulation" class="voting">- Voting Age Population: {{district.presidentialElection.votingAgePopulation}}</a>
+    <a class="voting" *ngIf="district.representative != null">- Representative: {{district.representative}}</a>
+    <a class="voting" *ngIf="district.goodness != null">- Goodness: {{district.goodness}}</a>
+    <a class="voting" *ngIf="district.wastedVoteRatio != null">- Efficiency Gap: {{district.wastedVoteRatio}}</a>
+    <cdg-button class="compare-button" [disabled]="compareDisable" (click)="openCompare(district)" name="Compare"></cdg-button>
 </nb-card>
 </div>

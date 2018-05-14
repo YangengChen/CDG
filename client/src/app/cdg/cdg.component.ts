@@ -395,11 +395,13 @@ export class CdgComponent implements OnInit {
     this.genService.saveGeneration().subscribe( ) ;
   }
   startGenerationCheck(){
-    // if( ( this.genConfig.getContiguityWeight().valueOf()
-    // 		+ this.genConfig.getEqualPopWeight().valueOf()
-    //     + this.genConfig.getPartisanFairnessWeight().valueOf()) != 1){
-    //         return SnackbarEnum.WEIGHT_FAILURE;
-    //      }
+    if( ( this.genConfig.getEqualPopWeight().valueOf()
+        + this.genConfig.getPartisanFairnessWeight().valueOf() 
+        + this.genConfig.getReock().valueOf()
+        + this.genConfig.getSchwartz().valueOf() 
+        + this.genConfig.getHull().valueOf()) != 1){
+            return SnackbarEnum.WEIGHT_FAILURE;
+    }
     return null;
   }
   beginGenerationStatusCheck(){
@@ -526,10 +528,10 @@ export class CdgComponent implements OnInit {
   }
 
   exitGeneration(){
+    this.steps = new Array<Object>();
+    this.mapReset();
     this.backToFront();
     this.getUnitedStates();
-    this.mapReset();
-    this.steps = new Array<Object>();
   }
 
 

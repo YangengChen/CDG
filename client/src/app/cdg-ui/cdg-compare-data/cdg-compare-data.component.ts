@@ -24,8 +24,8 @@ export class CdgCompareDataComponent implements OnInit {
       compareDataLabel: compareDataLabel
     };
     return this.dialog.open(CdgCompareDialogComponent, {
-      width: '700px',
-      height:"375px",
+      width: '950px',
+      height:"700px",
       data: dialogData
     });
   }

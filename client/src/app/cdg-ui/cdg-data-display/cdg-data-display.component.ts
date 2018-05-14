@@ -30,7 +30,10 @@ export class CdgDataDisplayComponent implements OnInit {
       }
       this.dataCompare.generateCompareData(data, compare, this.originalDataLabel, this.compareDataLabel);
     }
-    else if(this.compareData)
-      this.dataCompare.generateCompareData(this.stateData, this.compareData, this.originalDataLabel, this.compareDataLabel);
+    else if(this.compareData){
+      console.log("COMPARE: " + JSON.stringify(this.compareData.districts[0]))
+      console.log("ORIGINAL: " + JSON.stringify(this.stateData.districts[0]))
+      this.dataCompare.generateCompareData(this.stateData.districts[0], this.compareData.districts[0], this.originalDataLabel, this.compareDataLabel);
+    }
   }
 }
