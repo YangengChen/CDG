@@ -222,7 +222,15 @@ public class GenerationController {
 		System.out.println("Key:   "+mapName);
 		System.out.println("Value: "+savedMap.getId());
 		userRepo.save(user);
-	
+		for (Map.Entry<String,SavedMap> entry : user.getSavedMaps().entrySet()) {
+			  String key = entry.getKey();
+			  String valueName = entry.getValue().getName();
+			  String valueId = entry.getValue().getId();
+			  System.out.println("KEY:       "+key);
+			  System.out.println("valueName: "+valueName);
+			  System.out.println("valueId:   "+valueId);
+			  // do stuff
+			}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
@@ -257,7 +265,7 @@ public class GenerationController {
 	    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 	    httpHeaders.setContentLength(file.length);
 		return new ResponseEntity<>(file, httpHeaders, HttpStatus.OK);	
-	}s
+	}
 	
 	@RequestMapping( value = CdgConstants.GENERATION_MAP_DATA_PATH, method=RequestMethod.GET)
 	public ResponseEntity<MapDataDTO> getGeneratedData(HttpSession session, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) 
@@ -301,6 +309,8 @@ public class GenerationController {
 		User loggedUser = (User) session.getAttribute(CdgConstants.SESSION_USER);
 		loggedUser.deleteSavedMap(savedMapId);
 		userRepo.save(loggedUser);
+		session.removeAttribute(CdgConstants.SESSION_USER);
+		session.setAttribute(CdgConstants.SESSION_USER, loggedUser);
 		return new ResponseEntity<>(HttpStatus.OK); 
 	}
 	

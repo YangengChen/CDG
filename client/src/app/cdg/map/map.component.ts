@@ -110,6 +110,7 @@ export class MapComponent implements OnInit{
     this.mapTypeChanged.emit(event.value);
   }
   onSavedMapChanged(event){
+    this.resetAndReloadStyle();
     this.savedMapChanged.emit(event.value);
   }
   setData(map:mapboxgl.GeoJSONGeometry){
