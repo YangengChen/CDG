@@ -14,6 +14,7 @@ export class Constants{
     public static get LOGOUT_URL(): string {return "http://localhost:8080/api/user/logout"}
     public static get LOGIN_URL(): string {return "http://localhost:8080/api/user/login"}
     public static get UNITED_STATES_DROPDOWNVALUE(): DropdownValue<State> {return  new DropdownValue<State>(new State("All", "0"), "All")}
+    public static get SAVE_MAP_DROPDOWNVALUE(): DropdownValue<State> {return  new DropdownValue<State>(new State("Saved Maps", "-1"), "Saved Maps")}
     public static get NO_SAVED_MAPS(): DropdownValue<String> {return new DropdownValue<String>("", "No Saved Maps")}
     public static get FULLMAP_ID(): string {return "0"}
     public static get STATELIST_URL():string {return "http://localhost:8080/api/map/states"}

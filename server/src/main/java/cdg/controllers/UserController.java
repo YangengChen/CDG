@@ -51,12 +51,14 @@ public class UserController {
 	
 	@RequestMapping(value=CdgConstants.USER_REGISTER_PATH, method=RequestMethod.POST)
 	public ResponseEntity<UserDTO> register(@RequestBody UserDTO user, HttpServletRequest request, HttpSession session) {
-		session.invalidate();
-		session = request.getSession();
+//		session.invalidate();
+//		session = request.getSession();
 		User registeredUser = userService.register(new User(user));
 		if(registeredUser != null) {
-			registeredUser.setGenerator(new MapGenerator());
-			session.setAttribute(CdgConstants.SESSION_USER, registeredUser);
+			if(session.getAttribute(CdgConstants.SESSION_USER) == null) {
+				registeredUser.setGenerator(new MapGenerator());
+				session.setAttribute(CdgConstants.SESSION_USER, registeredUser);
+			}
 			return new ResponseEntity<>(registeredUser.getDTO(), HttpStatus.OK);
 		} else {
 			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -86,7 +88,7 @@ public class UserController {
 	}	
 
 	@RequestMapping(value="/delete_user", method=RequestMethod.POST) 
-	public ResponseEntity<User> delete_user(@RequestBody User user,HttpSession session) {
+	public ResponseEntity<UserDTO> delete_user(@RequestBody UserDTO user,HttpSession session) {
 		userService.deleteUser(user);
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
@@ -94,8 +96,11 @@ public class UserController {
 	@RequestMapping(value="/edit_user", method=RequestMethod.POST) 
 	public ResponseEntity<UserDTO> edit_user(@RequestBody UserDTO user,HttpSession session) {
 		User edittedUser = userService.editUser(user);
-		session.removeAttribute(CdgConstants.SESSION_USER);
-		session.setAttribute(CdgConstants.SESSION_USER, edittedUser);
+		User sessionUser = (User) session.getAttribute(CdgConstants.SESSION_USER);
+		if(sessionUser.getEmail().equals(edittedUser.getEmail())) {
+			session.removeAttribute(CdgConstants.SESSION_USER);
+			session.setAttribute(CdgConstants.SESSION_USER, edittedUser);
+		}
 		return new ResponseEntity<>(user, HttpStatus.OK);
 	}
 	
@@ -108,6 +113,7 @@ public class UserController {
 			return new ResponseEntity<>(false, HttpStatus.OK);
 		}
 	}	
+
 	
 }
 

@@ -91,8 +91,8 @@
         </nb-card-front>
           <nb-card-back class="inner-card">
             <nb-card class="inner-card">
-              <nb-card-body  class="inner-card">
-              <nb-tabset style="width:100%;" class="full-width">   
+              <nb-card-body class="inner-card">
+              <nb-tabset *ngIf="!saveInProgress" style="width:100%;" class="full-width">   
                 <nb-tab tabTitle="Generation" style="width:100%">
                   <div class="container" id="generation-started-controls"> 
                       <span style="margin-top:20px; font-size:20px;">Current Goodnesses</span>
@@ -142,10 +142,13 @@
                         </cdg-data-display>
                   </div>
                 </nb-tab>
-
-
               </nb-tabset>
-              </nb-card-body></nb-card>
+              <div *ngIf="saveInProgress">
+                <h1> Saving Map ... </h1>
+                <mat-spinner mode="spinnerMode"></mat-spinner>
+              </div>
+              </nb-card-body>
+            </nb-card>
           </nb-card-back>
           </nb-flip-card>
         </nb-sidebar>
@@ -163,9 +166,11 @@
           [savedMapList]="savedMapList"
           [savedMapListLabel]="savedMapListLabel"
           [mapTypeListLabel]="mapTypeListLabel"
-          [disableMapTypeList]="!genConfig"
-          [disableResetButton]="!genConfig"
+          [disableMapTypeList]="mainMapTypeDisable"
+          [disableResetButton]="mainResetDisable"
+          [disableSavedMapList]="savedMapdisable"
           [flipped]="flipped"
+          [loading]="loading"
           > 
           </map>
       </nb-layout-column>

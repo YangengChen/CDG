@@ -31,13 +31,14 @@ export class MapComponent implements OnInit{
   precinctLockedStylePattern:any;
   restartImage:string;
   popupFilter = ['==', 'name', '']
-  disableSavedMapList:boolean = false;
+  @Input() disableSavedMapList:boolean = false;
   numberOfDistricts:number = 8;
   lockedOpacityStops: Array<any>;
   lockedRegions:Object= {}
   movedRegions:Object = {}
   _mapObject:mapboxgl.GeoJSONSource;
   @ViewChild("mapVariable") mapVariable:mapboxgl.Map;
+  @Input() loading: boolean = false;
   @Input() mapTypeListLabel: string;
   @Input() savedMapListLabel:string;
   @Input() 
@@ -114,10 +115,12 @@ export class MapComponent implements OnInit{
     this.savedMapChanged.emit(event.value);
   }
   setData(map:mapboxgl.GeoJSONGeometry){
-    
-    let source:any = this.map.getSource('states');
-    console.log("SOURCE TYPE " + source.type)
-    source.setData(map);
+    let source:any
+    if(this.map){
+      source = this.map.getSource('states');
+      console.log("SOURCE TYPE " + source.type)
+      source.setData(map);
+    }
     
   }
   onMapClick(event){

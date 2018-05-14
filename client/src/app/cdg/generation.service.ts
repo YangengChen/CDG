@@ -23,7 +23,7 @@ export class GenerationService{
         return this.http.get(Constants.STATUS_URL, {withCredentials:true});
     }
     saveGeneration(mapName: String){
-        return this.http.post(Constants.SAVE_GEN_URL, "mapName", {withCredentials:true});
+        return this.http.post(Constants.SAVE_GEN_URL, mapName, {withCredentials:true});
     }
     deleteGeneration(id: string){
         return this.http.post(Constants.DELETE_GEN_URL,  id, {withCredentials:true});

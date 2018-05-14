@@ -3,14 +3,18 @@
     <div *ngIf="!flipped && !compare"  style="position:relative" id="header-container">
       <div *ngIf="mapTypeList" class="map-dropdown">
         {{mapTypeListLabel}}:<br>
-        <cdg-dropdown (change)="onMapTypeChange($event)" [values]="mapTypeList" name="MapType" [disabled]="disableMapTypeList"></cdg-dropdown>
+        <cdg-dropdown (change)="onMapTypeChange($event)" [values]="mapTypeList" name="MapType" [disabled]="disableMapTypeList || loading"></cdg-dropdown>
       </div>
       <div class="map-dropdown">
         {{savedMapListLabel}}:<br>
-        <cdg-dropdown (change)="onSavedMapChanged($event)" [values]="savedMapList" name="No Saved Maps" [disabled]="disableSavedMapList"></cdg-dropdown>
+        <cdg-dropdown (change)="onSavedMapChanged($event)" [values]="savedMapList" name="No Saved Maps" [disabled]="disableSavedMapList || loading"></cdg-dropdown>
       </div>
       <div class="map-button">
-        <cdg-button [disabled]="disableResetButton" [img]="restartImage" (click)="resetMap()"></cdg-button>
+        <cdg-button [disabled]="disableResetButton || loading" [img]="restartImage" (click)="resetMap()"></cdg-button>
+      </div>
+      <div *ngIf="loading" class="map-button">Loading Map ...</div>
+      <div *ngIf="loading" class="map-button">
+        <mat-spinner [diameter]="40" mode="'indeterminate'"></mat-spinner>
       </div>
     </div>
     <div *ngIf="flipped && !compare"  style="position:relative" id="header-container">
