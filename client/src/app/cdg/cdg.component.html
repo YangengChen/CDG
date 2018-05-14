@@ -142,7 +142,7 @@
         <map #map
           (clicked)="precinctSelected($event)" 
           (mapTypeChanged)="mapTypeChanged($event)"
-          (savedMapChanged)="savedMapChanged"
+          (savedMapChanged)="savedMapChanged($event)"
           (updateGenConfig)="updateGenConfig($event)"
           (mapReset)="mapReset()"
           [genConfig]="genConfig"
@@ -160,7 +160,7 @@
           <nb-layout-column *ngIf="compare && !flipped">
         <map 
           (mapTypeChanged)="compareMapTypeChanged($event)"
-          (savedMapChanged)="compareSavedMapChanged"
+          (savedMapChanged)="compareSavedMapChanged($event)"
           [mapObject]="compareMapObject"
           [genConfig]="genConfig"
           [mapTypeList]="mapTypeList" 
@@ -178,7 +178,7 @@
         <map 
         #generatedMap
           (mapTypeChanged)="mapTypeChanged($event)"
-          (savedMapChanged)="savedMapChanged"
+          (savedMapChanged)="savedMapChanged($event)"
           (updateGenConfig)="updateGenConfig($event)"
           (mapReset)="mapReset()"
           [genConfig]="genConfig"
@@ -196,7 +196,7 @@
       <nb-layout-column *ngIf="generatedCompare && flipped">
         <map 
           (mapTypeChanged)="generatedCompareMapTypeChanged($event)"
-          (savedMapChanged)="generatedCompareSavedMapChanged"
+          (savedMapChanged)="generatedCompareSavedMapChanged($event)"
           [mapObject]="generatedCompareMapObject"
           [genConfig]="genConfig"
           [mapTypeList]="mapTypeList" 

@@ -196,7 +196,7 @@ export class MapComponent implements OnInit{
     console.log("DISt STOPS: " +   JSON.stringify({ data: distStops}, null, 4))
       this.lockedStylePattern = {
         'line-color': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], "red", ["has", ["get", "districtID"], ["literal", (distStops)]], "red", "black"],// ['has', ['get', 'districtID'], {'01':'red'}], ['get', ['get', 'districtID'], {'01':'red'}], 'black'],
-        'line-width': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], 2, ["has", ["get", "districtID"], ["literal", (distStops)]], 1, .8],
+        'line-width': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], 2, ["has", ["get", "districtID"], ["literal", (distStops)]], 1, .3],
       };
           let properties = this.appProperties.getProperties();
 

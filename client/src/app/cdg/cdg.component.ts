@@ -17,6 +17,7 @@ import { State }                      from "../cdg-objects/state";
 import { CdgMap }                     from "../cdg-objects/cdgmap";
 import { CdgSnackbarComponent,
          SnackbarEnum }               from "../cdg-ui/cdg-snackbar/cdg-snackbar.component";
+import { CdgSavemapComponent }        from "../cdg-ui/cdg-savemap/cdg-savemap.component";
 import { DropdownValue }              from "../cdg-objects/dropdownvalue";
 import { CdgMapService }                 from "./map/map.service";
 import { AppProperties }              from '../app.properties'
@@ -58,7 +59,7 @@ export class CdgComponent implements OnInit {
 
   //GENERATED COMPARE MAP DATA
   generatedCompareMapObject:Object;
-  generatedCompareConDistData:Object;
+  generatedCompareConDistData:any;
   generatedCompareData:any;
   generatedCompareSelectedStateId: string;
   generatedCompareSelectedMapType:string;
@@ -118,7 +119,8 @@ export class CdgComponent implements OnInit {
     private genService    : GenerationService,
     private mapService    : CdgMapService,
     private appProperties : AppProperties,
-    private snackBar      : CdgSnackbarComponent) { 
+    private snackBar      : CdgSnackbarComponent,
+    private saveModal     : CdgSavemapComponent ) { 
   }
 
   logout(){
@@ -148,6 +150,7 @@ export class CdgComponent implements OnInit {
     this.setUpLabels(this.appProperties.getProperties());
     this.mapTypeList = new Array<DropdownValue<String>>();
     this.stateList = new Array<DropdownValue<State>>();
+    this.savedMapList = new Array<DropdownValue<String>>();
     this.steps = new Array<Object>();
     this.stateList.push(Constants.UNITED_STATES_DROPDOWNVALUE);
     this.mapService.getStateList()
@@ -163,6 +166,12 @@ export class CdgComponent implements OnInit {
     this.getCompareUnitedStates();
     this.generateMapObject = this.mapObject
     this.genConfig = new GenerationConfiguration();
+    this.mapService.getUserMapList()
+    .subscribe((savedMapList:any) => {
+        savedMapList.forEach((element:any) => {
+        this.savedMapList.push(new DropdownValue<String>(element.name, element.publicID));
+      });
+    });
   }
 
 
@@ -326,7 +335,12 @@ export class CdgComponent implements OnInit {
     this.mapService.getData(this.selectedGenerationStateId, "congressional")
     .subscribe(stateData => {
       this.generatedCompareConDistData = stateData;
-    })   
+      if(this.currCheck){
+        for(let i = 0; i < this.currCheck.districtsGoodness.length; i++){
+          this.generatedCompareConDistData.districts[i].goodness = this.currCheck.startDistrictsGoodness[i].goodness;
+        }
+      } 
+    }) 
   }
   getGeneratedCompareData(){
     this.mapService.getData(this.selectedGenerationStateId, "state")
@@ -340,7 +354,6 @@ export class CdgComponent implements OnInit {
      	this.generatedCompareMapObject = usData;
      });
   }
-
 
   // GEN CONFIG UPDATE FUNCTINOS
   updateContiguity(weight:number){
@@ -374,9 +387,11 @@ export class CdgComponent implements OnInit {
       this.selectedGenerationStateId = this.selectedStateId;
       this.startingGeneration = true;
       this.generateMapObject = this.mapObject;
-      for(var i = 0; i < this.mapObject.features.length; i++){
-        this.precinctToNum[this.mapObject.features[i].properties.precinctID] = i;
-      }      
+      if(this.mapObject.features != null){
+        for(var i = 0; i < this.mapObject.features.length; i++){
+          this.precinctToNum[this.mapObject.features[i].properties.precinctID] = i;
+        }     
+      } 
       this.genService.startGeneration(this.genConfig)
       .subscribe(data =>{
         let status:any = data;
@@ -397,8 +412,16 @@ export class CdgComponent implements OnInit {
     }
   }
   saveGeneration(){
-    this.genService.saveGeneration().subscribe( ) ;
-  }
+    let ref:any = this.saveModal.generateSaveMap();
+    ref.afterClosed().subscribe(result => {
+      let res: any = result;
+      console.log(JSON.stringify(result));
+      if(result != null){
+        console.log("SENDING REQUEST");
+        this.genService.saveGeneration(result.savedName)
+        .subscribe();
+      }
+    });  }
   startGenerationCheck(){
     if( ( this.genConfig.getEqualPopWeight().valueOf()
         + this.genConfig.getPartisanFairnessWeight().valueOf() 
@@ -418,6 +441,7 @@ export class CdgComponent implements OnInit {
         if(check.status == "COMPLETE"){
           this.getFinishedMap()
           this.getFinishedData();
+          this.getGeneratedCompareCongressionalDistrictData()
           clearInterval(this.interval)
           this.snackBar.generateSnackbar(SnackbarEnum.GENERATION_FINISHED);
           this.algoRunning = false;
@@ -458,8 +482,13 @@ export class CdgComponent implements OnInit {
     this.selectedMapType = type;
     this.getState();
   }
-  savedMapChanged(savedMap:string){
-    
+  savedMapChanged(mapName){
+    this.mapService.getUserMap(mapName, "precinct")
+    .subscribe(stateData =>{
+    this.mapObject = stateData;
+    this.originalMapObject = stateData;
+    this.mapReset()
+    });  
   }
   pauseGenerationClicked(){
     this.genService.pauseGeneration();

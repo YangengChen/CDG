@@ -191,14 +191,14 @@ public class GenerationController {
 		return new ResponseEntity<byte[]>(mapFile, HttpStatus.OK);
 	}
 	
-	@RequestMapping( value = CdgConstants.GENERATION_SAVE_MAP_PATH, method=RequestMethod.POST)
-	public ResponseEntity<?> saveGeneratedMap(HttpSession session)
+	@RequestMapping(value=CdgConstants.GENERATION_SAVE_MAP_PATH, method=RequestMethod.POST)
+	public ResponseEntity<?> saveGeneratedMap(HttpSession session, @RequestBody String mapName)
 	{
 		User user = (User) session.getAttribute(SESSION_USER);
 		if (user == null) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
-		
+	
 		MapGenerator generator = user.getGenerator();
 		if (generator == null) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -210,13 +210,19 @@ public class GenerationController {
 		if (savedMap == null) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		savedMap.setName(mapName);
 		savedMap = savedMapRepo.save(savedMap);
 		if (user.getSavedMaps() == null) {
 			user.setSavedMaps(new HashMap<String,SavedMap>());
 		}
-		user.getSavedMaps().put(savedMap.getId(), savedMap);
+		// else if(user.getSavedMaps().containsKey(mapName)) {
+		// return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		// }
+		user.getSavedMaps().put(mapName, savedMap);
+		System.out.println("Key:   "+mapName);
+		System.out.println("Value: "+savedMap.getId());
 		userRepo.save(user);
-		
+	
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
@@ -251,7 +257,7 @@ public class GenerationController {
 	    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
 	    httpHeaders.setContentLength(file.length);
 		return new ResponseEntity<>(file, httpHeaders, HttpStatus.OK);	
-	}
+	}s
 	
 	@RequestMapping( value = CdgConstants.GENERATION_MAP_DATA_PATH, method=RequestMethod.GET)
 	public ResponseEntity<MapDataDTO> getGeneratedData(HttpSession session, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type) 

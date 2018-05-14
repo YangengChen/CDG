@@ -7,7 +7,7 @@
       </div>
       <div class="map-dropdown">
         {{savedMapListLabel}}:<br>
-        <cdg-dropdown  [values]="savedMapList" name="No Saved Maps" [disabled]="disableSavedMapList"></cdg-dropdown>
+        <cdg-dropdown (change)="onSavedMapChanged($event)" [values]="savedMapList" name="No Saved Maps" [disabled]="disableSavedMapList"></cdg-dropdown>
       </div>
       <div class="map-button">
         <cdg-button [disabled]="disableResetButton" [img]="restartImage" (click)="resetMap()"></cdg-button>

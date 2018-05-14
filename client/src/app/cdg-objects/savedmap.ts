@@ -1,5 +1,6 @@
 export class SavedMap{
-    id                  :   string; 
+    id                  :   string;
+    name                :   string; 
     schwarzbergWeight   :   number; 
     hullRatioWeight     :   number; 
     reockWeight         :   number; 

@@ -2,6 +2,7 @@ package cdg.dto;
 
 public class SavedMapDTO {
 	private String id;
+	private String name;
 	private double schwarzbergWeight;
 	private double hullRatioWeight;
 	private double reockWeight;
@@ -12,6 +13,7 @@ public class SavedMapDTO {
 	
 	public SavedMapDTO(
 			String id, 
+			String name,
 			double schwarzbergWeight, 
 			double hullRatioWeight, 
 			double reockWeight, 
@@ -20,6 +22,7 @@ public class SavedMapDTO {
 			double partisanFairWeight,
 			String state) {
 		this.id = id;
+		this.name = name;
 		this.schwarzbergWeight = schwarzbergWeight;
 		this.hullRatioWeight = hullRatioWeight;
 		this.reockWeight = reockWeight;
@@ -91,6 +94,14 @@ public class SavedMapDTO {
 
 	public void setPartisanFairWeight(double partisanFairWeight) {
 		this.partisanFairWeight = partisanFairWeight;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 }

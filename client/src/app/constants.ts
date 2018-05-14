@@ -31,4 +31,6 @@ export class Constants{
     public static get CONFIRM_EDIT_USER(): string {return 'Are you sure you want to edit this user?'; }
     public static get CONFIRM_DELETE_USER(): string {return 'Are you sure you want to delete this user?'; }
     public static get CONFIRM_ADD_USER(): string {return 'Are you sure you want to add this user?'; }
+    public static get USER_MAP_LIST_URL():string {return "http://localhost:8080/api/map/user_map_names"}
+    public static GET_USER_MAP_URL(state:string, type:string): string {return "http://localhost:8080/api/generation/user_map/".concat(state).concat("/".concat(type))}
 }
