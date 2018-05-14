@@ -9,7 +9,9 @@ import java.util.Optional;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -216,6 +218,39 @@ public class GenerationController {
 		userRepo.save(user);
 		
 		return new ResponseEntity<>(HttpStatus.OK);
+	}
+	
+	@RequestMapping(value="/user_map/{stateid}/{maptype}", method=RequestMethod.GET, produces = "application/json")
+	public ResponseEntity<byte[]> getUserMapFile(@PathVariable(CdgConstants.MAP_STATEID_PATH_VARIABLE) String mapId, @PathVariable(CdgConstants.MAP_MAPTYPE_PATH_VARIABLE) MapType type, HttpSession session) {
+
+		User loggedUser = (User) session.getAttribute(CdgConstants.SESSION_USER);
+		if (loggedUser == null) {
+			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+		}
+		if (!(type == MapType.STATE || type == MapType.CONGRESSIONAL || type == MapType.PRECINCT)) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		if (loggedUser.getSavedMaps() == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		SavedMap savedMap = loggedUser.getSavedMaps().get(mapId);
+		if (savedMap == null) {
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		}
+		State savedMapState;
+		byte[] file;
+		try {
+			savedMapState = MapGenerator.loadSavedMapState(stateRepo, savedMap);
+			file = savedMapState.getMapFile(type);
+		} catch (Exception e) {
+			System.err.println(e);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		HttpHeaders httpHeaders= new HttpHeaders();
+	    httpHeaders.setContentType(MediaType.APPLICATION_JSON);
+	    httpHeaders.setContentLength(file.length);
+		return new ResponseEntity<>(file, httpHeaders, HttpStatus.OK);	
 	}
 	
 	@RequestMapping( value = CdgConstants.GENERATION_MAP_DATA_PATH, method=RequestMethod.GET)

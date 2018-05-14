@@ -2,6 +2,7 @@ package cdg.domain.generation;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -12,8 +13,10 @@ import cdg.dao.Precinct;
 import cdg.dao.SavedMap;
 import cdg.dao.SavedMapping;
 import cdg.dao.State;
+import cdg.domain.map.MapType;
 import cdg.repository.StateRepository;
 import cdg.responses.GenerationResponse;
+import cdg.services.ImportService;
 
 public class MapGenerator {
 	private GoodnessEvaluator goodnessEvaluator;
@@ -144,6 +147,50 @@ public class MapGenerator {
 			savedMap.getDistricts().add(currDistrictMapping);
 		}
 		return savedMap;
+	}
+	
+	public static State loadSavedMapState(StateRepository repo, SavedMap savedMap) {
+		if (savedMap == null) {
+			throw new IllegalArgumentException();
+		}
+		
+		State state = savedMap.getState();
+		if (state == null) {
+			throw new IllegalStateException();
+		}
+		repo.detach(state);
+		
+		Set<SavedMapping> districtToPrecinctMaps = savedMap.getDistricts();
+		if (districtToPrecinctMaps == null) {
+			throw new IllegalStateException();
+		}
+		CongressionalDistrict currDistrict;
+		Set<Precinct> currPrecincts;
+		HashMap<Integer,Precinct> currPrecinctsMap;
+		HashMap<Integer,Precinct> allPrecincts = new HashMap<Integer,Precinct>();
+		HashMap<Integer,CongressionalDistrict> allDistricts = new HashMap<Integer,CongressionalDistrict>();
+		for (SavedMapping mapping : districtToPrecinctMaps) {
+			currDistrict = mapping.getDistrict();
+			currPrecincts = mapping.getPrecincts();
+			if (currDistrict == null || currPrecincts == null) {
+				throw new IllegalStateException();
+			}
+			currPrecinctsMap = new HashMap<Integer,Precinct>();
+			for (Precinct p : currPrecincts) {
+				currPrecinctsMap.put(p.getId(), p);
+				p.setConDistrict(currDistrict);
+			}
+			allPrecincts.putAll(currPrecinctsMap);
+			currDistrict.setPrecincts(currPrecinctsMap);
+			currDistrict.setGoodnessValue(mapping.getGoodness());
+			allDistricts.put(currDistrict.getId(),currDistrict);
+		}
+		state.setConDistricts(allDistricts);
+		state.setPrecincts(allPrecincts);
+		
+		ImportService.setPopulation(state);
+		ImportService.updateElectionData(state);
+		return state;
 	}
 	
 	public void setState(String stateId) {
