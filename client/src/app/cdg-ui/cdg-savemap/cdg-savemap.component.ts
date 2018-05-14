@@ -17,7 +17,7 @@ export class CdgSavemapComponent implements OnInit {
   generateSaveMap() : MatDialogRef<CdgSaveDialogComponent>{
     return this.dialog.open(CdgSaveDialogComponent, {
       width: '500px',
-      height:"500px",
+      height:"250px",
       data: {}
     });
   }

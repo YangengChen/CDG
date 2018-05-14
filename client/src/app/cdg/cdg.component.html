@@ -105,15 +105,13 @@
                             <mat-spinner mode="spinnerMode"></mat-spinner>
                         </div>
                       </nb-card>
-                    <div class="generating-button" style="display:flex;">
-                      <cdg-button style="margin-left:20%" [disabled]="!algoRunning" (click)="stopGenerationClicked()" [img]="stopImage"></cdg-button>
-                    </div>
                     <div class="generating-button">
                       <cdg-button [disabled]="algoRunning" (click)="saveGeneration()" name="Save Generated District"></cdg-button>
                     </div>
                     <br>
                     <div class="generating-button">
-                      <cdg-button [disabled]="algoRunning" (click)="exitGeneration()" name="Done"></cdg-button>
+                      <cdg-button style="display: inline-block;" [disabled]="!algoRunning" (click)="stopGenerationClicked()" [img]="stopImage"></cdg-button>
+                      <cdg-button style="margin-left:20%; display: inline-block;" [disabled]="algoRunning" (click)="exitGeneration()" name="Done"></cdg-button>
                     </div>
                   </div>
                 </nb-tab>
