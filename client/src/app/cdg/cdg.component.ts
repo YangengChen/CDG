@@ -522,7 +522,7 @@ export class CdgComponent implements OnInit {
   savedMapChanged(mapName){
     if(mapName != "Saved Maps"){
         this.loading = true;
-        this.mapService.getUserMap(mapName, "precinct")
+        this.mapService.getUserMap(mapName, "congressional")
         .subscribe(stateData =>{
           this.loading = false;
         this.mapObject = stateData;
