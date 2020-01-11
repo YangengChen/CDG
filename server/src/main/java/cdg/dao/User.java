@@ -138,12 +138,13 @@ public class User {
 		for(SavedMap map: this.savedMaps.values()) {
 			SavedMapDTO newMap = new SavedMapDTO(
 					map.getId(), 
+					map.getName(),
+					map.getSchwarzbergWeight(), 
+					map.getHullRatioWeight(),
+					map.getReockWeight(), 
 					map.getContiguityWeight(), 
 					map.getEqualPopWeight(), 
-					map.getHullRatioWeight(),
 					map.getPartisanFairWeight(), 
-					map.getReockWeight(), 
-					map.getSchwarzbergWeight(), 
 					map.getState().getName());
 			list.add(newMap);
 		}

@@ -22,12 +22,12 @@ export class GenerationService{
     checkStatus(){
         return this.http.get(Constants.STATUS_URL, {withCredentials:true});
     }
-    saveGeneration(){
-        return this.http.post(Constants.SAVE_GEN_URL, {}, {withCredentials:true});
+    saveGeneration(mapName: String){
+        return this.http.post(Constants.SAVE_GEN_URL, mapName, {withCredentials:true});
     }
     deleteGeneration(id: string){
         return this.http.post(Constants.DELETE_GEN_URL,  id, {withCredentials:true});
-    }
+    }   
 }
 export class GenerationConfiguration {
     private stateId: string;

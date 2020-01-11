@@ -1,10 +1,22 @@
     <nb-layout>
       <nb-layout-header  fixed >
         <div style="padding-top:1.5rem;padding-left:1rem;text-align:middle; width:100%;">
+            <a href="/">
           <h1>CDG
             <h6>Congressional District Generator</h6>
           </h1>
+        </a>
         </div>
+        <div id="user-container" style="padding-right:5rem; margin-top:30px;">
+            <a href="/maps">
+          <cdg-button name="Maps"></cdg-button>
+          </a>
+      </div>
+        <div id="user-container" style="padding-right:5rem; margin-top:30px;">
+            <a href="/manage">
+          <cdg-button (click)="goToManage()" name="Manage"></cdg-button>
+          </a>
+      </div>
         <div id="user-container" style="padding-right:5rem; margin-top:30px;">
             <cdg-button (click)="logout()" name="Logout"></cdg-button>
         </div>
@@ -79,8 +91,8 @@
         </nb-card-front>
           <nb-card-back class="inner-card">
             <nb-card class="inner-card">
-              <nb-card-body  class="inner-card">
-              <nb-tabset style="width:100%;" class="full-width">   
+              <nb-card-body class="inner-card">
+              <nb-tabset *ngIf="!saveInProgress" style="width:100%;" class="full-width">   
                 <nb-tab tabTitle="Generation" style="width:100%">
                   <div class="container" id="generation-started-controls"> 
                       <span style="margin-top:20px; font-size:20px;">Current Goodnesses</span>
@@ -93,15 +105,13 @@
                             <mat-spinner mode="spinnerMode"></mat-spinner>
                         </div>
                       </nb-card>
-                    <div class="generating-button" style="display:flex;">
-                      <cdg-button style="margin-left:20%" [disabled]="!algoRunning" (click)="stopGenerationClicked()" [img]="stopImage"></cdg-button>
-                    </div>
                     <div class="generating-button">
                       <cdg-button [disabled]="algoRunning" (click)="saveGeneration()" name="Save Generated District"></cdg-button>
                     </div>
                     <br>
                     <div class="generating-button">
-                      <cdg-button [disabled]="algoRunning" (click)="exitGeneration()" name="Done"></cdg-button>
+                      <cdg-button style="display: inline-block;" [disabled]="!algoRunning" (click)="stopGenerationClicked()" [img]="stopImage"></cdg-button>
+                      <cdg-button style="margin-left:20%; display: inline-block;" [disabled]="algoRunning" (click)="exitGeneration()" name="Done"></cdg-button>
                     </div>
                   </div>
                 </nb-tab>
@@ -130,10 +140,13 @@
                         </cdg-data-display>
                   </div>
                 </nb-tab>
-
-
               </nb-tabset>
-              </nb-card-body></nb-card>
+              <div *ngIf="saveInProgress">
+                <h1> Saving Map ... </h1>
+                <mat-spinner mode="spinnerMode"></mat-spinner>
+              </div>
+              </nb-card-body>
+            </nb-card>
           </nb-card-back>
           </nb-flip-card>
         </nb-sidebar>
@@ -142,7 +155,7 @@
         <map #map
           (clicked)="precinctSelected($event)" 
           (mapTypeChanged)="mapTypeChanged($event)"
-          (savedMapChanged)="savedMapChanged"
+          (savedMapChanged)="savedMapChanged($event)"
           (updateGenConfig)="updateGenConfig($event)"
           (mapReset)="mapReset()"
           [genConfig]="genConfig"
@@ -151,16 +164,18 @@
           [savedMapList]="savedMapList"
           [savedMapListLabel]="savedMapListLabel"
           [mapTypeListLabel]="mapTypeListLabel"
-          [disableMapTypeList]="!genConfig"
-          [disableResetButton]="!genConfig"
+          [disableMapTypeList]="mainMapTypeDisable"
+          [disableResetButton]="mainResetDisable"
+          [disableSavedMapList]="savedMapdisable"
           [flipped]="flipped"
+          [loading]="loading"
           > 
           </map>
       </nb-layout-column>
           <nb-layout-column *ngIf="compare && !flipped">
         <map 
           (mapTypeChanged)="compareMapTypeChanged($event)"
-          (savedMapChanged)="compareSavedMapChanged"
+          (savedMapChanged)="compareSavedMapChanged($event)"
           [mapObject]="compareMapObject"
           [genConfig]="genConfig"
           [mapTypeList]="mapTypeList" 
@@ -169,6 +184,7 @@
           [mapTypeListLabel]="mapTypeListLabel"
           [disableResetButton]="true" 
           [disableMapTypeList]="compareSelectedStateId == 0"
+          [compare]="'true'"
           >         
           </map>
 
@@ -178,7 +194,7 @@
         <map 
         #generatedMap
           (mapTypeChanged)="mapTypeChanged($event)"
-          (savedMapChanged)="savedMapChanged"
+          (savedMapChanged)="savedMapChanged($event)"
           (updateGenConfig)="updateGenConfig($event)"
           (mapReset)="mapReset()"
           [genConfig]="genConfig"
@@ -196,7 +212,7 @@
       <nb-layout-column *ngIf="generatedCompare && flipped">
         <map 
           (mapTypeChanged)="generatedCompareMapTypeChanged($event)"
-          (savedMapChanged)="generatedCompareSavedMapChanged"
+          (savedMapChanged)="generatedCompareSavedMapChanged($event)"
           [mapObject]="generatedCompareMapObject"
           [genConfig]="genConfig"
           [mapTypeList]="mapTypeList" 

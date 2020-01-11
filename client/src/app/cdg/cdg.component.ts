@@ -17,6 +17,7 @@ import { State }                      from "../cdg-objects/state";
 import { CdgMap }                     from "../cdg-objects/cdgmap";
 import { CdgSnackbarComponent,
          SnackbarEnum }               from "../cdg-ui/cdg-snackbar/cdg-snackbar.component";
+import { CdgSavemapComponent }        from "../cdg-ui/cdg-savemap/cdg-savemap.component";
 import { DropdownValue }              from "../cdg-objects/dropdownvalue";
 import { CdgMapService }                 from "./map/map.service";
 import { AppProperties }              from '../app.properties'
@@ -40,6 +41,7 @@ export class CdgComponent implements OnInit {
   interval = null;
   spinnerValue:number;
   spinnerMode = "indeterminate";
+  loading:boolean;
   generatedConDistData:any;
   conDistData:any;
   steps: Array<Object>;
@@ -58,7 +60,7 @@ export class CdgComponent implements OnInit {
 
   //GENERATED COMPARE MAP DATA
   generatedCompareMapObject:Object;
-  generatedCompareConDistData:Object;
+  generatedCompareConDistData:any;
   generatedCompareData:any;
   generatedCompareSelectedStateId: string;
   generatedCompareSelectedMapType:string;
@@ -92,7 +94,9 @@ export class CdgComponent implements OnInit {
   compare:boolean;
   generatedCompare:boolean;
   canGenerate: boolean;
-
+  mainMapTypeDisable:boolean;
+  savedMapdisable:boolean;
+  saveInProgress:boolean;
 
   //LABELS 
   mapTypeListLabel:string;
@@ -118,7 +122,8 @@ export class CdgComponent implements OnInit {
     private genService    : GenerationService,
     private mapService    : CdgMapService,
     private appProperties : AppProperties,
-    private snackBar      : CdgSnackbarComponent) { 
+    private snackBar      : CdgSnackbarComponent,
+    private saveModal     : CdgSavemapComponent ) { 
   }
 
   logout(){
@@ -136,7 +141,11 @@ export class CdgComponent implements OnInit {
     this.generatedCompare = false;
     this.algoPaused = false;
     this.algoRunning = false;
+    this.loading = false;
+    this.mainMapTypeDisable = true;
+    this.savedMapdisable = false;
     this.canGenerate = false;
+    this.saveInProgress = false;
     this.selectedMapType = Constants.INIT_MAP_TYPE;
     this.selectedStateId = Constants.FULLMAP_ID;
     this.compareSelectedMapType = Constants.INIT_MAP_TYPE;
@@ -148,8 +157,11 @@ export class CdgComponent implements OnInit {
     this.setUpLabels(this.appProperties.getProperties());
     this.mapTypeList = new Array<DropdownValue<String>>();
     this.stateList = new Array<DropdownValue<State>>();
+    this.savedMapList = new Array<DropdownValue<String>>();
     this.steps = new Array<Object>();
     this.stateList.push(Constants.UNITED_STATES_DROPDOWNVALUE);
+    this.stateList.push(Constants.SAVE_MAP_DROPDOWNVALUE)
+    this.savedMapList.push(new DropdownValue<String>("Saved Maps", "Saved Maps"));
     this.mapService.getStateList()
     .subscribe((stateList:any) => {
       stateList.forEach((element:any) => {
@@ -163,6 +175,12 @@ export class CdgComponent implements OnInit {
     this.getCompareUnitedStates();
     this.generateMapObject = this.mapObject
     this.genConfig = new GenerationConfiguration();
+    this.mapService.getUserMapList()
+    .subscribe((savedMapList:any) => {
+        savedMapList.forEach((element:any) => {
+        this.savedMapList.push(new DropdownValue<String>(element.name, element.publicID));
+      });
+    });
   }
 
 
@@ -175,7 +193,16 @@ export class CdgComponent implements OnInit {
   changeState(event){
     if(event.value.id == Constants.FULLMAP_ID){
       this.genConfig = null;
+      this.mainMapTypeDisable = true;
+      this.savedMapdisable = true;
       this.getUnitedStates();
+    }
+    else if (event.value.id == "-1"){
+      this.genConfig = null;
+      this.mainMapTypeDisable = true;
+      this.canGenerate = false;
+      this.savedMapdisable = false;
+
     }
     else{
       this.genConfig = new GenerationConfiguration()
@@ -183,6 +210,8 @@ export class CdgComponent implements OnInit {
       this.selectedStateName = event.label;
       this.selectedStateId = event.value.id;
       this.canGenerate = true;
+      this.mainMapTypeDisable = false;
+      this.savedMapdisable = true;
       this.getState();
       this.getStateData();
       this.getCongressionalDistrictData();
@@ -261,18 +290,23 @@ export class CdgComponent implements OnInit {
 
   */
   getUnitedStates() {
+    this.loading = true;
     this.canGenerate = false;
     this.mapService.getUnitedStates()
      .subscribe(usData =>{
      	this.mapObject = usData;
+        this.loading = false;
      });
   }
   getState(){
+    this.loading = true;
     this.mapService.getMap(this.selectedStateId, this.selectedMapType)
     .subscribe(stateData =>{
         this.mapObject = stateData;
         this.originalMapObject = stateData;
         this.mapReset()
+        this.loading = false;
+
     });
   }
   getStateData(){
@@ -326,7 +360,12 @@ export class CdgComponent implements OnInit {
     this.mapService.getData(this.selectedGenerationStateId, "congressional")
     .subscribe(stateData => {
       this.generatedCompareConDistData = stateData;
-    })   
+      if(this.currCheck){
+        for(let i = 0; i < this.currCheck.districtsGoodness.length; i++){
+          this.generatedCompareConDistData.districts[i].goodness = this.currCheck.startDistrictsGoodness[i].goodness;
+        }
+      } 
+    }) 
   }
   getGeneratedCompareData(){
     this.mapService.getData(this.selectedGenerationStateId, "state")
@@ -340,7 +379,6 @@ export class CdgComponent implements OnInit {
      	this.generatedCompareMapObject = usData;
      });
   }
-
 
   // GEN CONFIG UPDATE FUNCTINOS
   updateContiguity(weight:number){
@@ -374,9 +412,11 @@ export class CdgComponent implements OnInit {
       this.selectedGenerationStateId = this.selectedStateId;
       this.startingGeneration = true;
       this.generateMapObject = this.mapObject;
-      for(var i = 0; i < this.mapObject.features.length; i++){
-        this.precinctToNum[this.mapObject.features[i].properties.precinctID] = i;
-      }      
+      if(this.mapObject.features != null){
+        for(var i = 0; i < this.mapObject.features.length; i++){
+          this.precinctToNum[this.mapObject.features[i].properties.precinctID] = i;
+        }     
+      } 
       this.genService.startGeneration(this.genConfig)
       .subscribe(data =>{
         let status:any = data;
@@ -397,8 +437,27 @@ export class CdgComponent implements OnInit {
     }
   }
   saveGeneration(){
-    this.genService.saveGeneration().subscribe( ) ;
-  }
+    let ref:any = this.saveModal.generateSaveMap();
+    ref.afterClosed().subscribe(result => {
+      let res: any = result;
+      console.log(JSON.stringify(result));
+      if(result != null){
+        console.log("SENDING REQUEST");
+        this.saveInProgress = true;
+        this.genService.saveGeneration(result.savedName)
+        .subscribe(data =>{
+          this.mapService.getUserMapList()
+          .subscribe((savedMapList:any) => {   
+              this.savedMapList = new Array<DropdownValue<String>>();           
+              this.savedMapList.push(new DropdownValue<String>("Saved Maps", "Saved Maps"));
+              savedMapList.forEach((element:any) => {
+              this.savedMapList.push(new DropdownValue<String>(element.name, element.publicID));
+            });
+            this.saveInProgress = false;
+          });
+        });
+      }
+    });  }
   startGenerationCheck(){
     if( ( this.genConfig.getEqualPopWeight().valueOf()
         + this.genConfig.getPartisanFairnessWeight().valueOf() 
@@ -418,6 +477,7 @@ export class CdgComponent implements OnInit {
         if(check.status == "COMPLETE"){
           this.getFinishedMap()
           this.getFinishedData();
+          this.getGeneratedCompareCongressionalDistrictData()
           clearInterval(this.interval)
           this.snackBar.generateSnackbar(SnackbarEnum.GENERATION_FINISHED);
           this.algoRunning = false;
@@ -451,15 +511,25 @@ export class CdgComponent implements OnInit {
   changeMap(theNewMap:any){
     // console.log("REALLY CHANGING MAP: " + theNewMap.type)
     // this.mapObject = theNewMap;
-    this.map.setData(theNewMap);
+    if(this.map)
+      this.map.setData(theNewMap);
     // this.map.resetAndReloadStyle();
   }
   mapTypeChanged(type:string){
     this.selectedMapType = type;
     this.getState();
   }
-  savedMapChanged(savedMap:string){
-    
+  savedMapChanged(mapName){
+    if(mapName != "Saved Maps"){
+        this.loading = true;
+        this.mapService.getUserMap(mapName, "congressional")
+        .subscribe(stateData =>{
+          this.loading = false;
+        this.mapObject = stateData;
+        this.originalMapObject = stateData;
+        this.mapReset()
+      }); 
+    } 
   }
   pauseGenerationClicked(){
     this.genService.pauseGeneration();
@@ -475,7 +545,10 @@ export class CdgComponent implements OnInit {
     this.genService.playGeneration();
   }
   savedMapClick(event){
-    this.mapService.saveMap()
+    this.saveInProgress = true;
+    this.mapService.saveMap().subscribe(data => {
+      this.saveInProgress = false;
+    })
   }
   exportMap(){
         let blob = new Blob([JSON.stringify(this.mapObject)], { type: Constants.EXPORT_HEADERS });
@@ -487,7 +560,8 @@ export class CdgComponent implements OnInit {
   mapReset(){
     let newMap:string = this.originalMapObject;
     this.changeMap(newMap);
-    this.map.reloadStyle();
+    if(this.map)
+      this.map.reloadStyle();
     this.genConfig.restartConfig();
   }
   toggleFlip(){

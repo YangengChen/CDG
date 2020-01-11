@@ -191,14 +191,14 @@ public class GenerationController {
 		return new ResponseEntity<byte[]>(mapFile, HttpStatus.OK);
 	}
 	
-	@RequestMapping( value = CdgConstants.GENERATION_SAVE_MAP_PATH, method=RequestMethod.POST)
-	public ResponseEntity<?> saveGeneratedMap(HttpSession session)
+	@RequestMapping(value=CdgConstants.GENERATION_SAVE_MAP_PATH, method=RequestMethod.POST)
+	public ResponseEntity<?> saveGeneratedMap(HttpSession session, @RequestBody String mapName)
 	{
 		User user = (User) session.getAttribute(SESSION_USER);
 		if (user == null) {
 			return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
 		}
-		
+	
 		MapGenerator generator = user.getGenerator();
 		if (generator == null) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -210,13 +210,27 @@ public class GenerationController {
 		if (savedMap == null) {
 			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+		savedMap.setName(mapName);
 		savedMap = savedMapRepo.save(savedMap);
 		if (user.getSavedMaps() == null) {
 			user.setSavedMaps(new HashMap<String,SavedMap>());
 		}
-		user.getSavedMaps().put(savedMap.getId(), savedMap);
+		// else if(user.getSavedMaps().containsKey(mapName)) {
+		// return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		// }
+		user.getSavedMaps().put(mapName, savedMap);
+		System.out.println("Key:   "+mapName);
+		System.out.println("Value: "+savedMap.getId());
 		userRepo.save(user);
-		
+		for (Map.Entry<String,SavedMap> entry : user.getSavedMaps().entrySet()) {
+			  String key = entry.getKey();
+			  String valueName = entry.getValue().getName();
+			  String valueId = entry.getValue().getId();
+			  System.out.println("KEY:       "+key);
+			  System.out.println("valueName: "+valueName);
+			  System.out.println("valueId:   "+valueId);
+			  // do stuff
+			}
 		return new ResponseEntity<>(HttpStatus.OK);
 	}
 	
@@ -295,6 +309,8 @@ public class GenerationController {
 		User loggedUser = (User) session.getAttribute(CdgConstants.SESSION_USER);
 		loggedUser.deleteSavedMap(savedMapId);
 		userRepo.save(loggedUser);
+		session.removeAttribute(CdgConstants.SESSION_USER);
+		session.setAttribute(CdgConstants.SESSION_USER, loggedUser);
 		return new ResponseEntity<>(HttpStatus.OK); 
 	}
 	

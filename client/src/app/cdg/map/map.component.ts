@@ -31,13 +31,14 @@ export class MapComponent implements OnInit{
   precinctLockedStylePattern:any;
   restartImage:string;
   popupFilter = ['==', 'name', '']
-  disableSavedMapList:boolean = false;
+  @Input() disableSavedMapList:boolean = false;
   numberOfDistricts:number = 8;
   lockedOpacityStops: Array<any>;
   lockedRegions:Object= {}
   movedRegions:Object = {}
   _mapObject:mapboxgl.GeoJSONSource;
   @ViewChild("mapVariable") mapVariable:mapboxgl.Map;
+  @Input() loading: boolean = false;
   @Input() mapTypeListLabel: string;
   @Input() savedMapListLabel:string;
   @Input() 
@@ -110,13 +111,16 @@ export class MapComponent implements OnInit{
     this.mapTypeChanged.emit(event.value);
   }
   onSavedMapChanged(event){
+    this.resetAndReloadStyle();
     this.savedMapChanged.emit(event.value);
   }
   setData(map:mapboxgl.GeoJSONGeometry){
-    
-    let source:any = this.map.getSource('states');
-    console.log("SOURCE TYPE " + source.type)
-    source.setData(map);
+    let source:any
+    if(this.map){
+      source = this.map.getSource('states');
+      console.log("SOURCE TYPE " + source.type)
+      source.setData(map);
+    }
     
   }
   onMapClick(event){
@@ -196,7 +200,7 @@ export class MapComponent implements OnInit{
     console.log("DISt STOPS: " +   JSON.stringify({ data: distStops}, null, 4))
       this.lockedStylePattern = {
         'line-color': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], "red", ["has", ["get", "districtID"], ["literal", (distStops)]], "red", "black"],// ['has', ['get', 'districtID'], {'01':'red'}], ['get', ['get', 'districtID'], {'01':'red'}], 'black'],
-        'line-width': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], 2, ["has", ["get", "districtID"], ["literal", (distStops)]], 1, .8],
+        'line-width': ["case", ["has", ["get", "precinctID"], ["literal", (distStops)]], 2, ["has", ["get", "districtID"], ["literal", (distStops)]], 1, .3],
       };
           let properties = this.appProperties.getProperties();
 

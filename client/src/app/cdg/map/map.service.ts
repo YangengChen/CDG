@@ -35,4 +35,11 @@ export class CdgMapService {
   changeMap(map:any): Observable<Object>{
     return new Observable<Object>(map);
   }
+  getUserMapList(){
+    console.log("USERMAPLIST: " + Constants.USER_MAP_LIST_URL);
+    return this.http.get(Constants.USER_MAP_LIST_URL, {withCredentials:true});
+  }
+  getUserMap(mapid:string, type:string){
+    return this.http.get(Constants.GET_USER_MAP_URL(mapid, type), {withCredentials:true});
+  }
 }

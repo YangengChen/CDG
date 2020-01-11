@@ -3,7 +3,10 @@ package cdg.controllers;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
+
+import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
@@ -22,8 +25,10 @@ import com.google.common.collect.Lists;
 import org.springframework.web.bind.annotation.CrossOrigin;
 
 import cdg.dao.NameOnly;
+import cdg.dao.SavedMap;
 import cdg.dao.State;
 import cdg.dao.StateStat;
+import cdg.dao.User;
 import cdg.domain.map.MapType;
 import cdg.domain.map.MapTypeEnumConverter;
 import cdg.dto.MapDTO;
@@ -131,5 +136,24 @@ public class MapController {
 	public Iterable<StateStat> getAllStateStats() {
 		return stateStatRepo.findAll();
 	}
+	
+	@RequestMapping(value="/user_map_names", method=RequestMethod.GET)
+	public List<State> getUserMapNames(HttpSession session) {
+		User loggedUser = (User) session.getAttribute(CdgConstants.SESSION_USER);
+		List<State> names = new ArrayList<State>();
+		List<String> mapKeys= new ArrayList<String>();
+		mapKeys.addAll(loggedUser.getSavedMaps().keySet());
+		Map<String,SavedMap> userMaps = loggedUser.getSavedMaps();
+		System.out.println("Number of maps: " + mapKeys.size());
+		for(int i=0; i<mapKeys.size(); i++) {
+			State newState = new State();
+			newState.setId(i);
+			newState.setName(mapKeys.get(i));
+			newState.setPublicID(userMaps.get(mapKeys.get(i)).getName());
+			names.add(newState);
+		}
+		return names;
+	}
+	
 
 }

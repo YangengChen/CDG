@@ -14,6 +14,7 @@ export class Constants{
     public static get LOGOUT_URL(): string {return "http://localhost:8080/api/user/logout"}
     public static get LOGIN_URL(): string {return "http://localhost:8080/api/user/login"}
     public static get UNITED_STATES_DROPDOWNVALUE(): DropdownValue<State> {return  new DropdownValue<State>(new State("All", "0"), "All")}
+    public static get SAVE_MAP_DROPDOWNVALUE(): DropdownValue<State> {return  new DropdownValue<State>(new State("Saved Maps", "-1"), "Saved Maps")}
     public static get NO_SAVED_MAPS(): DropdownValue<String> {return new DropdownValue<String>("", "No Saved Maps")}
     public static get FULLMAP_ID(): string {return "0"}
     public static get STATELIST_URL():string {return "http://localhost:8080/api/map/states"}
@@ -31,4 +32,6 @@ export class Constants{
     public static get CONFIRM_EDIT_USER(): string {return 'Are you sure you want to edit this user?'; }
     public static get CONFIRM_DELETE_USER(): string {return 'Are you sure you want to delete this user?'; }
     public static get CONFIRM_ADD_USER(): string {return 'Are you sure you want to add this user?'; }
+    public static get USER_MAP_LIST_URL():string {return "http://localhost:8080/api/map/user_map_names"}
+    public static GET_USER_MAP_URL(state:string, type:string): string {return "http://localhost:8080/api/generation/user_map/".concat(state).concat("/".concat(type))}
 }

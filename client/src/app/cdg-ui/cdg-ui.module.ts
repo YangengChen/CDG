@@ -20,7 +20,9 @@ import { CdgStepComponent } from "./cdg-step/cdg-step.component";
 import { NbCardModule } from "@nebular/theme";
 import { CdgDataDisplayComponent } from './cdg-data-display/cdg-data-display.component';
 import { CdgCompareDataComponent } from './cdg-compare-data/cdg-compare-data.component';
-import { CdgCompareDialogComponent } from './cdg-compare-data/cdg-compare-dialog/cdg-compare-dialog.component'
+import { CdgCompareDialogComponent } from './cdg-compare-data/cdg-compare-dialog/cdg-compare-dialog.component';
+import { CdgSavemapComponent } from './cdg-savemap/cdg-savemap.component';
+import { CdgSaveDialogComponent } from './cdg-savemap/cdg-save-dialog/cdg-save-dialog.component'
 
 @NgModule({
   imports: [
@@ -46,7 +48,9 @@ import { CdgCompareDialogComponent } from './cdg-compare-data/cdg-compare-dialog
     PermPickerDialogComponent,
     CdgDataDisplayComponent,
     CdgCompareDataComponent,
-    CdgCompareDialogComponent
+    CdgCompareDialogComponent,
+    CdgSavemapComponent,
+    CdgSaveDialogComponent
   ],
   exports: [
     CdgStepComponent,
@@ -56,7 +60,8 @@ import { CdgCompareDialogComponent } from './cdg-compare-data/cdg-compare-dialog
     CdgSnackbarComponent,
     CdgPermPickerComponent,
     CdgDataDisplayComponent,
-    CdgCompareDialogComponent
+    CdgCompareDialogComponent,
+    CdgSavemapComponent
   ],
   entryComponents:[
     StartGenerationFailedComponent,
@@ -64,8 +69,14 @@ import { CdgCompareDialogComponent } from './cdg-compare-data/cdg-compare-dialog
     WeightFailureComponent,
     GenerationFinishedComponent,
     PermPickerDialogComponent,
-    CdgCompareDialogComponent
+    CdgCompareDialogComponent,
+    CdgSaveDialogComponent,
+
   ],
-  providers : [CdgSnackbarComponent, CdgPermPickerComponent, CdgCompareDataComponent]
+  providers : [
+    CdgSavemapComponent,
+    CdgSnackbarComponent,   
+    CdgPermPickerComponent, 
+    CdgCompareDataComponent]
 })
 export class CdgUiModule { }

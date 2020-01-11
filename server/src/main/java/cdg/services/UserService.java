@@ -39,7 +39,7 @@ public class UserService {
 		}
 	}
 
-	public User deleteUser(User user) {
+	public User deleteUser(UserDTO user) {
 		User deleteUser = userRepository.findOneByEmail(user.getEmail());
 		userRepository.delete(deleteUser);
 		return deleteUser;

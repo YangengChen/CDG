@@ -22,6 +22,7 @@ public class SavedMap {
 	private double contiguityWeight;
 	private double equalPopWeight;
 	private double partisanFairWeight;
+	private String name;
 	@ManyToOne
 	private State state;
 	@OneToMany(cascade= {CascadeType.ALL}, orphanRemoval=true)
@@ -105,4 +106,14 @@ public class SavedMap {
 	public void setPartisanFairWeight(double partisanFairWeight) {
 		this.partisanFairWeight = partisanFairWeight;
 	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	
 }
